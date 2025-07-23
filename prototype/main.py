@@ -1,69 +1,74 @@
 import numpy as np
-import time
+import json
 from src.entities import Vehicle, BaseStation
 from src.simulation import Simulation
 from src.optimizer import Optimizer
-from src.visualizer import Visualizer
 
 def main():
     """
-    Main function to run the V2X network simulation prototype.
+    Main function to run the V2X network simulation and export the log to a JSON file.
     """
     # --- Simulation Setup ---
-    print("Initializing simulation...")
+    print("Initializing simulation for data export...")
 
-    # Create Base Stations
     base_stations = [
         BaseStation(bs_id=0, position=np.array([500, 500]), max_capacity=2),
         BaseStation(bs_id=1, position=np.array([1500, 500]), max_capacity=2)
     ]
 
-    # Create Vehicles
     vehicles = [
         Vehicle(vehicle_id=0, position=np.array([100, 450]), velocity=np.array([80, 0])),
         Vehicle(vehicle_id=1, position=np.array([200, 550]), velocity=np.array([80, 0])),
         Vehicle(vehicle_id=2, position=np.array([800, 480]), velocity=np.array([80, 0])),
-        Vehicle(vehicle_id=3, position=np.array([1800, 520]), velocity=np.array([-80, 0])) # Moving towards the other BS
+        Vehicle(vehicle_id=3, position=np.array([1800, 520]), velocity=np.array([-80, 0]))
     ]
 
-    # Create Simulation Environment, Optimizer, and Visualizer
     sim = Simulation(vehicles, base_stations)
     optimizer = Optimizer()
-    visualizer = Visualizer()
 
-    # --- Run Simulation ---
-    time_steps = 20
-    delta_time = 1.0 # seconds
+    # --- Run Simulation and Collect Logs ---
+    simulation_log = []
+    time_steps = 50 # Increase steps for a longer animation
+    delta_time = 0.5
 
-    print(f"Running simulation for {time_steps} steps with visualization.")
+    print(f"Running simulation for {time_steps} steps to generate log...")
 
-    try:
-        for step in range(time_steps):
-            sim.step(delta_time)
-            state = sim.get_state()
+    # Add initial state
+    initial_state = sim.get_state()
+    initial_assignments = optimizer.decide_assignments(
+        initial_state['vehicles'], initial_state['base_stations'], initial_state['datarate_matrix']
+    )
+    simulation_log.append({
+        "time": initial_state['time'],
+        "vehicles": [{ "id": v.id, "position": v.position.tolist() } for v in initial_state['vehicles']],
+        "base_stations": [{ "id": bs.id, "position": bs.position.tolist() } for bs in initial_state['base_stations']],
+        "assignments": initial_assignments
+    })
 
-            # Decide assignments using the optimizer
-            assignments = optimizer.decide_assignments(
-                state['vehicles'], state['base_stations'], state['datarate_matrix']
-            )
+    for step in range(time_steps):
+        sim.step(delta_time)
+        state = sim.get_state()
+        assignments = optimizer.decide_assignments(
+            state['vehicles'], state['base_stations'], state['datarate_matrix']
+        )
+        
+        # Convert numpy arrays to lists for JSON serialization
+        log_entry = {
+            "time": state['time'],
+            "vehicles": [{ "id": v.id, "position": v.position.tolist() } for v in state['vehicles']],
+            "base_stations": [{ "id": bs.id, "position": bs.position.tolist() } for bs in state['base_stations']],
+            "assignments": assignments
+        }
+        simulation_log.append(log_entry)
 
-            # Update the visualization
-            visualizer.update_plot(
-                state['time'], state['vehicles'], state['base_stations'], assignments
-            )
+    # --- Export to JSON ---
+    output_path = "prototype/simulation_log.json"
+    print(f"Simulation finished. Exporting log to {output_path}...")
 
-            print(f"--- Time Step {step+1} (Time: {state['time']:.1f}s) ---")
-            print("Assignments (Vehicle ID -> BS ID):", assignments)
-            
-            # A short pause to make the visualization smoother
-            time.sleep(0.5)
+    with open(output_path, 'w') as f:
+        json.dump(simulation_log, f, indent=2)
 
-    except Exception as e:
-        print(f"An error occurred during simulation: {e}")
-    finally:
-        print("\nSimulation finished. Closing plot.")
-        visualizer.close()
-
+    print("Export complete.")
 
 if __name__ == "__main__":
     main()
