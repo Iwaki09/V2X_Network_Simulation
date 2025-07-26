@@ -22,25 +22,33 @@ def run_raytracing(scene: Scene, mitsuba_xml_path: str):
         raise RuntimeError("No GPU found. SIONNA RT requires a GPU.")
     print(f"Using GPU: {gpus[0].name}")
 
-    # Use a proven scene with buildings for testing
-    print("Loading SIONNA RT built-in scene with buildings...")
+    # Use a custom test building for precise occlusion testing
+    print("Loading custom test scene with precise building placement...")
+    
+    import os
+    test_scene_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "test_building.xml")
     
     try:
-        # Load the simple street canyon scene which has buildings
-        rt_scene = sn.rt.load_scene(sn.rt.scene.simple_street_canyon)
-        print("✅ Successfully loaded simple_street_canyon scene")
+        # Load our custom test scene
+        rt_scene = sn.rt.load_scene(test_scene_path)
+        print("✅ Successfully loaded custom test scene")
         
         # Check scene objects
         if hasattr(rt_scene, 'objects') and rt_scene.objects:
             print(f"Scene contains {len(rt_scene.objects)} objects")
         
-        # Note: We'll use this scene as-is for testing building occlusion effects
-        # The transmitter/receiver positions will be overridden below
+        print(f"Test building positioned at x=50, y=100, z=15")
+        print(f"Building size: 10x100x30 (X[45-55], Y[50-150], Z[0-30])")
         
     except Exception as e:
-        print(f"❌ Failed to load built-in scene: {e}")
-        print("Falling back to empty scene...")
-        rt_scene = sn.rt.Scene()
+        print(f"❌ Failed to load test scene: {e}")
+        print("Falling back to simple_street_canyon...")
+        try:
+            rt_scene = sn.rt.load_scene(sn.rt.scene.simple_street_canyon)
+            print("✅ Loaded simple_street_canyon as fallback")
+        except:
+            rt_scene = sn.rt.Scene()
+            print("Using empty scene")
 
     # Configure antenna arrays (example: simple dipole antennas)
     # These are default arrays for all transmitters and receivers unless overridden
