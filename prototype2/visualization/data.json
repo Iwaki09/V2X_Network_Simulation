@@ -1,0 +1,852 @@
+[
+    {
+        "time": 0,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    20.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 83.9476490020752
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 83.93088340759277
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 1,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    25.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 83.96852493286133
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 83.65780830383301
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 2,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    35.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 84.03465270996094
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 83.08478355407715
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 3,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    50.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 84.19175148010254
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 82.14848518371582
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 4,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    70.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 84.49724197387695
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 80.72210311889648
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 5,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    95.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 85.00147819519043
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 78.54094982147217
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 6,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    125.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 85.72559356689453
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 74.95885848999023
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 7,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    160.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 86.65069580078125
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 68.23047161102295
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 8,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    200.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 87.72726058959961
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 68.23047161102295
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    },
+    {
+        "time": 9,
+        "world_size": [
+            200,
+            200
+        ],
+        "vehicles": [
+            {
+                "id": "vehicle1",
+                "position": [
+                    245.0,
+                    20
+                ]
+            },
+            {
+                "id": "vehicle2",
+                "position": [
+                    80,
+                    150
+                ]
+            }
+        ],
+        "base_stations": [
+            {
+                "id": "bs1",
+                "position": [
+                    10,
+                    180
+                ]
+            },
+            {
+                "id": "bs2",
+                "position": [
+                    180,
+                    20
+                ]
+            }
+        ],
+        "buildings": [
+            {
+                "id": "building1",
+                "position": [
+                    50,
+                    50
+                ],
+                "size": [
+                    20,
+                    80
+                ]
+            },
+            {
+                "id": "building2",
+                "position": [
+                    150,
+                    100
+                ],
+                "size": [
+                    30,
+                    20
+                ]
+            }
+        ],
+        "path_losses": [
+            {
+                "source": "vehicle1",
+                "target": "bs1",
+                "value": 88.89582633972168
+            },
+            {
+                "source": "vehicle1",
+                "target": "bs2",
+                "value": 76.31300449371338
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs1",
+                "value": 77.62229442596436
+            },
+            {
+                "source": "vehicle2",
+                "target": "bs2",
+                "value": 84.1440200805664
+            }
+        ]
+    }
+]

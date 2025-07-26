@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>V2X Simulation Visualizer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>V2X Simulation Visualizer</h1>
+        <canvas id="simulationCanvas"></canvas>
+        <div class="controls">
+            <button id="playPauseBtn">Play</button>
+            <input type="range" id="timeSlider" min="0" value="0">
+            <span id="timeLabel">Time: 0</span>
+        </div>
+        <div class="legend">
+            <span class="legend-item vehicle">Vehicle</span>
+            <span class="legend-item base-station">Base Station</span>
+            <span class="legend-item building">Building</span>
+            <span class="legend-item link">Communication Link (Path Loss)</span>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
