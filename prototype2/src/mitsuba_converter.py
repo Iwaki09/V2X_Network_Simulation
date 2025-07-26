@@ -57,20 +57,16 @@ def scene_to_mitsuba_xml(scene: Scene) -> str:
     # Integrator (use surface integrator for ray tracing)
     xml_parts.append('<integrator type="direct"/>')
 
-    # Materials with HolderMaterial for SIONNA RT
+    # Materials using ITU radio materials for SIONNA RT
     xml_parts.append('''
-    <bsdf type="holder-material" id="concrete">
-        <bsdf type="itu" id="concrete_itu">
-            <string name="itu_type" value="concrete"/>
-            <float name="thickness" value="0.2"/>
-        </bsdf>
+    <bsdf type="itu-radio-material" id="concrete">
+        <string name="type" value="concrete"/>
+        <float name="thickness" value="0.2"/>
     </bsdf>
     
-    <bsdf type="holder-material" id="ground">
-        <bsdf type="itu" id="ground_itu">
-            <string name="itu_type" value="concrete"/>
-            <float name="thickness" value="0.1"/>
-        </bsdf>
+    <bsdf type="itu-radio-material" id="ground">
+        <string name="type" value="concrete"/>
+        <float name="thickness" value="0.1"/>
     </bsdf>
     ''')
 

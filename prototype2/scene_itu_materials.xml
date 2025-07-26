@@ -1,17 +1,20 @@
 <scene version="3.0.0">
-<integrator type="direct"/>
-
+    <integrator type="direct"/>
+    
+    <!-- ITU Radio Materials for SIONNA RT -->
     <bsdf type="itu-radio-material" id="concrete">
         <string name="type" value="concrete"/>
         <float name="thickness" value="0.2"/>
     </bsdf>
     
-    <bsdf type="itu-radio-material" id="ground">
+    <bsdf type="itu-radio-material" id="ground_material">
         <string name="type" value="concrete"/>
         <float name="thickness" value="0.1"/>
     </bsdf>
     
-
+    <!-- Building 1: position [50, 50, 0], size [20, 80, 30] -->
+    <!-- Center position: [50 + 20/2, 50 + 80/2, 0 + 30/2] = [60, 90, 15] -->
+    <!-- Scale: [20/2, 80/2, 30/2] = [10, 40, 15] -->
     <shape type="cube" id="building1">
         <transform name="to_world">
             <translate x="60.0" y="90.0" z="15.0"/>
@@ -20,6 +23,9 @@
         <ref id="concrete"/>
     </shape>
 
+    <!-- Building 2: position [150, 100, 0], size [30, 20, 40] -->
+    <!-- Center position: [150 + 30/2, 100 + 20/2, 0 + 40/2] = [165, 110, 20] -->
+    <!-- Scale: [30/2, 20/2, 40/2] = [15, 10, 20] -->
     <shape type="cube" id="building2">
         <transform name="to_world">
             <translate x="165.0" y="110.0" z="20.0"/>
@@ -28,11 +34,12 @@
         <ref id="concrete"/>
     </shape>
 
+    <!-- Ground plane -->
     <shape type="rectangle" id="ground_plane">
         <transform name="to_world">
             <translate x="100.0" y="100.0" z="0"/>
             <scale x="100.0" y="100.0" z="1"/>
         </transform>
-        <ref id="ground"/>
+        <ref id="ground_material"/>
     </shape>
 </scene>
