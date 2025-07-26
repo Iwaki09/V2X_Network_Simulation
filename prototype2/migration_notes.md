@@ -29,3 +29,23 @@ A critical feature is to treat **vehicles themselves as 3D objects** that obstru
 3.  Share the output with me.
     - If the command succeeds and shows an NVIDIA GPU, we will proceed with the original plan to install SIONNA RT in a virtual environment.
     - If the command fails, we will revert to the proposed alternative plan: a CPU-based 3D ray-casting model for blockage detection.
+
+## 5. Implementation & Troubleshooting (Post-Migration)
+
+- **GPU Confirmed**: Successfully ran `nvidia-smi` and confirmed the presence of an NVIDIA GeForce RTX 4070.
+- **Environment Setup**: Created a Python virtual environment (`.venv`) and installed `sionna` and its dependencies using `pip`.
+- **Core Logic Implemented**:
+    - Created `main.py` to orchestrate the simulation.
+    - The script successfully loads `scene.json`, converts it to a Mitsuba XML file (`generated_scene.xml`).
+- **Execution Error**:
+    - Running `main.py` fails with `RuntimeError: No GPU found. SIONNA RT requires a GPU.`.
+    - This indicates that TensorFlow, a dependency of Sionna, cannot locate the necessary CUDA libraries.
+- **Troubleshooting Steps Taken**:
+    - Checked `LD_LIBRARY_PATH`, which was empty.
+    - Attempted to run the script with `LD_LIBRARY_PATH` set to the standard `/usr/local/cuda/lib64`, but the error persisted.
+    - Searched for the CUDA compiler (`nvcc`) using `which nvcc`, but it was not found in the system's PATH.
+
+## 6. Current Status & Next Steps (After Reboot)
+
+- **Problem**: The exact installation path of the CUDA toolkit is unknown. The environment is not configured correctly for TensorFlow to leverage the GPU.
+- **Next Action**: After rebooting, the immediate next step is to locate the CUDA installation directory. Once found, we must update the environment variables (`PATH` and `LD_LIBRARY_PATH`) to point to the correct directories, allowing the simulation to run.
