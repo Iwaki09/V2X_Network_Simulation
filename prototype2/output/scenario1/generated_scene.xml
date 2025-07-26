@@ -12,7 +12,7 @@
     </bsdf>
     
 
-    <shape type="cube" id="building1">
+    <shape type="cube" id="building1" name="building1">
         
         <transform name="to_world">
             <translate x="50" y="50" z="15.0"/>
@@ -23,7 +23,7 @@
     </shape>
     
 
-    <shape type="cube" id="building2">
+    <shape type="cube" id="building2" name="building2">
         
         <transform name="to_world">
             <translate x="150" y="100" z="20.0"/>
@@ -34,10 +34,10 @@
     </shape>
     
 
-    <shape type="cube" id="vehicle1">
+    <shape type="cube" id="vehicle1" name="vehicle1">
         
         <transform name="to_world">
-            <translate x="245.0" y="20" z="1.75"/>
+            <translate x="50.0" y="20" z="1.75"/>
             <scale x="2.0" y="1.0" z="0.75"/>
         </transform>
     
@@ -45,7 +45,7 @@
     </shape>
     
 
-    <shape type="cube" id="vehicle2">
+    <shape type="cube" id="vehicle2" name="vehicle2">
         
         <transform name="to_world">
             <translate x="80" y="150" z="1.75"/>

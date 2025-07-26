@@ -22,11 +22,36 @@ def run_raytracing(scene: Scene, mitsuba_xml_path: str):
         raise RuntimeError("No GPU found. SIONNA RT requires a GPU.")
     print(f"Using GPU: {gpus[0].name}")
 
-    # Create a new SIONNA RT scene
+    # Create a new SIONNA RT scene and manually add buildings
     rt_scene = sn.rt.Scene()
     
-    # Note: Building geometry will be added through manual object creation later
-    # For now, proceeding with basic transmitter/receiver setup
+    # Add buildings as SceneObjects using simple box mesh
+    import os
+    box_mesh_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "simple_box.obj")
+    
+    for building in scene.buildings:
+        pos = building['position']
+        size = building['size']
+        
+        # Create radio material for the building
+        building_material = sn.rt.ITURadioMaterial(
+            name=f"{building['id']}_material",
+            itu_type="concrete",
+            thickness=0.2  # 20cm thickness
+        )
+        
+        try:
+            # Create SceneObject from OBJ file
+            building_obj = sn.rt.SceneObject(
+                fname=box_mesh_path,
+                name=building['id'],
+                radio_material=building_material
+            )
+            
+            rt_scene.add(building_obj)
+            print(f"Added building: {building['id']} at {pos} with size {size}")
+        except Exception as e:
+            print(f"Warning: Failed to add building {building['id']}: {e}")
 
     # Configure antenna arrays (example: simple dipole antennas)
     # These are default arrays for all transmitters and receivers unless overridden

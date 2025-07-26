@@ -18,7 +18,7 @@ def shape_to_xml(shape_info, material_id):
     """
 
     return f"""
-    <shape type="{shape_type}" id="{shape_info['id']}">
+    <shape type="{shape_type}" id="{shape_info['id']}" name="{shape_info['id']}">
         {transform_xml}
         <ref id="{material_id}"/>
     </shape>
