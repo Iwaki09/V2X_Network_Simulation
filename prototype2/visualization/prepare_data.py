@@ -76,7 +76,7 @@ def prepare_visualization_data(
             step_data['buildings'].append({
                 "id": building['id'],
                 "position": building['position'][:2], # x, y 座標のみ
-                "size": building['size'][:2], # width, height のみ
+                "size": building['size'], # width, height, height 全て含める
             })
 
         # パスロス情報 (車両IDと基地局IDを紐付けて保存)

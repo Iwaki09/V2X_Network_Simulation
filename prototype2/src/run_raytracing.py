@@ -24,6 +24,9 @@ def run_raytracing(scene: Scene, mitsuba_xml_path: str):
 
     # Load the Mitsuba scene
     rt_scene = sn.rt.Scene()
+    
+    # Load the Mitsuba XML scene for proper building geometry
+    rt_scene.load_file(mitsuba_xml_path)
 
     # Configure antenna arrays (example: simple dipole antennas)
     # These are default arrays for all transmitters and receivers unless overridden
