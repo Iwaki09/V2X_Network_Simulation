@@ -54,29 +54,52 @@ def scene_to_mitsuba_xml(scene: Scene) -> str:
     """
     xml_parts = ['<scene version="3.0.0">']
 
-    # Integrator (we use a simple path tracer)
-    xml_parts.append('<integrator type="path"/>')
+    # Integrator (use surface integrator for ray tracing)
+    xml_parts.append('<integrator type="direct"/>')
 
-    # Materials
-    for mat_id, mat_info in scene.materials.items():
-        xml_parts.append(material_to_xml(mat_id, mat_info))
+    # Materials with HolderMaterial for SIONNA RT
+    xml_parts.append('''
+    <bsdf type="holder-material" id="concrete">
+        <bsdf type="itu" id="concrete_itu">
+            <string name="itu_type" value="concrete"/>
+            <float name="thickness" value="0.2"/>
+        </bsdf>
+    </bsdf>
+    
+    <bsdf type="holder-material" id="ground">
+        <bsdf type="itu" id="ground_itu">
+            <string name="itu_type" value="concrete"/>
+            <float name="thickness" value="0.1"/>
+        </bsdf>
+    </bsdf>
+    ''')
 
-    # Shapes (Buildings and Vehicles)
+    # Shapes (Buildings only - focus on main geometry)
     for building in scene.buildings:
-        xml_parts.append(shape_to_xml(building, building['material']))
-    for vehicle in scene.vehicles:
-        xml_parts.append(shape_to_xml(vehicle, vehicle['material']))
+        pos = building['position']
+        size = building['size']
+        center_x = pos[0] + size[0] / 2
+        center_y = pos[1] + size[1] / 2
+        center_z = pos[2] + size[2] / 2
+        
+        xml_parts.append(f'''
+    <shape type="cube" id="{building['id']}">
+        <transform name="to_world">
+            <translate x="{center_x}" y="{center_y}" z="{center_z}"/>
+            <scale x="{size[0]/2}" y="{size[1]/2}" z="{size[2]/2}"/>
+        </transform>
+        <ref id="concrete"/>
+    </shape>''')
 
-    # Floor
+    # Simple ground plane
     xml_parts.append(f'''
-    <shape type="rectangle">
+    <shape type="rectangle" id="ground_plane">
         <transform name="to_world">
             <translate x="{scene.world_size[0]/2}" y="{scene.world_size[1]/2}" z="0"/>
             <scale x="{scene.world_size[0]/2}" y="{scene.world_size[1]/2}" z="1"/>
         </transform>
-        <bsdf type="diffuse"/>
-    </shape>
-    ''')
+        <ref id="ground"/>
+    </shape>''')
 
     xml_parts.append('</scene>')
 
