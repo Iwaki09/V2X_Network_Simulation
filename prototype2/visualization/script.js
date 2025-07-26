@@ -147,17 +147,25 @@ function draw(stepData) {
 }
 
 // --- Animation Loop ---
-function gameLoop() {
+function gameLoop(currentTime) {
     if (!isPlaying || currentStep >= visualizationData.length - 1) {
         isPlaying = false;
         playPauseBtn.textContent = 'Play';
         return;
     }
-    currentStep++;
-    timeSlider.value = String(currentStep);
-    const stepData = visualizationData[currentStep];
-    timeLabel.textContent = `Time: ${stepData.time}`;
-    draw(stepData);
+    
+    // Control animation speed
+    const frameDelay = 1000 / (animationSpeed * 2); // Base speed: 2 fps, adjusted by speed
+    
+    if (currentTime - lastFrameTime >= frameDelay) {
+        currentStep++;
+        timeSlider.value = String(currentStep);
+        const stepData = visualizationData[currentStep];
+        timeLabel.textContent = `Time: ${stepData.time}`;
+        draw(stepData);
+        lastFrameTime = currentTime;
+    }
+    
     animationFrameId = requestAnimationFrame(gameLoop);
 }
 
@@ -169,7 +177,8 @@ playPauseBtn.addEventListener('click', () => {
         if (currentStep >= visualizationData.length - 1) {
             currentStep = 0; // Restart if at the end
         }
-        gameLoop();
+        lastFrameTime = 0; // Reset frame timing
+        requestAnimationFrame(gameLoop);
     }
 });
 
@@ -183,6 +192,11 @@ timeSlider.addEventListener('input', () => {
         playPauseBtn.textContent = 'Play';
         cancelAnimationFrame(animationFrameId);
     }
+});
+
+speedSlider.addEventListener('input', () => {
+    animationSpeed = parseFloat(speedSlider.value);
+    speedLabel.textContent = `${animationSpeed.toFixed(1)}x`;
 });
 
 // --- Data Loading ---
