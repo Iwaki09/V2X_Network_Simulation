@@ -5,6 +5,7 @@ import json
 from src.scene_parser import load_scene
 from src.mitsuba_converter import scene_to_mitsuba_xml
 from src.run_raytracing import run_raytracing
+from src.graph_builder import build_graphs_from_simulation_results # 追加
 
 def main():
     """
@@ -47,6 +48,12 @@ def main():
         json.dump(all_results, f, indent=4)
     
     print(f"\nSimulation finished. Results saved to: {output_path}")
+
+    # 6. シミュレーション結果からグラフを構築 (追加)
+    base_scene_path = os.path.join(script_dir, 'scene.json')
+    output_graph_dir = os.path.join(script_dir, 'output')
+    build_graphs_from_simulation_results(output_path, base_scene_path, output_graph_dir)
+
 
 if __name__ == '__main__':
     main()

@@ -105,3 +105,26 @@ prototype2/
     ...
 ]
 ```
+
+さらに、`simulation_results.json` と `prototype2/scene.json` を基に、各タイムステップのネットワーク状態をグラフ構造で表現した `prototype2/output/graph_data.json` が生成される。
+
+```json
+[
+    {
+        "timestamp": "scene_t0.json",
+        "nodes": [
+            {"id": "vehicle1", "type": "vehicle"},
+            {"id": "vehicle2", "type": "vehicle"},
+            {"id": "bs1", "type": "base_station"},
+            {"id": "bs2", "type": "base_station"}
+        ],
+        "edges": [
+            {"source": "vehicle1", "target": "bs1", "weight": 83.947649},
+            {"source": "vehicle1", "target": "bs2", "weight": 83.93088341},
+            {"source": "vehicle2", "target": "bs1", "weight": 77.62229443},
+            {"source": "vehicle2", "target": "bs2", "weight": 84.14402008}
+        ]
+    },
+    ...
+]
+```
