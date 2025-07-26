@@ -13,16 +13,20 @@
 // };
 
 // --- Canvas and Control Elements ---
-const canvas = document.getElementById('simulationCanvas') as HTMLCanvasElement;
-const ctx = canvas.getContext('2d')!;
-const playPauseBtn = document.getElementById('playPauseBtn') as HTMLButtonElement;
-const timeSlider = document.getElementById('timeSlider') as HTMLInputElement;
-const timeLabel = document.getElementById('timeLabel') as HTMLSpanElement;
+const canvas = document.getElementById('simulationCanvas');
+const ctx = canvas.getContext('2d');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const timeSlider = document.getElementById('timeSlider');
+const timeLabel = document.getElementById('timeLabel');
+const speedSlider = document.getElementById('speedSlider');
+const speedLabel = document.getElementById('speedLabel');
 
 let visualizationData = [];
 let currentStep = 0;
 let isPlaying = false;
 let animationFrameId;
+let animationSpeed = 1.0; // Default speed
+let lastFrameTime = 0;
 
 // --- Configuration ---
 const CANVAS_WIDTH = 800;
@@ -190,6 +194,8 @@ async function loadData() {
     }
     visualizationData = await response.json();
     timeSlider.max = String(visualizationData.length - 1);
+    timeLabel.textContent = `Time: ${visualizationData[0].time}`;
+    speedLabel.textContent = `${animationSpeed.toFixed(1)}x`;
     draw(visualizationData[0]); // Draw initial state
   } catch (error) {
     console.error("Failed to load visualization data:", error);
