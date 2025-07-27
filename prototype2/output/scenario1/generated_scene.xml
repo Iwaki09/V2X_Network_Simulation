@@ -14,8 +14,8 @@
 
     <shape type="cube" id="building1">
         <transform name="to_world">
-            <translate x="60.0" y="90.0" z="15.0"/>
-            <scale x="10.0" y="40.0" z="15.0"/>
+            <translate x="140.0" y="90.0" z="15.0"/>
+            <scale x="40.0" y="40.0" z="15.0"/>
         </transform>
         <ref id="concrete"/>
     </shape>

@@ -14,8 +14,8 @@
   "buildings": [
     {
       "id": "building1",
-      "position": [50, 50, 0],
-      "size": [20, 80, 30],
+      "position": [100, 50, 0],
+      "size": [80, 80, 30],
       "material": "concrete"
     },
     {
