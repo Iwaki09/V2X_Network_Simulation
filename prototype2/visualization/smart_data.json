@@ -1,0 +1,2862 @@
+[
+  {
+    "time": 0,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          50.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          100.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          80.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          150.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          80.0,
+          200.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          180.0,
+          30.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 73.616623878479
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 86.46771430969238
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 71.5121841430664
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 83.10161590576172
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 1,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          58.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          94.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          87.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          145.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          84.0,
+          197.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          173.0,
+          34.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 72.83043384552002
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 86.2114429473877
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 71.03596687316895
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 83.39184761047363
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 2,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          66.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          88.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          94.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          140.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          88.0,
+          194.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          166.0,
+          38.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 72.20958232879639
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 85.9526252746582
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 70.78897476196289
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 83.6767578125
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 3,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          74.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          82.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          101.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          135.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          92.0,
+          191.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          159.0,
+          42.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 71.83797359466553
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 85.69175720214844
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 70.72218418121338
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 83.95615577697754
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 4,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          82.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          76.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          108.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          130.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          96.0,
+          188.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          152.0,
+          46.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 71.7618465423584
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 85.42947769165039
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 70.73193550109863
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 84.22999382019043
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 5,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          90.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          70.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          115.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          125.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          100.0,
+          185.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          145.0,
+          50.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 71.98860168457031
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 111.03277206420898
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 70.84622383117676
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 84.49820518493652
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 6,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          98.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          64.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          122.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          120.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          104.0,
+          182.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          138.0,
+          54.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 72.49356746673584
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 84.90389823913574
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 71.17044925689697
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 84.76081848144531
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 7,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          106.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          58.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          129.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          115.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          108.0,
+          179.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          131.0,
+          58.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 73.20861339569092
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 118.29938888549805
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 71.71404361724854
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 85.01789093017578
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 8,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          114.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          52.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          136.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          110.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          112.0,
+          176.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          124.0,
+          62.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 74.04411315917969
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 84.38406944274902
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 72.4061918258667
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 85.26948928833008
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 9,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          122.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          46.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          143.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          105.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          116.0,
+          173.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          117.0,
+          66.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 74.92482662200928
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 84.12971496582031
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 73.17049026489258
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 85.51571846008301
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 10,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          130.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          40.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          150.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          120.0,
+          170.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          110.0,
+          70.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 75.80241680145264
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 83.88134956359863
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 73.953857421875
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 85.75669288635254
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 11,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          138.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          34.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          157.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          95.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          124.0,
+          167.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          103.0,
+          74.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 76.65079116821289
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 83.64097595214844
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 74.72557544708252
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 85.99252700805664
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 12,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          146.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          28.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          164.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          90.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          128.0,
+          164.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          96.0,
+          78.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 77.45798587799072
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 83.41083526611328
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 75.46989917755127
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.22335433959961
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 13,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          154.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          22.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          171.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          85.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          132.0,
+          161.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          89.0,
+          82.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 78.21999073028564
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 83.19336891174316
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 76.1798620223999
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.4493179321289
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 14,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          162.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          16.0,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          178.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          80.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          136.0,
+          158.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          82.0,
+          86.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 78.93693447113037
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.9912281036377
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 76.8532943725586
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.67054176330566
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 15,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          170.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          10,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          185.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          75.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          140.0,
+          155.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          75.0,
+          90.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 79.61094379425049
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.80715942382812
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 77.49056816101074
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.88716888427734
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 16,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          178.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          10,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          192.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          70.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          144.0,
+          152.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          68.0,
+          94.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 80.2449893951416
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.64397621154785
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 77.49056816101074
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.88716888427734
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 17,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          186.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          10,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          199.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          65.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          148.0,
+          149.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          61.0,
+          98.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 80.84228515625
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.50438690185547
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 77.49056816101074
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.88716888427734
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 18,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          194.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          10,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          206.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          60.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          152.0,
+          146.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          54.0,
+          102.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 81.4059829711914
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.39092826843262
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 77.49056816101074
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.88716888427734
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  },
+  {
+    "time": 19,
+    "world_size": [
+      300,
+      300
+    ],
+    "vehicles": [
+      {
+        "id": "vehicle_1",
+        "position": [
+          202.0,
+          50.0
+        ]
+      },
+      {
+        "id": "vehicle_2",
+        "position": [
+          10,
+          100.0
+        ]
+      },
+      {
+        "id": "vehicle_3",
+        "position": [
+          150.0,
+          213.0
+        ]
+      },
+      {
+        "id": "vehicle_4",
+        "position": [
+          200.0,
+          55.0
+        ]
+      },
+      {
+        "id": "vehicle_5",
+        "position": [
+          156.0,
+          143.0
+        ]
+      },
+      {
+        "id": "vehicle_6",
+        "position": [
+          47.0,
+          106.0
+        ]
+      }
+    ],
+    "base_stations": [
+      {
+        "id": "bs_1",
+        "position": [
+          80,
+          80
+        ]
+      },
+      {
+        "id": "bs_2",
+        "position": [
+          220,
+          180
+        ]
+      }
+    ],
+    "buildings": [
+      {
+        "id": "building_1",
+        "position": [
+          150,
+          120
+        ],
+        "size": [
+          60,
+          40,
+          25
+        ]
+      }
+    ],
+    "path_losses": [
+      {
+        "source": "vehicle_1",
+        "target": "bs_1",
+        "value": 81.93906784057617
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_1",
+        "value": 82.30579376220703
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_1",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_1",
+        "target": "bs_2",
+        "value": 77.49056816101074
+      },
+      {
+        "source": "vehicle_2",
+        "target": "bs_2",
+        "value": 86.88716888427734
+      },
+      {
+        "source": "vehicle_3",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_4",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_5",
+        "target": "bs_2",
+        "value": 120.0
+      },
+      {
+        "source": "vehicle_6",
+        "target": "bs_2",
+        "value": 120.0
+      }
+    ]
+  }
+]

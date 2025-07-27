@@ -1,0 +1,35 @@
+<scene version="3.0.0">
+    <integrator type="direct"/>
+    
+    <!-- ITU推奨コンクリート材料 -->
+    <bsdf type="twosided" id="concrete_material">
+        <bsdf type="diffuse">
+            <rgb value="0.7 0.6 0.5" name="reflectance"/>
+        </bsdf>
+    </bsdf>
+    
+    <!-- 地面材料 -->
+    <bsdf type="twosided" id="ground_material">
+        <bsdf type="diffuse">
+            <rgb value="0.3 0.8 0.3" name="reflectance"/>
+        </bsdf>
+    </bsdf>
+    
+    <!-- カスタム建物 -->
+    <shape type="cube" id="custom_building">
+        <transform name="to_world">
+            <translate x="150.0" y="120.0" z="12.5"/>
+            <scale x="30.0" y="20.0" z="12.5"/>
+        </transform>
+        <ref name="bsdf" id="concrete_material"/>
+    </shape>
+    
+    <!-- 地面 -->
+    <shape type="rectangle" id="ground">
+        <transform name="to_world">
+            <translate x="150.0" y="150.0" z="0"/>
+            <scale x="150.0" y="150.0" z="1"/>
+        </transform>
+        <ref name="bsdf" id="ground_material"/>
+    </shape>
+</scene>

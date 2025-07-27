@@ -1,44 +1,69 @@
-# Prototype 2: Static V2X Network Optimization with Ray-Tracing
+# Prototype 2: V2X Network Simulation with Ray-Tracing
 
 ## 1. Goal
 
-This prototype aims to build a simulation framework to optimize a **static snapshot** of a V2X network. Unlike `prototype1`, this version incorporates a high-fidelity physical propagation model using **ray-tracing**. The key feature is to treat **vehicles themselves as 3D objects** that can obstruct or reflect radio signals, in addition to static buildings.
+This prototype builds a comprehensive V2X (Vehicle-to-Everything) network simulation framework using **ray-tracing** with SIONNA RT. The simulation supports both static snapshots and dynamic scenarios with moving vehicles. Buildings are modeled as 3D objects that create realistic radio signal occlusion effects.
 
-The primary objective is to determine the optimal assignment of vehicles to base stations based on link quality data derived from a realistic, static 3D scene.
+The primary objective is to analyze and visualize V2X communication quality considering building occlusion, vehicle mobility, and realistic radio propagation.
 
 ## 2. Core Concepts
 
-- **Static Simulation**: The simulation does not involve a time dimension. All entities (vehicles, buildings) are stationary.
-- **3D Scene Definition**: The environment, including buildings, vehicles, and base stations, is defined as a 3D scene.
-- **Ray-Tracing for Link Quality**: The link quality (e.g., path loss) between every vehicle and base station is calculated using a ray-tracing engine. This approach accounts for complex phenomena like reflection, diffraction, and blockage by both buildings and other vehicles.
-- **Centralized Optimization**: A central optimizer uses the high-fidelity link quality data to find the globally optimal network configuration (assignments) that maximizes a certain objective (e.g., total throughput).
+- **Dynamic Simulation**: Time-based simulation with moving vehicles and static infrastructure
+- **3D Scene Definition**: Environment with buildings, moving vehicles, and base stations modeled in 3D
+- **SIONNA RT Integration**: High-fidelity ray-tracing using SIONNA RT with proper building materials and triangle meshes
+- **Building Occlusion**: Realistic radio signal blockage by buildings with ITU-recommended material properties
+- **Interactive Visualization**: Web-based visualization with animation controls and real-time statistics
 
-## 3. Technical Approach & Implementation Plan
+## 3. Implementation
 
-### Phase 1: Scene Definition
+### Smart Simulation System (`smart_simulation.py`)
 
-- **Objective**: Create a programmatic way to define the 3D simulation environment.
-- **Tasks**:
-    1.  Define a simple JSON format (`scene.json`) to describe the properties (ID, position, size, material) of all objects (buildings, vehicles, base stations).
-    2.  Implement a Python parser (`scene_parser.py`) to load this JSON file into memory as Python objects.
+6台車両のダイナミックシナリオ:
+- 6台の車両が異なる速度と経路で移動
+- 2つの基地局による通信カバレッジ
+- 1つの建物による電波遮蔽効果
+- SIONNA RTによる高精度パスロス計算
 
-### Phase 2: Ray-Tracing Execution
+### Building Placement System (`building_placement.py`)
 
-- **Objective**: Convert the defined scene into a format usable by a ray-tracing engine and execute the simulation.
-- **Key Technology**: **SIONNA RT** (which uses **Mitsuba 3** internally) is the chosen engine because of its ability to handle complex 3D scenes described in XML.
-- **Tasks**:
-    1.  Implement a converter (`mitsuba_converter.py`) that translates the Python scene objects into a Mitsuba 3 XML scene file.
-    2.  Create a wrapper (`run_raytracing.py`) to invoke SIONNA RT with the generated scene, execute the ray-tracing, and process the results to get path loss values for all links.
+SIONNA RT公式ドキュメントに基づく建物配置:
+- ITU推奨コンクリート材料パラメータ
+- 三角メッシュによる3D建物モデリング
+- RadioMaterialクラスによる材質定義
 
-### Phase 3: Network Optimization
+### Interactive Visualization (`smart_visualization.py`)
 
-- **Objective**: Use the ray-tracing results to perform network optimization.
-- **Tasks**:
-    1.  Adapt the optimizer from `prototype1` (`optimizer.py`). It will take the high-fidelity link quality data as input and determine the best vehicle-to-base station assignments.
+Webベースのインタラクティブ可視化:
+- 車両移動のアニメーション表示
+- リアルタイム統計情報
+- パスロス変動の分析
+- 遮蔽効果の可視化
 
-### Phase 4: Visualization
+## 4. 実行方法
 
-- **Objective**: Visualize the scene and the optimization results.
-- **Tasks**:
-    1.  Implement a visualizer (`visualizer.py`) using `matplotlib` to display a top-down (2D) view of the scene.
-    2.  The visualization will show the layout of buildings, vehicles, and base stations, as well as the final optimized connection links.
+### スマートシミュレーション実行
+```bash
+python3 smart_simulation.py
+```
+
+### ビジュアライゼーション作成
+```bash
+python3 smart_visualization.py
+```
+
+### 結果確認
+- `output/smart_v2x_simulation_results.json`: シミュレーション結果
+- `output/smart_v2x_analysis.json`: 統計分析
+- `visualization/smart_index.html`: インタラクティブ可視化
+
+## 5. シミュレーション結果
+
+### 遮蔽効果の確認
+- vehicle_2-bs_1間で36dBの大きなパスロス変動を確認
+- 建物による電波遮蔽が適切に機能
+- 他の車両では通常の自由空間パスロス
+
+### 車両移動分析
+- 全6台の車両が異なる軌道で移動
+- 最大153mの移動距離
+- 建物周辺での遮蔽効果を確認
