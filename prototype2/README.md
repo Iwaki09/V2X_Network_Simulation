@@ -16,7 +16,7 @@ The primary objective is to analyze and visualize V2X communication quality cons
 
 ## 3. Implementation
 
-### Smart Simulation System (`smart_simulation.py`)
+### Simulation System (`simulation.py`)
 
 6台車両のダイナミックシナリオ:
 - 6台の車両が異なる速度と経路で移動
@@ -31,7 +31,7 @@ SIONNA RT公式ドキュメントに基づく建物配置:
 - 三角メッシュによる3D建物モデリング
 - RadioMaterialクラスによる材質定義
 
-### Interactive Visualization (`smart_visualization.py`)
+### Interactive Visualization (`visualization.py`)
 
 Webベースのインタラクティブ可視化:
 - 車両移動のアニメーション表示
@@ -41,29 +41,59 @@ Webベースのインタラクティブ可視化:
 
 ## 4. 実行方法
 
-### スマートシミュレーション実行
+### シミュレーション実行
 ```bash
-python3 smart_simulation.py
+python3 simulation.py
 ```
 
 ### ビジュアライゼーション作成
 ```bash
-python3 smart_visualization.py
+python3 visualization.py
 ```
 
 ### 結果確認
-- `output/smart_v2x_simulation_results.json`: シミュレーション結果
-- `output/smart_v2x_analysis.json`: 統計分析
-- `visualization/smart_index.html`: インタラクティブ可視化
+- `output/simulation_results.json`: シミュレーション結果
+- `output/analysis.json`: 統計分析
+- `visualization/index.html`: インタラクティブ可視化
 
-## 5. シミュレーション結果
+## 5. 可視化システム
+
+### 三つのビューモード
+
+1. **Map View (🗺️)**: 基本のマップビュー
+   - 車両、基地局、建物の表示
+   - 車両の移動軌跡
+
+2. **Graph View (📊)**: ネットワークグラフビュー
+   - 車両と基地局をノードとして円形配置
+   - パスロス値でエッジを色分け表示
+   - 信号品質の凡例付き
+
+3. **Map+Graph View (🗺️+📊)**: 統合ビュー [New!]
+   - 既存マップ上にネットワーク接続をオーバーレイ表示
+   - リアルタイムでパスロス値をエッジに表示
+   - 建物遮蔽効果の可視的確認
+   - V2I（車両-基地局）とV2V（車両間）通信の同時表示
+
+### 信号品質の色分け
+- 🟢 緑: 良好 (<80dB)
+- 🟠 オレンジ: 中程度 (80-100dB)
+- 🔴 赤: 悪い (100-120dB)
+- ⚫ グレー: 非常に悪い (>120dB)
+
+## 6. シミュレーション結果
+
+### V2X通信のサポート
+- **V2I通信**: 車両と基地局間の通信
+- **V2V通信**: 車両間の直接通信
+- 4台の車両による最適化されたシナリオ
 
 ### 遮蔽効果の確認
-- vehicle_2-bs_1間で36dBの大きなパスロス変動を確認
-- 建物による電波遮蔽が適切に機能
-- 他の車両では通常の自由空間パスロス
+- Liang-Barskyアルゴリズムによる線分-矩形交差判定
+- 建物遮蔽時の+15dBの追加パスロス
+- 70-107dB範囲のリアルなパスロス値
 
 ### 車両移動分析
-- 全6台の車両が異なる軌道で移動
-- 最大153mの移動距離
-- 建物周辺での遮蔽効果を確認
+- 基地局近傍での最適化された車両配置
+- 建物周辺での遮蔽効果の確認
+- 動的なネットワーク接続品質の変化

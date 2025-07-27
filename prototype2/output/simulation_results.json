@@ -1,132 +1,3769 @@
-[
+{
+  "scenario": "v2x_4vehicles_with_v2v",
+  "time_steps": 20,
+  "vehicles": 4,
+  "base_stations": 2,
+  "buildings": 1,
+  "simulation_data": [
     {
-        "timestamp": "scene_t0.json",
-        "path_loss_matrix": [
-            [
-                83.9476490020752,
-                93.3530330657959
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 0,
+      "time": 0.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          60.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          180.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          60.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          200.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          70.84622859954834,
+          85.15389442443848,
+          78.95224892167913,
+          107.04527413797884
+        ],
+        [
+          82.0997428894043,
+          73.953857421875,
+          107.04527413797884,
+          78.95224892167913
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          88.58391014210194,
+          82.28735556918986,
+          90.06052989434332
+        ],
+        [
+          88.58391014210194,
+          Infinity,
+          87.64561195312952,
+          79.77375510539562
+        ],
+        [
+          82.28735556918986,
+          87.64561195312952,
+          Infinity,
+          89.66453406744336
+        ],
+        [
+          90.06052989434332,
+          79.77375510539562,
+          89.66453406744336,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 70.84622859954834,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 85.15389442443848,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 78.95224892167913,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 107.04527413797884,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 82.0997428894043,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 73.953857421875,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 107.04527413797884,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 78.95224892167913,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 88.58391014210194,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 82.28735556918986,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 90.06052989434332,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 88.58391014210194,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 87.64561195312952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 79.77375510539562,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 82.28735556918986,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 87.64561195312952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 89.66453406744336,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 90.06052989434332,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 79.77375510539562,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 89.66453406744336,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t1.json",
-        "path_loss_matrix": [
-            [
-                83.96852493286133,
-                93.07574272155762
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 1,
+      "time": 1.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          66.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          176.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          65.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          196.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          70.77113628387451,
+          84.90818977355957,
+          78.32434062308458,
+          106.88774419321179
+        ],
+        [
+          81.8941879272461,
+          74.47082996368408,
+          106.84830993893395,
+          78.44239373945587
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          88.12375510539562,
+          81.25972659209842,
+          89.74890386025004
+        ],
+        [
+          88.12375510539562,
+          Infinity,
+          87.25568617723516,
+          79.30047628507806
+        ],
+        [
+          81.25972659209842,
+          87.25568617723516,
+          Infinity,
+          89.30732416783941
+        ],
+        [
+          89.74890386025004,
+          79.30047628507806,
+          89.30732416783941,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 70.77113628387451,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 84.90818977355957,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 78.32434062308458,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.88774419321179,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 81.8941879272461,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 74.47082996368408,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 106.84830993893395,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 78.44239373945587,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 88.12375510539562,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 81.25972659209842,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 89.74890386025004,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 88.12375510539562,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 87.25568617723516,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 79.30047628507806,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 81.25972659209842,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 87.25568617723516,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 89.30732416783941,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 89.74890386025004,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 79.30047628507806,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 89.30732416783941,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t2.json",
-        "path_loss_matrix": [
-            [
-                93.20477485656738,
-                97.0241641998291
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 2,
+      "time": 2.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          72.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          172.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          70.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          192.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          71.69213771820068,
+          84.65801239013672,
+          77.81281539861077,
+          106.72992739982449
+        ],
+        [
+          81.68745040893555,
+          74.97720241546631,
+          106.65096905841507,
+          77.9998203852732
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          87.64561195312952,
+          80.06861026647908,
+          89.42349511147327
+        ],
+        [
+          87.64561195312952,
+          Infinity,
+          86.84370739777373,
+          78.93241721175119
+        ],
+        [
+          80.06861026647908,
+          86.84370739777373,
+          Infinity,
+          88.93875125149695
+        ],
+        [
+          89.42349511147327,
+          78.93241721175119,
+          88.93875125149695,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 71.69213771820068,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 84.65801239013672,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 77.81281539861077,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.72992739982449,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 81.68745040893555,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 74.97720241546631,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 106.65096905841507,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.9998203852732,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 87.64561195312952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 80.06861026647908,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 89.42349511147327,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 87.64561195312952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 86.84370739777373,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 78.93241721175119,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 80.06861026647908,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 86.84370739777373,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 88.93875125149695,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 89.42349511147327,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 78.93241721175119,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 88.93875125149695,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t3.json",
-        "path_loss_matrix": [
-            [
-                101.51641845703125,
-                96.1288833618164
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 3,
+      "time": 3.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          78.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          168.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          75.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          188.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          73.16902160644531,
+          84.40340042114258,
+          77.47423272600109,
+          106.57201083565725
+        ],
+        [
+          81.47985458374023,
+          75.46989917755127,
+          106.45363281272147,
+          77.65358573763908
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          87.15093360364912,
+          78.65580297231106,
+          89.08304981080016
+        ],
+        [
+          87.15093360364912,
+          Infinity,
+          86.40704543023392,
+          78.71055237899375
+        ],
+        [
+          78.65580297231106,
+          86.40704543023392,
+          Infinity,
+          88.5592120810484
+        ],
+        [
+          89.08304981080016,
+          78.71055237899375,
+          88.5592120810484,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 73.16902160644531,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 84.40340042114258,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 77.47423272600109,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.57201083565725,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 81.47985458374023,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 75.46989917755127,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 106.45363281272147,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.65358573763908,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 87.15093360364912,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 78.65580297231106,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 89.08304981080016,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 87.15093360364912,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 86.40704543023392,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 78.71055237899375,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 78.65580297231106,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 86.40704543023392,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 88.5592120810484,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 89.08304981080016,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 78.71055237899375,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 88.5592120810484,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t4.json",
-        "path_loss_matrix": [
-            [
-                101.96934700012207,
-                80.72210311889648
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 4,
+      "time": 4.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          84.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          164.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          80.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          184.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          72.75557518005371,
+          84.14445877075195,
+          77.35524049300402,
+          106.41420353438652
+        ],
+        [
+          81.27176284790039,
+          75.94723701477051,
+          106.25673813546187,
+          77.43177013528927
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          86.64271161497359,
+          76.9298519843929,
+          88.72613852524677
+        ],
+        [
+          86.64271161497359,
+          Infinity,
+          85.94257276874009,
+          78.66450275798836
+        ],
+        [
+          76.9298519843929,
+          85.94257276874009,
+          Infinity,
+          88.16954093267259
+        ],
+        [
+          88.72613852524677,
+          78.66450275798836,
+          88.16954093267259,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 72.75557518005371,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 84.14445877075195,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 77.35524049300402,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.41420353438652,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 81.27176284790039,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 75.94723701477051,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 106.25673813546187,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.43177013528927,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 86.64271161497359,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 76.9298519843929,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 88.72613852524677,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 86.64271161497359,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 85.94257276874009,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 78.66450275798836,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 76.9298519843929,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 85.94257276874009,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 88.16954093267259,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 88.72613852524677,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 78.66450275798836,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 88.16954093267259,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t5.json",
-        "path_loss_matrix": [
-            [
-                85.00147819519043,
-                78.54094982147217
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 5,
+      "time": 5.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          90.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          160.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          85.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          180.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          71.25714302062988,
+          83.88134956359863,
+          77.47423272600109,
+          106.25673813546187
+        ],
+        [
+          81.06361389160156,
+          76.40841960906982,
+          106.06078257482807,
+          77.35524049300402
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          86.12624434391937,
+          74.74655417780713,
+          88.35112271204471
+        ],
+        [
+          86.12624434391937,
+          Infinity,
+          85.44653174847215,
+          78.80093360364913
+        ],
+        [
+          74.74655417780713,
+          85.44653174847215,
+          Infinity,
+          87.77118680397612
+        ],
+        [
+          88.35112271204471,
+          78.80093360364913,
+          87.77118680397612,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 71.25714302062988,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 83.88134956359863,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 77.47423272600109,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.25673813546187,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 81.06361389160156,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 76.40841960906982,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 106.06078257482807,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.35524049300402,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 74.74655417780713,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 88.35112271204471,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 85.44653174847215,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 78.80093360364913,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 74.74655417780713,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 85.44653174847215,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 87.77118680397612,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 88.35112271204471,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 78.80093360364913,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 87.77118680397612,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t6.json",
-        "path_loss_matrix": [
-            [
-                85.72559356689453,
-                74.95885848999023
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 6,
+      "time": 6.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          96.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          156.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          176.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          70.70784568786621,
+          83.61431121826172,
+          77.81281539861077,
+          106.0998725142995
+        ],
+        [
+          80.85594177246094,
+          76.8532943725586,
+          105.866329093077,
+          77.43177013528927
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          85.61015464160138,
+          71.9398448077136,
+          87.9561130959982
+        ],
+        [
+          85.61015464160138,
+          Infinity,
+          84.91435460787619,
+          79.10062632946384
+        ],
+        [
+          71.9398448077136,
+          84.91435460787619,
+          Infinity,
+          87.36644571244324
+        ],
+        [
+          87.9561130959982,
+          79.10062632946384,
+          87.36644571244324,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 70.70784568786621,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 83.61431121826172,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 77.81281539861077,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 106.0998725142995,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 80.85594177246094,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 76.8532943725586,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 105.866329093077,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.43177013528927,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 85.61015464160138,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 71.9398448077136,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 87.9561130959982,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 85.61015464160138,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 84.91435460787619,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 79.10062632946384,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 71.9398448077136,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 84.91435460787619,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 87.36644571244324,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 87.9561130959982,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 79.10062632946384,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 87.36644571244324,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t7.json",
-        "path_loss_matrix": [
-            [
-                86.65069580078125,
-                68.23047161102295
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 7,
+      "time": 7.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          102.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          152.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          95.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          172.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          71.01017475128174,
+          83.34364891052246,
+          78.32434062308458,
+          105.94389135056072
+        ],
+        [
+          80.64929008483887,
+          77.28208065032959,
+          105.67401042451439,
+          77.65358573763908
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          85.10759147164069,
+          69.07691316737206,
+          87.53891758763504
+        ],
+        [
+          85.10759147164069,
+          Infinity,
+          84.34041512614017,
+          79.52660827094753
+        ],
+        [
+          69.07691316737206,
+          84.34041512614017,
+          Infinity,
+          86.95875418094346
+        ],
+        [
+          87.53891758763504,
+          79.52660827094753,
+          86.95875418094346,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 71.01017475128174,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 83.34364891052246,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 78.32434062308458,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.94389135056072,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 80.64929008483887,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 77.28208065032959,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 105.67401042451439,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.65358573763908,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 85.10759147164069,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 69.07691316737206,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 87.53891758763504,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 85.10759147164069,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 84.34041512614017,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 79.52660827094753,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 69.07691316737206,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 84.34041512614017,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 86.95875418094346,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 87.53891758763504,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 79.52660827094753,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 86.95875418094346,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t8.json",
-        "path_loss_matrix": [
-            [
-                87.72726058959961,
-                68.23047161102295
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 8,
+      "time": 8.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          108.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          148.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          100.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          168.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          71.71404361724854,
+          83.06977272033691,
+          78.95224892167913,
+          105.78910758225224
+        ],
+        [
+          80.44434547424316,
+          77.69521713256836,
+          105.4845326826409,
+          77.9998203852732
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          84.63733313985487,
+          69.64173499503184,
+          87.0969756247959
+        ],
+        [
+          84.63733313985487,
+          Infinity,
+          83.71767851236075,
+          80.03700781005877
+        ],
+        [
+          69.64173499503184,
+          83.71767851236075,
+          Infinity,
+          86.55303896999268
+        ],
+        [
+          87.0969756247959,
+          80.03700781005877,
+          86.55303896999268,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 71.71404361724854,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 83.06977272033691,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 78.95224892167913,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.78910758225224,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 80.44434547424316,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 77.69521713256836,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 105.4845326826409,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 77.9998203852732,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 84.63733313985487,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 69.64173499503184,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 87.0969756247959,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 84.63733313985487,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 83.71767851236075,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 80.03700781005877,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 69.64173499503184,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 83.71767851236075,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 86.55303896999268,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 87.0969756247959,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 80.03700781005877,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 86.55303896999268,
+          "link_type": "V2V"
+        }
+      ]
     },
     {
-        "timestamp": "scene_t9.json",
-        "path_loss_matrix": [
-            [
-                88.89582633972168,
-                76.31300449371338
-            ],
-            [
-                77.62229442596436,
-                84.1440200805664
-            ]
+      "time_step": 9,
+      "time": 9.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          114.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          144.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          105.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          164.0,
+          1.5
         ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          72.56255626678467,
+          82.79321670532227,
+          79.64551383543882,
+          105.63586368231647
+        ],
+        [
+          80.24185180664062,
+          78.09329986572266,
+          105.2986778371618,
+          78.44239373945587
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          84.22413035813756,
+          72.68934891738718,
+          86.62727480305495
+        ],
+        [
+          84.22413035813756,
+          Infinity,
+          83.037196010933,
+          80.5948797348474
+        ],
+        [
+          72.68934891738718,
+          83.037196010933,
+          Infinity,
+          86.15609412099698
+        ],
+        [
+          86.62727480305495,
+          80.5948797348474,
+          86.15609412099698,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 72.56255626678467,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 82.79321670532227,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 79.64551383543882,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.63586368231647,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 80.24185180664062,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 78.09329986572266,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 105.2986778371618,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 78.44239373945587,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 84.22413035813756,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 72.68934891738718,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 86.62727480305495,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 84.22413035813756,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 83.037196010933,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 80.5948797348474,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 72.68934891738718,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 83.037196010933,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 86.15609412099698,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 86.62727480305495,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 80.5948797348474,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 86.15609412099698,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 10,
+      "time": 10.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          120.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          140.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          110.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          160.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          73.43866348266602,
+          82.51463890075684,
+          80.36554044964383,
+          105.4845326826409
+        ],
+        [
+          80.04262924194336,
+          78.47700595855713,
+          105.11730461239351,
+          78.95224892167913
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          83.89721012305363,
+          75.33590614809279,
+          86.12624434391937
+        ],
+        [
+          83.89721012305363,
+          Infinity,
+          82.28735556918986,
+          81.17230568429855
+        ],
+        [
+          75.33590614809279,
+          82.28735556918986,
+          Infinity,
+          85.77691316737204
+        ],
+        [
+          86.12624434391937,
+          81.17230568429855,
+          85.77691316737204,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 73.43866348266602,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 82.51463890075684,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 80.36554044964383,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.4845326826409,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 80.04262924194336,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 78.47700595855713,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 105.11730461239351,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 78.95224892167913,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 75.33590614809279,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 82.28735556918986,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 81.17230568429855,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 75.33590614809279,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 82.28735556918986,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 85.77691316737204,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 81.17230568429855,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 85.77691316737204,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 11,
+      "time": 11.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          126.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          136.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          115.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          156.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          74.2927598953247,
+          82.23487854003906,
+          81.08640474247407,
+          105.33551885849398
+        ],
+        [
+          79.84763622283936,
+          78.84701728820801,
+          104.94134729808188,
+          79.503678973481
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          83.68590614809278,
+          77.39005544712764,
+          85.58961833986234
+        ],
+        [
+          83.68590614809278,
+          Infinity,
+          81.45273688985225,
+          81.75032572772894
+        ],
+        [
+          77.39005544712764,
+          81.45273688985225,
+          Infinity,
+          85.42684025338193
+        ],
+        [
+          85.58961833986234,
+          81.75032572772894,
+          85.42684025338193,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 74.2927598953247,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 82.23487854003906,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 81.08640474247407,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.33551885849398,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 79.84763622283936,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 78.84701728820801,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 104.94134729808188,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 79.503678973481,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 83.68590614809278,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 77.39005544712764,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 85.58961833986234,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 83.68590614809278,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 81.45273688985225,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 81.75032572772894,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 77.39005544712764,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 81.45273688985225,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 85.42684025338193,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 85.58961833986234,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 81.75032572772894,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 85.42684025338193,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 12,
+      "time": 12.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          132.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          132.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          120.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          152.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          75.10554313659668,
+          81.95497512817383,
+          81.79221548533114,
+          105.18925797500269
+        ],
+        [
+          79.65788841247559,
+          79.20404434204102,
+          104.77181192270311,
+          80.07623627024707
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          83.61264388012512,
+          79.0279929643952,
+          85.01226000794495
+        ],
+        [
+          83.61264388012512,
+          Infinity,
+          80.51230252902654,
+          82.31709740253422
+        ],
+        [
+          79.0279929643952,
+          80.51230252902654,
+          Infinity,
+          85.11933360469726
+        ],
+        [
+          85.01226000794495,
+          82.31709740253422,
+          85.11933360469726,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 75.10554313659668,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 81.95497512817383,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 81.79221548533114,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.18925797500269,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 79.65788841247559,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 79.20404434204102,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 104.77181192270311,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 80.07623627024707,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 83.61264388012512,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 79.0279929643952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 85.01226000794495,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 83.61264388012512,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 80.51230252902654,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 82.31709740253422,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 79.0279929643952,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 80.51230252902654,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 85.11933360469726,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 85.01226000794495,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 82.31709740253422,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 85.11933360469726,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 13,
+      "time": 13.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          138.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          128.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          125.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          148.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          75.8711576461792,
+          81.67617797851562,
+          82.47407410279276,
+          105.04621698739454
+        ],
+        [
+          79.47449684143066,
+          79.54878330230713,
+          104.60976923185584,
+          80.6548660756287
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          83.68590614809278,
+          80.3793890837349,
+          84.38793713904471
+        ],
+        [
+          83.68590614809278,
+          Infinity,
+          79.4364359501764,
+          82.86581211137785
+        ],
+        [
+          80.3793890837349,
+          79.4364359501764,
+          Infinity,
+          84.86910579902099
+        ],
+        [
+          84.38793713904471,
+          82.86581211137785,
+          84.86910579902099,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 75.8711576461792,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 81.67617797851562,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 82.47407410279276,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 105.04621698739454,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 79.47449684143066,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 79.54878330230713,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 104.60976923185584,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 80.6548660756287,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 83.68590614809278,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 80.3793890837349,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 84.38793713904471,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 83.68590614809278,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 79.4364359501764,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 82.86581211137785,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 80.3793890837349,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 79.4364359501764,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.86910579902099,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 84.38793713904471,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 82.86581211137785,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.86910579902099,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 14,
+      "time": 14.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          144.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          124.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          130.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          144.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          76.58963203430176,
+          81.39997482299805,
+          83.12760456903332,
+          104.90689307957452
+        ],
+        [
+          79.29867744445801,
+          79.88188743591309,
+          89.45634395645514,
+          81.22913875639131
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          83.89721012305363,
+          81.52583804240419,
+          83.70904089273776
+        ],
+        [
+          83.89721012305363,
+          Infinity,
+          78.18192473902576,
+          83.39298225538626
+        ],
+        [
+          81.52583804240419,
+          78.18192473902576,
+          Infinity,
+          84.69050001410724
+        ],
+        [
+          83.70904089273776,
+          83.39298225538626,
+          84.69050001410724,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 76.58963203430176,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 81.39997482299805,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 83.12760456903332,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.90689307957452,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 79.29867744445801,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 79.88188743591309,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 89.45634395645514,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 81.22913875639131,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 81.52583804240419,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 83.70904089273776,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 78.18192473902576,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 83.39298225538626,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 81.52583804240419,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 78.18192473902576,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.69050001410724,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 83.70904089273776,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 83.39298225538626,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.69050001410724,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 15,
+      "time": 15.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          150.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          120.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          135.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          140.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          77.26346969604492,
+          81.12813949584961,
+          83.75121200942348,
+          104.77181192270311
+        ],
+        [
+          79.13170337677002,
+          80.2039909362793,
+          89.31269996352553,
+          81.79221548533114
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          84.22413035813756,
+          82.51972850296059,
+          82.96625181549682
+        ],
+        [
+          84.22413035813756,
+          Infinity,
+          76.68332896675483,
+          83.89721012305363
+        ],
+        [
+          82.51972850296059,
+          76.68332896675483,
+          Infinity,
+          84.59524726411485
+        ],
+        [
+          82.96625181549682,
+          83.89721012305363,
+          84.59524726411485,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 77.26346969604492,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 81.12813949584961,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 83.75121200942348,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.77181192270311,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 79.13170337677002,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 80.2039909362793,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 89.31269996352553,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 81.79221548533114,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 84.22413035813756,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 82.51972850296059,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 82.96625181549682,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 84.22413035813756,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 76.68332896675483,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 82.51972850296059,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 76.68332896675483,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.59524726411485,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 82.96625181549682,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 83.89721012305363,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.59524726411485,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 16,
+      "time": 16.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          156.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          116.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          140.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          136.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          77.89609909057617,
+          80.86275100708008,
+          84.3449405363642,
+          104.64152503849985
+        ],
+        [
+          78.97490978240967,
+          80.51569938659668,
+          89.18002107017483,
+          82.33987766372105
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          84.63733313985487,
+          83.39612604312012,
+          82.14819762513106
+        ],
+        [
+          84.63733313985487,
+          Infinity,
+          74.83921879727973,
+          84.37836258846913
+        ],
+        [
+          83.39612604312012,
+          74.83921879727973,
+          Infinity,
+          84.59016397844252
+        ],
+        [
+          82.14819762513106,
+          84.37836258846913,
+          84.59016397844252,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 77.89609909057617,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 80.86275100708008,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 84.3449405363642,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.64152503849985,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 78.97490978240967,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 80.51569938659668,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 89.18002107017483,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 82.33987766372105,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 84.63733313985487,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 83.39612604312012,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 82.14819762513106,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 84.63733313985487,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 74.83921879727973,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 84.37836258846913,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 83.39612604312012,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 74.83921879727973,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.59016397844252,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 82.14819762513106,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 84.37836258846913,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.59016397844252,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 17,
+      "time": 17.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          162.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          112.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          145.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          132.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          78.49111080169678,
+          80.6061840057373,
+          84.90975409588869,
+          104.51660616284151
+        ],
+        [
+          78.82967948913574,
+          80.81759452819824,
+          89.05948757559686,
+          82.86974047273277
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          85.10759147164069,
+          84.1794647776713,
+          81.2412717994757
+        ],
+        [
+          85.10759147164069,
+          Infinity,
+          72.5041328894251,
+          84.83703950406917
+        ],
+        [
+          84.1794647776713,
+          72.5041328894251,
+          Infinity,
+          84.6756254484828
+        ],
+        [
+          81.2412717994757,
+          84.83703950406917,
+          84.6756254484828,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 78.49111080169678,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 80.6061840057373,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 84.90975409588869,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.51660616284151,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 78.82967948913574,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 80.81759452819824,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 89.05948757559686,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 82.86974047273277,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 85.10759147164069,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 84.1794647776713,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 81.2412717994757,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 85.10759147164069,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 72.5041328894251,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 84.83703950406917,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 84.1794647776713,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 72.5041328894251,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.6756254484828,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 81.2412717994757,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 84.83703950406917,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.6756254484828,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 18,
+      "time": 18.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          168.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          108.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          150.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          128.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          79.05194759368896,
+          80.36111831665039,
+          85.44709533424013,
+          104.39764652560324
+        ],
+        [
+          78.69738578796387,
+          81.11017227172852,
+          88.95224892167913,
+          83.38066322168102
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          85.61015464160138,
+          84.88737727830522,
+          80.23015030876991
+        ],
+        [
+          85.61015464160138,
+          Infinity,
+          69.64173499503184,
+          85.27423987248008
+        ],
+        [
+          84.88737727830522,
+          69.64173499503184,
+          Infinity,
+          84.84547780671065
+        ],
+        [
+          80.23015030876991,
+          85.27423987248008,
+          84.84547780671065,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 79.05194759368896,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 80.36111831665039,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 85.44709533424013,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.39764652560324,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 78.69738578796387,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 81.11017227172852,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 88.95224892167913,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 83.38066322168102,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 85.61015464160138,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 84.88737727830522,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 80.23015030876991,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 85.61015464160138,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 69.64173499503184,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 85.27423987248008,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 84.88737727830522,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 69.64173499503184,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 84.84547780671065,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 80.23015030876991,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 85.27423987248008,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 84.84547780671065,
+          "link_type": "V2V"
+        }
+      ]
+    },
+    {
+      "time_step": 19,
+      "time": 19.0,
+      "vehicle_positions": {
+        "vehicle_1": [
+          174.0,
+          90.0,
+          1.5
+        ],
+        "vehicle_2": [
+          104.0,
+          160.0,
+          1.5
+        ],
+        "vehicle_3": [
+          110.0,
+          155.0,
+          1.5
+        ],
+        "vehicle_4": [
+          190.0,
+          124.0,
+          1.5
+        ]
+      },
+      "v2i_path_loss_matrix": [
+        [
+          79.58179950714111,
+          80.1305103302002,
+          85.95862055871395,
+          104.28524899404445
+        ],
+        [
+          78.57939720153809,
+          81.39394760131836,
+          88.85939330869873,
+          83.8723269742595
+        ]
+      ],
+      "v2v_path_loss_matrix": [
+        [
+          Infinity,
+          86.12624434391937,
+          85.53297222067073,
+          79.10062632946384
+        ],
+        [
+          86.12624434391937,
+          Infinity,
+          67.70701073422694,
+          85.6911562542519
+        ],
+        [
+          85.53297222067073,
+          67.70701073422694,
+          Infinity,
+          85.08842903994622
+        ],
+        [
+          79.10062632946384,
+          85.6911562542519,
+          85.08842903994622,
+          Infinity
+        ]
+      ],
+      "path_loss_pairs": [
+        {
+          "source": "vehicle_1",
+          "target": "bs_1",
+          "path_loss_db": 79.58179950714111,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_1",
+          "path_loss_db": 80.1305103302002,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_1",
+          "path_loss_db": 85.95862055871395,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_1",
+          "path_loss_db": 104.28524899404445,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "bs_2",
+          "path_loss_db": 78.57939720153809,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "bs_2",
+          "path_loss_db": 81.39394760131836,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "bs_2",
+          "path_loss_db": 88.85939330869873,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "bs_2",
+          "path_loss_db": 83.8723269742595,
+          "link_type": "V2I"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_2",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_3",
+          "path_loss_db": 85.53297222067073,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_1",
+          "target": "vehicle_4",
+          "path_loss_db": 79.10062632946384,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_1",
+          "path_loss_db": 86.12624434391937,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_3",
+          "path_loss_db": 67.70701073422694,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_2",
+          "target": "vehicle_4",
+          "path_loss_db": 85.6911562542519,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_1",
+          "path_loss_db": 85.53297222067073,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_2",
+          "path_loss_db": 67.70701073422694,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_3",
+          "target": "vehicle_4",
+          "path_loss_db": 85.08842903994622,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_1",
+          "path_loss_db": 79.10062632946384,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_2",
+          "path_loss_db": 85.6911562542519,
+          "link_type": "V2V"
+        },
+        {
+          "source": "vehicle_4",
+          "target": "vehicle_3",
+          "path_loss_db": 85.08842903994622,
+          "link_type": "V2V"
+        }
+      ]
     }
-]
+  ]
+}

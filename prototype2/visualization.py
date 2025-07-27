@@ -1,5 +1,5 @@
 """
-Smart V2X Simulation Visualization Tool
+V2X Simulation Visualization Tool
 6台の車両シナリオ用
 """
 
@@ -7,23 +7,23 @@ import json
 import os
 from typing import Dict, Any, List
 
-class SmartV2XVisualizer:
-    """スマートV2Xシミュレーション用ビジュアライザー"""
+class V2XVisualizer:
+    """V2Xシミュレーション用ビジュアライザー"""
     
     def __init__(self):
         self.world_size = [300, 300]
         
-    def convert_smart_results_to_visualization(self, smart_results_file: str, output_file: str = "visualization/smart_data.json"):
-        """スマートシミュレーション結果をvisualization形式に変換"""
+    def convert_results_to_visualization(self, results_file: str, output_file: str = "visualization/data.json"):
+        """シミュレーション結果をvisualization形式に変換"""
         
         try:
-            # Load smart simulation results
-            with open(smart_results_file, 'r') as f:
-                smart_data = json.load(f)
+            # Load simulation results
+            with open(results_file, 'r') as f:
+                simulation_data = json.load(f)
             
             visualization_data = []
             
-            for step_data in smart_data["simulation_data"]:
+            for step_data in simulation_data["simulation_data"]:
                 frame = {
                     "time": step_data["time_step"],
                     "world_size": self.world_size,
@@ -128,7 +128,7 @@ class SmartV2XVisualizer:
                 variation = max_loss - min_loss
                 print(f"{pair}: {min_loss:.1f} - {max_loss:.1f} dB (variation: {variation:.1f} dB)")
     
-    def create_html_visualization(self, data_file: str = "visualization/smart_data.json"):
+    def create_html_visualization(self, data_file: str = "visualization/data.json"):
         """HTMLビジュアライゼーションファイルを作成"""
         
         html_content = """<!DOCTYPE html>
@@ -136,7 +136,7 @@ class SmartV2XVisualizer:
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Smart V2X Simulation Visualization</title>
+    <title>V2X Simulation Visualization</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -197,7 +197,7 @@ class SmartV2XVisualizer:
 </head>
 <body>
     <div class="container">
-        <h1>🚗 Smart V2X Network Simulation</h1>
+        <h1>🚗 V2X Network Simulation</h1>
         <div class="time-info" id="timeInfo">Time: 0s | Step: 1/20</div>
         
         <div class="controls">
@@ -207,9 +207,13 @@ class SmartV2XVisualizer:
             <label for="speedSlider">Speed: </label>
             <input type="range" id="speedSlider" min="0.5" max="3" value="1" step="0.1">
             <span id="speedLabel">1.0x</span>
+            <button id="toggleViewBtn">📊 Graph View</button>
         </div>
         
-        <canvas id="simulationCanvas" class="simulation-canvas" width="800" height="600"></canvas>
+        <div id="visualizationContainer">
+            <canvas id="simulationCanvas" class="simulation-canvas" width="800" height="600"></canvas>
+            <canvas id="networkCanvas" class="simulation-canvas" width="800" height="600" style="display: none;"></canvas>
+        </div>
         
         <div class="stats-panel">
             <div class="stats-section">
@@ -229,20 +233,24 @@ class SmartV2XVisualizer:
         let isPlaying = false;
         let animationSpeed = 1.0;
         let lastTime = 0;
+        let isNetworkView = false;
 
         const canvas = document.getElementById('simulationCanvas');
         const ctx = canvas.getContext('2d');
+        const networkCanvas = document.getElementById('networkCanvas');
+        const networkCtx = networkCanvas.getContext('2d');
         const timeInfo = document.getElementById('timeInfo');
         const pathLossStats = document.getElementById('pathLossStats');
         const vehicleInfo = document.getElementById('vehicleInfo');
         
         // Load simulation data
-        fetch('smart_data.json')
+        fetch('data.json')
             .then(response => response.json())
             .then(data => {
                 simulationData = data;
                 currentFrame = 0;
                 drawFrame();
+                drawNetworkGraph();
                 updateStats();
             })
             .catch(error => {
@@ -350,6 +358,159 @@ class SmartV2XVisualizer:
             timeInfo.textContent = `Time: ${frame.time}s | Step: ${currentFrame + 1}/${simulationData.length}`;
         }
 
+        function drawNetworkGraph() {
+            if (simulationData.length === 0) return;
+            
+            const frame = simulationData[currentFrame];
+            
+            // Clear canvas
+            networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+            
+            // Network layout parameters
+            const centerX = networkCanvas.width / 2;
+            const centerY = networkCanvas.height / 2;
+            const radius = 200;
+            
+            // Calculate node positions
+            const allNodes = [...frame.vehicles, ...frame.base_stations];
+            const nodePositions = {};
+            
+            allNodes.forEach((node, index) => {
+                const angle = (2 * Math.PI * index) / allNodes.length;
+                nodePositions[node.id] = {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle),
+                    type: frame.vehicles.find(v => v.id === node.id) ? 'vehicle' : 'base_station'
+                };
+            });
+            
+            // Draw edges (connections with path loss)
+            frame.path_losses?.forEach(loss => {
+                const source = nodePositions[loss.source];
+                const target = nodePositions[loss.target];
+                
+                if (source && target) {
+                    // Color based on path loss value
+                    const pathLoss = loss.value;
+                    let edgeColor;
+                    let lineWidth;
+                    
+                    if (pathLoss < 80) {
+                        edgeColor = '#00ff00'; // Green for good signal
+                        lineWidth = 4;
+                    } else if (pathLoss < 100) {
+                        edgeColor = '#ffaa00'; // Orange for medium signal
+                        lineWidth = 3;
+                    } else if (pathLoss < 120) {
+                        edgeColor = '#ff4444'; // Red for poor signal
+                        lineWidth = 2;
+                    } else {
+                        edgeColor = '#888888'; // Gray for very poor/no signal
+                        lineWidth = 1;
+                    }
+                    
+                    // Draw connection line
+                    networkCtx.strokeStyle = edgeColor;
+                    networkCtx.lineWidth = lineWidth;
+                    networkCtx.beginPath();
+                    networkCtx.moveTo(source.x, source.y);
+                    networkCtx.lineTo(target.x, target.y);
+                    networkCtx.stroke();
+                    
+                    // Draw path loss value on edge
+                    const midX = (source.x + target.x) / 2;
+                    const midY = (source.y + target.y) / 2;
+                    
+                    networkCtx.fillStyle = '#000000';
+                    networkCtx.font = '12px Arial';
+                    networkCtx.textAlign = 'center';
+                    networkCtx.fillRect(midX - 20, midY - 8, 40, 16);
+                    networkCtx.fillStyle = '#ffffff';
+                    networkCtx.fillText(pathLoss.toFixed(1) + 'dB', midX, midY + 4);
+                }
+            });
+            
+            // Draw nodes
+            Object.entries(nodePositions).forEach(([nodeId, pos]) => {
+                // Node circle
+                if (pos.type === 'vehicle') {
+                    networkCtx.fillStyle = '#4ECDC4';
+                    networkCtx.strokeStyle = '#333333';
+                } else {
+                    networkCtx.fillStyle = '#FF6B6B';
+                    networkCtx.strokeStyle = '#333333';
+                }
+                
+                networkCtx.lineWidth = 2;
+                networkCtx.beginPath();
+                networkCtx.arc(pos.x, pos.y, 25, 0, 2 * Math.PI);
+                networkCtx.fill();
+                networkCtx.stroke();
+                
+                // Node label
+                networkCtx.fillStyle = '#000000';
+                networkCtx.font = 'bold 12px Arial';
+                networkCtx.textAlign = 'center';
+                networkCtx.fillText(nodeId.replace('vehicle_', 'V').replace('bs_', 'BS'), pos.x, pos.y + 4);
+            });
+            
+            // Legend
+            networkCtx.fillStyle = '#000000';
+            networkCtx.font = '14px Arial';
+            networkCtx.textAlign = 'left';
+            networkCtx.fillText('Network Graph Legend:', 20, 30);
+            
+            // Vehicle legend
+            networkCtx.fillStyle = '#4ECDC4';
+            networkCtx.beginPath();
+            networkCtx.arc(30, 55, 10, 0, 2 * Math.PI);
+            networkCtx.fill();
+            networkCtx.fillStyle = '#000000';
+            networkCtx.fillText('Vehicles', 50, 60);
+            
+            // Base station legend
+            networkCtx.fillStyle = '#FF6B6B';
+            networkCtx.beginPath();
+            networkCtx.arc(30, 80, 10, 0, 2 * Math.PI);
+            networkCtx.fill();
+            networkCtx.fillStyle = '#000000';
+            networkCtx.fillText('Base Stations', 50, 85);
+            
+            // Edge legend
+            const legendY = 110;
+            networkCtx.strokeStyle = '#00ff00';
+            networkCtx.lineWidth = 4;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY);
+            networkCtx.lineTo(40, legendY);
+            networkCtx.stroke();
+            networkCtx.fillText('Good Signal (<80dB)', 50, legendY + 5);
+            
+            networkCtx.strokeStyle = '#ffaa00';
+            networkCtx.lineWidth = 3;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 25);
+            networkCtx.lineTo(40, legendY + 25);
+            networkCtx.stroke();
+            networkCtx.fillText('Medium Signal (80-100dB)', 50, legendY + 30);
+            
+            networkCtx.strokeStyle = '#ff4444';
+            networkCtx.lineWidth = 2;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 50);
+            networkCtx.lineTo(40, legendY + 50);
+            networkCtx.stroke();
+            networkCtx.fillText('Poor Signal (100-120dB)', 50, legendY + 55);
+            
+            networkCtx.strokeStyle = '#888888';
+            networkCtx.lineWidth = 1;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 75);
+            networkCtx.lineTo(40, legendY + 75);
+            networkCtx.stroke();
+            networkCtx.fillText('Very Poor Signal (>120dB)', 50, legendY + 80);
+        }
+
         function updateStats() {
             if (simulationData.length === 0) return;
             
@@ -385,6 +546,7 @@ class SmartV2XVisualizer:
             if (isPlaying && timestamp - lastTime > (1000 / animationSpeed)) {
                 currentFrame = (currentFrame + 1) % simulationData.length;
                 drawFrame();
+                drawNetworkGraph();
                 updateStats();
                 lastTime = timestamp;
             }
@@ -405,7 +567,25 @@ class SmartV2XVisualizer:
             currentFrame = 0;
             isPlaying = false;
             drawFrame();
+            drawNetworkGraph();
             updateStats();
+        };
+        
+        document.getElementById('toggleViewBtn').onclick = () => {
+            isNetworkView = !isNetworkView;
+            const simCanvas = document.getElementById('simulationCanvas');
+            const netCanvas = document.getElementById('networkCanvas');
+            const toggleBtn = document.getElementById('toggleViewBtn');
+            
+            if (isNetworkView) {
+                simCanvas.style.display = 'none';
+                netCanvas.style.display = 'block';
+                toggleBtn.textContent = '🗺️ Map View';
+            } else {
+                simCanvas.style.display = 'block';
+                netCanvas.style.display = 'none';
+                toggleBtn.textContent = '📊 Graph View';
+            }
         };
         
         document.getElementById('speedSlider').oninput = (e) => {
@@ -421,27 +601,27 @@ class SmartV2XVisualizer:
         
         try:
             os.makedirs("visualization", exist_ok=True)
-            with open("visualization/smart_index.html", 'w') as f:
+            with open("visualization/index.html", 'w') as f:
                 f.write(html_content)
-            print("✅ HTML visualization created: visualization/smart_index.html")
+            print("✅ HTML visualization created: visualization/index.html")
         except Exception as e:
             print(f"❌ Failed to create HTML visualization: {e}")
 
 def main():
     """メイン関数"""
-    visualizer = SmartV2XVisualizer()
+    visualizer = V2XVisualizer()
     
-    # Convert smart simulation results to visualization format
-    success = visualizer.convert_smart_results_to_visualization(
-        "output/smart_v2x_simulation_results.json",
-        "visualization/smart_data.json"
+    # Convert simulation results to visualization format
+    success = visualizer.convert_results_to_visualization(
+        "output/simulation_results.json",
+        "visualization/data.json"
     )
     
     if success:
         # Create HTML visualization
         visualizer.create_html_visualization()
-        print("\n✅ Smart V2X visualization ready!")
-        print("📁 Open visualization/smart_index.html in your browser to view the simulation")
+        print("\n✅ V2X visualization ready!")
+        print("📁 Open visualization/index.html in your browser to view the simulation")
     else:
         print("\n❌ Failed to create visualization")
 

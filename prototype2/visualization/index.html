@@ -3,33 +3,625 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V2X Simulation Visualizer</title>
-    <link rel="stylesheet" href="style.css">
+    <title>V2X Simulation Visualization</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .time-info {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .simulation-canvas {
+            border: 2px solid #333;
+            background-color: #e8f4f8;
+            cursor: pointer;
+        }
+        .stats-panel {
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        .stats-section {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+        .path-loss-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        .high-loss {
+            background-color: #ffebee;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .low-loss {
+            background-color: #e8f5e8;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>V2X Simulation Visualizer</h1>
-        <canvas id="simulationCanvas"></canvas>
+        <h1>🚗 V2X Network Simulation</h1>
+        <div class="time-info" id="timeInfo">Time: 0s | Step: 1/20</div>
+        
         <div class="controls">
-            <button id="playPauseBtn">Play</button>
-            <div class="slider-group">
-                <label for="timeSlider">Time:</label>
-                <input type="range" id="timeSlider" min="0" value="0">
-                <span id="timeLabel">0</span>
-            </div>
-            <div class="slider-group">
-                <label for="speedSlider">Speed:</label>
-                <input type="range" id="speedSlider" min="0.1" max="2.0" step="0.1" value="1.0">
-                <span id="speedLabel">1.0x</span>
-            </div>
+            <button id="playBtn">▶️ Play</button>
+            <button id="pauseBtn">⏸️ Pause</button>
+            <button id="resetBtn">🔄 Reset</button>
+            <label for="speedSlider">Speed: </label>
+            <input type="range" id="speedSlider" min="0.5" max="3" value="1" step="0.1">
+            <span id="speedLabel">1.0x</span>
+            <button id="toggleViewBtn">📊 Graph View</button>
+            <button id="mapGraphViewBtn">🗺️+📊 Map+Graph View</button>
         </div>
-        <div class="legend">
-            <span class="legend-item vehicle">Vehicle</span>
-            <span class="legend-item base-station">Base Station</span>
-            <span class="legend-item building">Building</span>
-            <span class="legend-item link">Communication Link (Path Loss)</span>
+        
+        <div id="visualizationContainer" style="position: relative;">
+            <canvas id="simulationCanvas" class="simulation-canvas" width="800" height="600"></canvas>
+            <canvas id="networkCanvas" class="simulation-canvas" width="800" height="600" style="display: none;"></canvas>
+            <canvas id="overlayCanvas" class="simulation-canvas" width="800" height="600" style="position: absolute; top: 0; left: 0; display: none; pointer-events: none;"></canvas>
+        </div>
+        
+        <div class="stats-panel">
+            <div class="stats-section">
+                <h3>📊 Path Loss Statistics</h3>
+                <div id="pathLossStats"></div>
+            </div>
+            <div class="stats-section">
+                <h3>🚗 Vehicle Information</h3>
+                <div id="vehicleInfo"></div>
+            </div>
         </div>
     </div>
-    <script src="script.js"></script>
+
+    <script>
+        let simulationData = [];
+        let currentFrame = 0;
+        let isPlaying = false;
+        let animationSpeed = 1.0;
+        let lastTime = 0;
+        let viewMode = 0; // 0: Map View, 1: Graph View, 2: Map+Graph View
+
+        const canvas = document.getElementById('simulationCanvas');
+        const ctx = canvas.getContext('2d');
+        const networkCanvas = document.getElementById('networkCanvas');
+        const networkCtx = networkCanvas.getContext('2d');
+        const overlayCanvas = document.getElementById('overlayCanvas');
+        const overlayCtx = overlayCanvas.getContext('2d');
+        const timeInfo = document.getElementById('timeInfo');
+        const pathLossStats = document.getElementById('pathLossStats');
+        const vehicleInfo = document.getElementById('vehicleInfo');
+        
+        // Load simulation data
+        fetch('data.json')
+            .then(response => response.json())
+            .then(data => {
+                simulationData = data;
+                currentFrame = 0;
+                drawFrame();
+                drawNetworkGraph();
+                drawMapOverlay();
+                updateStats();
+            })
+            .catch(error => {
+                console.error('Error loading data:', error);
+                // Fallback: show sample frame
+                showSampleFrame();
+            });
+            
+        // Initialize view mode
+        updateViewMode();
+
+        function showSampleFrame() {
+            // Sample data for testing
+            simulationData = [{
+                time: 0,
+                world_size: [300, 300],
+                vehicles: [
+                    {id: "vehicle_1", position: [50, 50]},
+                    {id: "vehicle_2", position: [100, 100]},
+                    {id: "vehicle_3", position: [150, 80]},
+                    {id: "vehicle_4", position: [200, 150]},
+                    {id: "vehicle_5", position: [80, 200]},
+                    {id: "vehicle_6", position: [180, 30]}
+                ],
+                base_stations: [
+                    {id: "bs_1", position: [80, 80]},
+                    {id: "bs_2", position: [220, 180]}
+                ],
+                buildings: [
+                    {id: "building_1", position: [150, 120], size: [60, 40, 25]}
+                ],
+                path_losses: []
+            }];
+            drawFrame();
+        }
+
+        function drawFrame() {
+            if (simulationData.length === 0) return;
+            
+            const frame = simulationData[currentFrame];
+            const worldSize = frame.world_size || [300, 300];
+            
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Scale factors
+            const scaleX = canvas.width / worldSize[0];
+            const scaleY = canvas.height / worldSize[1];
+            
+            // Draw buildings
+            ctx.fillStyle = '#8B4513';
+            frame.buildings?.forEach(building => {
+                const x = building.position[0] * scaleX;
+                const y = building.position[1] * scaleY;
+                const w = building.size[0] * scaleX;
+                const h = building.size[1] * scaleY;
+                ctx.fillRect(x - w/2, y - h/2, w, h);
+                
+                // Building label
+                ctx.fillStyle = 'white';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(building.id, x, y);
+                ctx.fillStyle = '#8B4513';
+            });
+            
+            // Draw base stations
+            ctx.fillStyle = '#FF6B6B';
+            frame.base_stations?.forEach(bs => {
+                const x = bs.position[0] * scaleX;
+                const y = bs.position[1] * scaleY;
+                
+                // Draw tower
+                ctx.fillRect(x - 8, y - 8, 16, 16);
+                
+                // Draw antenna
+                ctx.strokeStyle = '#FF6B6B';
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.moveTo(x, y - 8);
+                ctx.lineTo(x, y - 25);
+                ctx.stroke();
+                
+                // Label
+                ctx.fillStyle = 'black';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(bs.id, x, y + 25);
+            });
+            
+            // Draw vehicles
+            const colors = ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+            frame.vehicles?.forEach((vehicle, index) => {
+                const x = vehicle.position[0] * scaleX;
+                const y = vehicle.position[1] * scaleY;
+                
+                ctx.fillStyle = colors[index % colors.length];
+                ctx.fillRect(x - 6, y - 6, 12, 12);
+                
+                // Vehicle label
+                ctx.fillStyle = 'black';
+                ctx.font = '10px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText(vehicle.id.replace('vehicle_', 'V'), x, y - 10);
+            });
+            
+            // Update time info
+            timeInfo.textContent = `Time: ${frame.time}s | Step: ${currentFrame + 1}/${simulationData.length}`;
+        }
+
+        function drawNetworkGraph() {
+            if (simulationData.length === 0) return;
+            
+            const frame = simulationData[currentFrame];
+            
+            // Clear canvas
+            networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+            
+            // Network layout parameters
+            const centerX = networkCanvas.width / 2;
+            const centerY = networkCanvas.height / 2;
+            const radius = 200;
+            
+            // Calculate node positions
+            const allNodes = [...frame.vehicles, ...frame.base_stations];
+            const nodePositions = {};
+            
+            allNodes.forEach((node, index) => {
+                const angle = (2 * Math.PI * index) / allNodes.length;
+                nodePositions[node.id] = {
+                    x: centerX + radius * Math.cos(angle),
+                    y: centerY + radius * Math.sin(angle),
+                    type: frame.vehicles.find(v => v.id === node.id) ? 'vehicle' : 'base_station'
+                };
+            });
+            
+            // Draw edges (connections with path loss)
+            frame.path_losses?.forEach(loss => {
+                const source = nodePositions[loss.source];
+                const target = nodePositions[loss.target];
+                
+                if (source && target) {
+                    // Color based on path loss value
+                    const pathLoss = loss.value;
+                    let edgeColor;
+                    let lineWidth;
+                    
+                    if (pathLoss < 80) {
+                        edgeColor = '#00ff00'; // Green for good signal
+                        lineWidth = 4;
+                    } else if (pathLoss < 100) {
+                        edgeColor = '#ffaa00'; // Orange for medium signal
+                        lineWidth = 3;
+                    } else if (pathLoss < 120) {
+                        edgeColor = '#ff4444'; // Red for poor signal
+                        lineWidth = 2;
+                    } else {
+                        edgeColor = '#888888'; // Gray for very poor/no signal
+                        lineWidth = 1;
+                    }
+                    
+                    // Draw connection line
+                    networkCtx.strokeStyle = edgeColor;
+                    networkCtx.lineWidth = lineWidth;
+                    networkCtx.beginPath();
+                    networkCtx.moveTo(source.x, source.y);
+                    networkCtx.lineTo(target.x, target.y);
+                    networkCtx.stroke();
+                    
+                    // Draw path loss value on edge
+                    const midX = (source.x + target.x) / 2;
+                    const midY = (source.y + target.y) / 2;
+                    
+                    networkCtx.fillStyle = '#000000';
+                    networkCtx.font = '12px Arial';
+                    networkCtx.textAlign = 'center';
+                    networkCtx.fillRect(midX - 20, midY - 8, 40, 16);
+                    networkCtx.fillStyle = '#ffffff';
+                    networkCtx.fillText(pathLoss.toFixed(1) + 'dB', midX, midY + 4);
+                }
+            });
+            
+            // Draw nodes
+            Object.entries(nodePositions).forEach(([nodeId, pos]) => {
+                // Node circle
+                if (pos.type === 'vehicle') {
+                    networkCtx.fillStyle = '#4ECDC4';
+                    networkCtx.strokeStyle = '#333333';
+                } else {
+                    networkCtx.fillStyle = '#FF6B6B';
+                    networkCtx.strokeStyle = '#333333';
+                }
+                
+                networkCtx.lineWidth = 2;
+                networkCtx.beginPath();
+                networkCtx.arc(pos.x, pos.y, 25, 0, 2 * Math.PI);
+                networkCtx.fill();
+                networkCtx.stroke();
+                
+                // Node label
+                networkCtx.fillStyle = '#000000';
+                networkCtx.font = 'bold 12px Arial';
+                networkCtx.textAlign = 'center';
+                networkCtx.fillText(nodeId.replace('vehicle_', 'V').replace('bs_', 'BS'), pos.x, pos.y + 4);
+            });
+            
+            // Legend
+            networkCtx.fillStyle = '#000000';
+            networkCtx.font = '14px Arial';
+            networkCtx.textAlign = 'left';
+            networkCtx.fillText('Network Graph Legend:', 20, 30);
+            
+            // Vehicle legend
+            networkCtx.fillStyle = '#4ECDC4';
+            networkCtx.beginPath();
+            networkCtx.arc(30, 55, 10, 0, 2 * Math.PI);
+            networkCtx.fill();
+            networkCtx.fillStyle = '#000000';
+            networkCtx.fillText('Vehicles', 50, 60);
+            
+            // Base station legend
+            networkCtx.fillStyle = '#FF6B6B';
+            networkCtx.beginPath();
+            networkCtx.arc(30, 80, 10, 0, 2 * Math.PI);
+            networkCtx.fill();
+            networkCtx.fillStyle = '#000000';
+            networkCtx.fillText('Base Stations', 50, 85);
+            
+            // Edge legend
+            const legendY = 110;
+            networkCtx.strokeStyle = '#00ff00';
+            networkCtx.lineWidth = 4;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY);
+            networkCtx.lineTo(40, legendY);
+            networkCtx.stroke();
+            networkCtx.fillText('Good Signal (<80dB)', 50, legendY + 5);
+            
+            networkCtx.strokeStyle = '#ffaa00';
+            networkCtx.lineWidth = 3;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 25);
+            networkCtx.lineTo(40, legendY + 25);
+            networkCtx.stroke();
+            networkCtx.fillText('Medium Signal (80-100dB)', 50, legendY + 30);
+            
+            networkCtx.strokeStyle = '#ff4444';
+            networkCtx.lineWidth = 2;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 50);
+            networkCtx.lineTo(40, legendY + 50);
+            networkCtx.stroke();
+            networkCtx.fillText('Poor Signal (100-120dB)', 50, legendY + 55);
+            
+            networkCtx.strokeStyle = '#888888';
+            networkCtx.lineWidth = 1;
+            networkCtx.beginPath();
+            networkCtx.moveTo(20, legendY + 75);
+            networkCtx.lineTo(40, legendY + 75);
+            networkCtx.stroke();
+            networkCtx.fillText('Very Poor Signal (>120dB)', 50, legendY + 80);
+        }
+
+        function drawMapOverlay() {
+            if (simulationData.length === 0) return;
+            
+            const frame = simulationData[currentFrame];
+            const worldSize = frame.world_size || [300, 300];
+            
+            // Clear overlay canvas
+            overlayCtx.clearRect(0, 0, overlayCanvas.width, overlayCanvas.height);
+            
+            // Scale factors (same as main map)
+            const scaleX = overlayCanvas.width / worldSize[0];
+            const scaleY = overlayCanvas.height / worldSize[1];
+            
+            // Draw network connections as overlay
+            frame.path_losses?.forEach(loss => {
+                // Find positions of source and target
+                let sourcePos = null;
+                let targetPos = null;
+                
+                // Check if source is a vehicle
+                const sourceVehicle = frame.vehicles?.find(v => v.id === loss.source);
+                if (sourceVehicle) {
+                    sourcePos = [sourceVehicle.position[0] * scaleX, sourceVehicle.position[1] * scaleY];
+                }
+                
+                // Check if target is a vehicle
+                const targetVehicle = frame.vehicles?.find(v => v.id === loss.target);
+                if (targetVehicle) {
+                    targetPos = [targetVehicle.position[0] * scaleX, targetVehicle.position[1] * scaleY];
+                }
+                
+                // Check if source is a base station
+                const sourceBS = frame.base_stations?.find(bs => bs.id === loss.source);
+                if (sourceBS) {
+                    sourcePos = [sourceBS.position[0] * scaleX, sourceBS.position[1] * scaleY];
+                }
+                
+                // Check if target is a base station
+                const targetBS = frame.base_stations?.find(bs => bs.id === loss.target);
+                if (targetBS) {
+                    targetPos = [targetBS.position[0] * scaleX, targetBS.position[1] * scaleY];
+                }
+                
+                if (sourcePos && targetPos) {
+                    // Color based on path loss value
+                    const pathLoss = loss.value;
+                    let edgeColor;
+                    let lineWidth;
+                    
+                    if (pathLoss < 80) {
+                        edgeColor = '#00ff00'; // Green for good signal
+                        lineWidth = 3;
+                    } else if (pathLoss < 100) {
+                        edgeColor = '#ffaa00'; // Orange for medium signal
+                        lineWidth = 2;
+                    } else if (pathLoss < 120) {
+                        edgeColor = '#ff4444'; // Red for poor signal
+                        lineWidth = 2;
+                    } else {
+                        edgeColor = '#888888'; // Gray for very poor/no signal
+                        lineWidth = 1;
+                    }
+                    
+                    // Draw connection line with transparency
+                    overlayCtx.globalAlpha = 0.7;
+                    overlayCtx.strokeStyle = edgeColor;
+                    overlayCtx.lineWidth = lineWidth;
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(sourcePos[0], sourcePos[1]);
+                    overlayCtx.lineTo(targetPos[0], targetPos[1]);
+                    overlayCtx.stroke();
+                    
+                    // Draw path loss value on edge (smaller font for overlay)
+                    const midX = (sourcePos[0] + targetPos[0]) / 2;
+                    const midY = (sourcePos[1] + targetPos[1]) / 2;
+                    
+                    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    overlayCtx.font = '10px Arial';
+                    overlayCtx.textAlign = 'center';
+                    
+                    // Background for text
+                    const text = pathLoss.toFixed(0) + 'dB';
+                    const metrics = overlayCtx.measureText(text);
+                    overlayCtx.fillRect(midX - metrics.width/2 - 2, midY - 6, metrics.width + 4, 12);
+                    
+                    overlayCtx.fillStyle = '#ffffff';
+                    overlayCtx.fillText(text, midX, midY + 3);
+                    
+                    overlayCtx.globalAlpha = 1.0;
+                }
+            });
+            
+            // Draw legend for overlay view
+            if (viewMode === 2) {
+                overlayCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                overlayCtx.fillRect(10, 10, 160, 80);
+                overlayCtx.strokeStyle = '#333';
+                overlayCtx.lineWidth = 1;
+                overlayCtx.strokeRect(10, 10, 160, 80);
+                
+                overlayCtx.fillStyle = '#000000';
+                overlayCtx.font = '12px Arial';
+                overlayCtx.textAlign = 'left';
+                overlayCtx.fillText('Network Overlay:', 15, 25);
+                
+                // Signal quality legend
+                const legendItems = [
+                    {color: '#00ff00', text: 'Good (<80dB)', y: 40},
+                    {color: '#ffaa00', text: 'Medium (80-100dB)', y: 55},
+                    {color: '#ff4444', text: 'Poor (100-120dB)', y: 70},
+                    {color: '#888888', text: 'Very Poor (>120dB)', y: 85}
+                ];
+                
+                legendItems.forEach(item => {
+                    overlayCtx.strokeStyle = item.color;
+                    overlayCtx.lineWidth = 2;
+                    overlayCtx.beginPath();
+                    overlayCtx.moveTo(20, item.y);
+                    overlayCtx.lineTo(35, item.y);
+                    overlayCtx.stroke();
+                    overlayCtx.fillText(item.text, 40, item.y + 4);
+                });
+            }
+        }
+
+        function updateStats() {
+            if (simulationData.length === 0) return;
+            
+            const frame = simulationData[currentFrame];
+            
+            // Update path loss stats
+            let pathLossHTML = '';
+            frame.path_losses?.forEach(loss => {
+                const lossClass = loss.value > 100 ? 'high-loss' : 'low-loss';
+                pathLossHTML += `
+                    <div class="path-loss-item">
+                        <span>${loss.source} → ${loss.target}</span>
+                        <span class="${lossClass}">${loss.value.toFixed(1)} dB</span>
+                    </div>
+                `;
+            });
+            pathLossStats.innerHTML = pathLossHTML;
+            
+            // Update vehicle info
+            let vehicleHTML = '';
+            frame.vehicles?.forEach(vehicle => {
+                vehicleHTML += `
+                    <div>
+                        <strong>${vehicle.id}:</strong> 
+                        [${vehicle.position[0].toFixed(1)}, ${vehicle.position[1].toFixed(1)}]
+                    </div>
+                `;
+            });
+            vehicleInfo.innerHTML = vehicleHTML;
+        }
+
+        function animate(timestamp) {
+            if (isPlaying && timestamp - lastTime > (1000 / animationSpeed)) {
+                currentFrame = (currentFrame + 1) % simulationData.length;
+                drawFrame();
+                drawNetworkGraph();
+                drawMapOverlay();
+                updateStats();
+                lastTime = timestamp;
+            }
+            requestAnimationFrame(animate);
+        }
+
+        // Controls
+        document.getElementById('playBtn').onclick = () => {
+            isPlaying = true;
+            lastTime = performance.now();
+        };
+        
+        document.getElementById('pauseBtn').onclick = () => {
+            isPlaying = false;
+        };
+        
+        document.getElementById('resetBtn').onclick = () => {
+            currentFrame = 0;
+            isPlaying = false;
+            drawFrame();
+            drawNetworkGraph();
+            drawMapOverlay();
+            updateStats();
+        };
+        
+        document.getElementById('toggleViewBtn').onclick = () => {
+            viewMode = (viewMode + 1) % 2; // Toggle between 0 (Map) and 1 (Graph)
+            updateViewMode();
+        };
+        
+        document.getElementById('mapGraphViewBtn').onclick = () => {
+            viewMode = 2; // Set to Map+Graph mode
+            updateViewMode();
+        };
+        
+        function updateViewMode() {
+            const simCanvas = document.getElementById('simulationCanvas');
+            const netCanvas = document.getElementById('networkCanvas');
+            const overlayCanvas = document.getElementById('overlayCanvas');
+            const toggleBtn = document.getElementById('toggleViewBtn');
+            const mapGraphBtn = document.getElementById('mapGraphViewBtn');
+            
+            // Reset all displays
+            simCanvas.style.display = 'none';
+            netCanvas.style.display = 'none';
+            overlayCanvas.style.display = 'none';
+            
+            switch(viewMode) {
+                case 0: // Map View
+                    simCanvas.style.display = 'block';
+                    toggleBtn.textContent = '📊 Graph View';
+                    mapGraphBtn.style.background = '';
+                    break;
+                case 1: // Graph View
+                    netCanvas.style.display = 'block';
+                    toggleBtn.textContent = '🗺️ Map View';
+                    mapGraphBtn.style.background = '';
+                    break;
+                case 2: // Map+Graph View
+                    simCanvas.style.display = 'block';
+                    overlayCanvas.style.display = 'block';
+                    toggleBtn.textContent = '📊 Graph View';
+                    mapGraphBtn.style.background = '#e0e0e0';
+                    break;
+            }
+        }
+        
+        document.getElementById('speedSlider').oninput = (e) => {
+            animationSpeed = parseFloat(e.target.value);
+            document.getElementById('speedLabel').textContent = `${animationSpeed.toFixed(1)}x`;
+        };
+
+        // Start animation loop
+        requestAnimationFrame(animate);
+    </script>
 </body>
 </html>
