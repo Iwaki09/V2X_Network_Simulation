@@ -248,19 +248,34 @@ class VehicleSimulation {
         const container = document.querySelector('.canvas-container');
         let line = document.getElementById(`link-${id}`);
         
+        // 赤色の車と基地局間のリンクかどうかを判定
+        const isRedCarToBaseStation = id === 'bs-vehicle2';
+        
         if (!line) {
             line = document.createElement('div');
             line.className = 'communication-link';
             line.id = `link-${id}`;
             line.style.position = 'absolute';
-            line.style.height = '2px';
-            line.style.opacity = '0.8';
-            line.style.zIndex = '3';
+            line.style.opacity = isRedCarToBaseStation ? '1.0' : '0.8';
+            line.style.zIndex = isRedCarToBaseStation ? '4' : '3';
             line.style.pointerEvents = 'none';
             container.appendChild(line);
         }
         
-        line.style.backgroundColor = isBlocked ? '#ff0000' : '#00ff00';
+        // 赤色の車と基地局間のリンクは強調表示
+        if (isRedCarToBaseStation) {
+            line.style.height = '4px';
+            line.style.backgroundColor = isBlocked ? '#ff0000' : '#ffff00';
+            line.style.boxShadow = isBlocked ? '0 0 8px #ff0000' : '0 0 8px #ffff00';
+            line.style.opacity = '1.0';
+            line.style.zIndex = '4';
+        } else {
+            line.style.height = '2px';
+            line.style.backgroundColor = isBlocked ? '#ff0000' : '#00ff00';
+            line.style.boxShadow = 'none';
+            line.style.opacity = '0.8';
+            line.style.zIndex = '3';
+        }
         
         const deltaX = x2 - x1;
         const deltaY = y2 - y1;
