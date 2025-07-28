@@ -141,6 +141,23 @@ class VehicleSimulation {
         
         const communicationRange = 500;
         let activeConnections = 0;
+        let redCarDirectBlocked = false;
+        
+        // 赤い車と基地局の直接通信をチェック
+        const redCar = this.vehicles.find(v => v.id === 'vehicle2');
+        if (redCar) {
+            redCarDirectBlocked = this.isLineBlocked(
+                baseStationX, baseStationY,
+                redCar.currentX + 40, redCar.currentY + 20
+            );
+        }
+        
+        // 迂回パスを計算
+        let alternativePaths = [];
+        if (redCarDirectBlocked) {
+            alternativePaths = this.findAlternativePaths(baseStationX, baseStationY, redCar);
+            console.log('赤い車の直接パスがブロック中。迂回パス:', alternativePaths);
+        }
         
         // 基地局と車両間の通信（常に表示）
         this.vehicles.forEach(vehicle => {
@@ -151,7 +168,7 @@ class VehicleSimulation {
             this.updateCommunicationLink(
                 baseStationX, baseStationY,
                 vehicle.currentX + 40, vehicle.currentY + 20,
-                isBlocked, `bs-${vehicle.id}`
+                isBlocked, `bs-${vehicle.id}`, false, alternativePaths
             );
             if (!isBlocked) activeConnections++;
         });
@@ -172,10 +189,11 @@ class VehicleSimulation {
                         vehicle1.currentX + 40, vehicle1.currentY + 20,
                         vehicle2.currentX + 40, vehicle2.currentY + 20
                     );
+                    const linkId = this.generateVehicleLinkId(vehicle1.id, vehicle2.id);
                     this.updateCommunicationLink(
                         vehicle1.currentX + 40, vehicle1.currentY + 20,
                         vehicle2.currentX + 40, vehicle2.currentY + 20,
-                        isBlocked, `${vehicle1.id}-${vehicle2.id}`
+                        isBlocked, linkId, false, alternativePaths
                     );
                     if (!isBlocked) activeConnections++;
                 }
@@ -183,6 +201,60 @@ class VehicleSimulation {
         }
         
         this.updateCommunicationStatus(activeConnections);
+    }
+    
+    findAlternativePaths(baseStationX, baseStationY, redCar) {
+        const paths = [];
+        const communicationRange = 500;
+        
+        // 赤い車から他の車両への接続を探す
+        this.vehicles.forEach(vehicle => {
+            if (vehicle.id === 'vehicle2') return; // 赤い車自身は除外
+            
+            const distanceToRedCar = this.calculateDistance(
+                redCar.currentX + 40, redCar.currentY + 20,
+                vehicle.currentX + 40, vehicle.currentY + 20
+            );
+            
+            const distanceToBaseStation = this.calculateDistance(
+                baseStationX, baseStationY,
+                vehicle.currentX + 40, vehicle.currentY + 20
+            );
+            
+            // 赤い車から他の車両への通信が可能で、その車両から基地局への通信も可能な場合
+            if (distanceToRedCar < communicationRange && distanceToBaseStation < communicationRange) {
+                const redCarToVehicleBlocked = this.isLineBlocked(
+                    redCar.currentX + 40, redCar.currentY + 20,
+                    vehicle.currentX + 40, vehicle.currentY + 20
+                );
+                
+                const vehicleToBaseStationBlocked = this.isLineBlocked(
+                    baseStationX, baseStationY,
+                    vehicle.currentX + 40, vehicle.currentY + 20
+                );
+                
+                if (!redCarToVehicleBlocked && !vehicleToBaseStationBlocked) {
+                    // 車両間リンクのIDは車両IDの辞書順で統一
+                    const vehicleToVehicleLinkId = this.generateVehicleLinkId('vehicle2', vehicle.id);
+                    
+                    paths.push({
+                        relayVehicle: vehicle.id,
+                        links: [vehicleToVehicleLinkId, `bs-${vehicle.id}`]
+                    });
+                }
+            }
+        });
+        
+        return paths;
+    }
+    
+    generateVehicleLinkId(vehicle1Id, vehicle2Id) {
+        // 車両間リンクのIDを一意に生成（辞書順で統一）
+        if (vehicle1Id < vehicle2Id) {
+            return `${vehicle1Id}-${vehicle2Id}`;
+        } else {
+            return `${vehicle2Id}-${vehicle1Id}`;
+        }
     }
     
     calculateDistance(x1, y1, x2, y2) {
@@ -244,20 +316,23 @@ class VehicleSimulation {
         return t >= 0 && t <= 1 && u >= 0 && u <= 1;
     }
     
-    updateCommunicationLink(x1, y1, x2, y2, isBlocked, id) {
+    updateCommunicationLink(x1, y1, x2, y2, isBlocked, id, isRelay = false, alternativePaths = []) {
         const container = document.querySelector('.canvas-container');
         let line = document.getElementById(`link-${id}`);
         
         // 赤色の車と基地局間のリンクかどうかを判定
         const isRedCarToBaseStation = id === 'bs-vehicle2';
         
+        // このリンクが迂回パスの一部かどうかを判定
+        const isPartOfAlternativePath = alternativePaths.some(path => 
+            path.links.includes(id)
+        );
+        
         if (!line) {
             line = document.createElement('div');
             line.className = 'communication-link';
             line.id = `link-${id}`;
             line.style.position = 'absolute';
-            line.style.opacity = isRedCarToBaseStation ? '1.0' : '0.8';
-            line.style.zIndex = isRedCarToBaseStation ? '4' : '3';
             line.style.pointerEvents = 'none';
             container.appendChild(line);
         }
@@ -269,12 +344,26 @@ class VehicleSimulation {
             line.style.boxShadow = isBlocked ? '0 0 8px #ff0000' : '0 0 8px #ffff00';
             line.style.opacity = '1.0';
             line.style.zIndex = '4';
-        } else {
+        }
+        // 迂回パスの一部のリンクを強調表示
+        else if (isPartOfAlternativePath) {
+            line.style.height = '3px';
+            line.style.backgroundColor = isBlocked ? '#ff0000' : '#00bfff';
+            line.style.boxShadow = isBlocked ? '0 0 6px #ff0000' : '0 0 6px #00bfff';
+            line.style.opacity = '1.0';
+            line.style.zIndex = '4';
+            
+            // 点滅アニメーション
+            line.style.animation = 'pulse 1s infinite';
+        }
+        // 通常のリンク
+        else {
             line.style.height = '2px';
             line.style.backgroundColor = isBlocked ? '#ff0000' : '#00ff00';
             line.style.boxShadow = 'none';
             line.style.opacity = '0.8';
             line.style.zIndex = '3';
+            line.style.animation = 'none';
         }
         
         const deltaX = x2 - x1;
