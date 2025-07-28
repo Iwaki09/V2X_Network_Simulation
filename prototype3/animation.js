@@ -10,7 +10,7 @@ class VehicleSimulation {
                 targetY: 180,
                 currentX: 1200,
                 currentY: 180,
-                speed: 2,
+                speed: 0.8,
                 direction: -1
             },
             {
@@ -22,7 +22,7 @@ class VehicleSimulation {
                 targetY: 180,
                 currentX: 800,
                 currentY: 180,
-                speed: 2,
+                speed: 0.8,
                 direction: -1
             },
             {
@@ -34,7 +34,7 @@ class VehicleSimulation {
                 targetY: 300,
                 currentX: 50,
                 currentY: 300,
-                speed: 2,
+                speed: 0.8,
                 direction: 1
             },
             {
@@ -46,7 +46,7 @@ class VehicleSimulation {
                 targetY: 300,
                 currentX: 350,
                 currentY: 300,
-                speed: 2,
+                speed: 0.8,
                 direction: 1
             }
         ];
