@@ -92,39 +92,34 @@ prototype2/
     {
         "timestamp": "scene_t0.json",
         "path_loss_matrix": [
-            [83.947649, 83.93088341],
-            [77.62229443, 84.14402008]
+            [83.947649, 93.353033],
+            [77.622294, 84.144020]
         ]
     },
     {
-        "timestamp": "scene_t1.json",
+        "timestamp": "scene_t2.json",
         "path_loss_matrix": [
-            [...]
+            [93.204775, 97.024164],
+            [77.622294, 84.144020]
         ]
     },
-    ...
+    {
+        "timestamp": "scene_t3.json",
+        "path_loss_matrix": [
+            [101.516418, 96.128883],
+            [77.622294, 84.144020]
+        ]
+    }
 ]
 ```
+
+**重要な遮蔽効果の確認**：Vehicle1とBS1間の通信において、時間経過に伴う建物の遮蔽効果が明確に観測される：
+- Time 0: 83.95 dB (正常な通信)
+- Time 2: 93.20 dB (+9.2 dB増加 - 遮蔽開始)
+- Time 3: 101.52 dB (+17.6 dB増加 - 強い遮蔽)
 
 さらに、`simulation_results.json` と `prototype2/scene.json` を基に、各タイムステップのネットワーク状態をグラフ構造で表現した `prototype2/output/graph_data.json` が生成される。
 
-```json
-[
-    {
-        "timestamp": "scene_t0.json",
-        "nodes": [
-            {"id": "vehicle1", "type": "vehicle"},
-            {"id": "vehicle2", "type": "vehicle"},
-            {"id": "bs1", "type": "base_station"},
-            {"id": "bs2", "type": "base_station"}
-        ],
-        "edges": [
-            {"source": "vehicle1", "target": "bs1", "weight": 83.947649},
-            {"source": "vehicle1", "target": "bs2", "weight": 83.93088341},
-            {"source": "vehicle2", "target": "bs1", "weight": 77.62229443},
-            {"source": "vehicle2", "target": "bs2", "weight": 84.14402008}
-        ]
-    },
-    ...
-]
-```
+### 建物遮蔽効果の実装
+
+V2X通信における物理的な遮蔽現象を正確にシミュレートするため、SIONNA RTレイトレーシングエンジンを使用した建物の遮蔽効果を実装した。この実装により、車両が建物の影になる際のパスロス増加（最大+18dB）を定量的に評価できる。

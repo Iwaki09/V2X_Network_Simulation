@@ -399,6 +399,63 @@
             const scaleX = overlayCanvas.width / worldSize[0];
             const scaleY = overlayCanvas.height / worldSize[1];
             
+            // Draw buildings
+            overlayCtx.fillStyle = '#8B4513';
+            frame.buildings?.forEach(building => {
+                const x = building.position[0] * scaleX;
+                const y = building.position[1] * scaleY;
+                const w = building.size[0] * scaleX;
+                const h = building.size[1] * scaleY;
+                overlayCtx.fillRect(x - w/2, y - h/2, w, h);
+                
+                // Building label
+                overlayCtx.fillStyle = 'white';
+                overlayCtx.font = '12px Arial';
+                overlayCtx.textAlign = 'center';
+                overlayCtx.fillText(building.id, x, y);
+                overlayCtx.fillStyle = '#8B4513';
+            });
+            
+            // Draw base stations
+            overlayCtx.fillStyle = '#FF6B6B';
+            frame.base_stations?.forEach(bs => {
+                const x = bs.position[0] * scaleX;
+                const y = bs.position[1] * scaleY;
+                
+                // Draw tower
+                overlayCtx.fillRect(x - 8, y - 8, 16, 16);
+                
+                // Draw antenna
+                overlayCtx.strokeStyle = '#FF6B6B';
+                overlayCtx.lineWidth = 3;
+                overlayCtx.beginPath();
+                overlayCtx.moveTo(x, y - 8);
+                overlayCtx.lineTo(x, y - 25);
+                overlayCtx.stroke();
+                
+                // Label
+                overlayCtx.fillStyle = 'black';
+                overlayCtx.font = '12px Arial';
+                overlayCtx.textAlign = 'center';
+                overlayCtx.fillText(bs.id, x, y + 25);
+            });
+            
+            // Draw vehicles
+            const colors = ['#4ECDC4', '#45B7D1', '#96CEB4', '#FFEAA7', '#DDA0DD', '#98D8C8'];
+            frame.vehicles?.forEach((vehicle, index) => {
+                const x = vehicle.position[0] * scaleX;
+                const y = vehicle.position[1] * scaleY;
+                
+                overlayCtx.fillStyle = colors[index % colors.length];
+                overlayCtx.fillRect(x - 6, y - 6, 12, 12);
+                
+                // Vehicle label
+                overlayCtx.fillStyle = 'black';
+                overlayCtx.font = '10px Arial';
+                overlayCtx.textAlign = 'center';
+                overlayCtx.fillText(vehicle.id.replace('vehicle_', 'V'), x, y - 10);
+            });
+            
             // Draw network connections as overlay
             frame.path_losses?.forEach(loss => {
                 // Find positions of source and target
@@ -449,8 +506,7 @@
                         lineWidth = 1;
                     }
                     
-                    // Draw connection line with transparency
-                    overlayCtx.globalAlpha = 0.7;
+                    // Draw connection line
                     overlayCtx.strokeStyle = edgeColor;
                     overlayCtx.lineWidth = lineWidth;
                     overlayCtx.beginPath();
@@ -458,11 +514,11 @@
                     overlayCtx.lineTo(targetPos[0], targetPos[1]);
                     overlayCtx.stroke();
                     
-                    // Draw path loss value on edge (smaller font for overlay)
+                    // Draw path loss value on edge
                     const midX = (sourcePos[0] + targetPos[0]) / 2;
                     const midY = (sourcePos[1] + targetPos[1]) / 2;
                     
-                    overlayCtx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+                    overlayCtx.fillStyle = '#000000';
                     overlayCtx.font = '10px Arial';
                     overlayCtx.textAlign = 'center';
                     
@@ -473,42 +529,8 @@
                     
                     overlayCtx.fillStyle = '#ffffff';
                     overlayCtx.fillText(text, midX, midY + 3);
-                    
-                    overlayCtx.globalAlpha = 1.0;
                 }
             });
-            
-            // Draw legend for overlay view
-            if (viewMode === 2) {
-                overlayCtx.fillStyle = 'rgba(255, 255, 255, 0.9)';
-                overlayCtx.fillRect(10, 10, 160, 80);
-                overlayCtx.strokeStyle = '#333';
-                overlayCtx.lineWidth = 1;
-                overlayCtx.strokeRect(10, 10, 160, 80);
-                
-                overlayCtx.fillStyle = '#000000';
-                overlayCtx.font = '12px Arial';
-                overlayCtx.textAlign = 'left';
-                overlayCtx.fillText('Network Overlay:', 15, 25);
-                
-                // Signal quality legend
-                const legendItems = [
-                    {color: '#00ff00', text: 'Good (<80dB)', y: 40},
-                    {color: '#ffaa00', text: 'Medium (80-100dB)', y: 55},
-                    {color: '#ff4444', text: 'Poor (100-120dB)', y: 70},
-                    {color: '#888888', text: 'Very Poor (>120dB)', y: 85}
-                ];
-                
-                legendItems.forEach(item => {
-                    overlayCtx.strokeStyle = item.color;
-                    overlayCtx.lineWidth = 2;
-                    overlayCtx.beginPath();
-                    overlayCtx.moveTo(20, item.y);
-                    overlayCtx.lineTo(35, item.y);
-                    overlayCtx.stroke();
-                    overlayCtx.fillText(item.text, 40, item.y + 4);
-                });
-            }
         }
 
         function updateStats() {
