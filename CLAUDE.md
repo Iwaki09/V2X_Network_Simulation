@@ -5,8 +5,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 # Language
 - ユーザとの対話では常に日本語を使うようにしてください
 
-# Git
-- 大きいタスクが完了したら、毎回`git add`と`git commit`、`git push`を行うこと
 
 # Environment
 - Pythonの実行にあたっては、常に仮想環境 `.venv`に入って作業をすること
@@ -48,13 +46,6 @@ python3 -m http.server 13191
 
 # Project Architecture
 
-## Core Components
-- **Vehicle Simulation**: 車両の移動と通信シミュレーション（4～6台の車両）
-- **SIONNA RT Integration**: レイトレーシングによる高精度パスロス計算
-- **Building Occlusion**: ITU推奨材料パラメータによる建物遮蔽効果
-- **Network Optimization**: 集中制御型のグローバル最適化アルゴリズム
-- **Visualization**: Web/TypeScriptベースのインタラクティブ可視化
-
 ## Simulation Framework
 ### Prototype 1 (`prototype/`)
 - 基本的なV2Xシミュレーション
@@ -69,16 +60,3 @@ python3 -m http.server 13191
 
 ### Prototype 3 (`prototype3/`)
 - Webベースのシンプルなアニメーション
-
-## Dependencies
-- **SIONNA**: TensorFlowベースの無線通信シミュレーションライブラリ
-- **TensorFlow**: 機械学習とSIONNAバックエンド
-- **NumPy**: 数値計算とベクトル演算
-- **TypeScript/Vite**: フロントエンド可視化ツール
-
-# Run Server
-- javascriptやhtmlなどでブラウザから見れる画面を作った際には、その`index.html`がある場所に移動した上で、`python3 -m http.server 13191`でサーバーを立てること。検証が終わったらサーバーを閉じること。
-
-# Other Rules
-- 大きいタスクが完了したら、README.mdを更新すること
-- 毎回実装前に計画を立てるようにしてください
