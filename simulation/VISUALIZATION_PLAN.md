@@ -27,10 +27,10 @@
 - [x] `simulation/frames/` ディレクトリの作成準備を確認
 
 ### Phase 2: データ読み込みモジュールの実装
-- [ ] `visualize.py` ファイル作成
-- [ ] FCDパース関数実装（`fcd_parser.py`からインポートまたは再実装）
-- [ ] CSVデータ読み込み（`pandas`）
-- [ ] データマージロジック実装（`timestamp` + `vehicle_id`キー）
+- [x] `visualize.py` ファイル作成
+- [x] FCDパース関数実装（`fcd_parser.py`からインポートまたは再実装）
+- [x] CSVデータ読み込み（`pandas`）
+- [x] データマージロジック実装（`timestamp` + `vehicle_id`キー）
 
 ### Phase 3: 静的オブジェクトの描画関数
 - [ ] 基地局描画関数（BS at (500, 150)）
