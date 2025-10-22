@@ -33,21 +33,21 @@
 - [x] データマージロジック実装（`timestamp` + `vehicle_id`キー）
 
 ### Phase 3: 静的オブジェクトの描画関数
-- [ ] 基地局描画関数（BS at (500, 150)）
-- [ ] 建物描画関数（Rectangle at (500, 50), size 20×20）
-- [ ] 道路描画関数（X: 0-1000, Y: -3.5~3.5）
+- [x] 基地局描画関数（BS at (500, 150)）
+- [x] 建物描画関数（Rectangle at (500, 50), size 20×20）
+- [x] 道路描画関数（X: 0-1000, Y: -3.5~3.5）
 
 ### Phase 4: 動的オブジェクトの描画関数
-- [ ] 車両マーカー描画関数（各timestepの車両位置）
-- [ ] 通信リンク描画関数（BS→車両）
-- [ ] LoS/NLoS判定による色分けロジック（緑=LoS、赤=NLoS）
+- [x] 車両マーカー描画関数（各timestepの車両位置）
+- [x] 通信リンク描画関数（BS→車両）
+- [x] LoS/NLoS判定による色分けロジック（緑=LoS、赤=NLoS）
 
 ### Phase 5: フレーム生成ループの実装
-- [ ] 全timestepループ処理
-- [ ] 各timestepでの図生成（matplotlib）
-- [ ] タイムスタンプテキスト表示
-- [ ] 縦横比 `'equal'` 設定
-- [ ] PNG画像保存（`frames/frame_XXXX.png`形式）
+- [x] 全timestepループ処理
+- [x] 各timestepでの図生成（matplotlib）
+- [x] タイムスタンプテキスト表示
+- [x] 縦横比 `'equal'` 設定
+- [x] PNG画像保存（`frames/frame_XXXX.png`形式）
 
 ### Phase 6: テストと動作確認
 - [ ] 仮想環境での構文チェック
