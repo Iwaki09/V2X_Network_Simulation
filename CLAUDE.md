@@ -2,6 +2,9 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+# Rule
+コードを更新した後は、必ずResearchProgress.mdも更新すること（日付入りで）
+
 # Language
 - ユーザとの対話では常に日本語を使うようにしてください
 
