@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- SUMO交通流定義
+     初期5台配置、その後平均10秒間隔で追加生成
+     合計15〜20台程度が走行
+     最高速度: 60km/h (16.67m/s)
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- 車両タイプ定義 -->
+    <vType id="passenger_car" accel="2.6" decel="4.5" sigma="0.5" length="4.5" minGap="2.5" maxSpeed="16.67" guiShape="passenger"/>
+
+    <!-- ルート定義 -->
+    <route id="route_east" edges="A0B0"/>
+    <route id="route_west" edges="B0A0"/>
+
+    <!-- 初期配置車両（5台） -->
+    <!-- 東行き車線（3台） -->
+    <vehicle id="vehicle_0" type="passenger_car" route="route_east" depart="0.0" departPos="50.0" departSpeed="14.0"/>
+    <vehicle id="vehicle_1" type="passenger_car" route="route_east" depart="2.0" departPos="100.0" departSpeed="15.0"/>
+    <vehicle id="vehicle_2" type="passenger_car" route="route_east" depart="5.0" departPos="200.0" departSpeed="16.0"/>
+
+    <!-- 西行き車線（2台） -->
+    <vehicle id="vehicle_3" type="passenger_car" route="route_west" depart="0.0" departPos="800.0" departSpeed="13.5"/>
+    <vehicle id="vehicle_4" type="passenger_car" route="route_west" depart="3.0" departPos="900.0" departSpeed="14.5"/>
+
+    <!-- 追加生成フロー（東行き） -->
+    <!-- 平均10秒間隔（0.1台/秒 = 6台/分）でランダム生成 -->
+    <flow id="flow_east" type="passenger_car" route="route_east"
+          begin="10.0" end="90.0"
+          vehsPerHour="360"
+          departPos="random"
+          departSpeed="max"/>
+
+    <!-- 追加生成フロー（西行き） -->
+    <flow id="flow_west" type="passenger_car" route="route_west"
+          begin="10.0" end="90.0"
+          vehsPerHour="360"
+          departPos="random"
+          departSpeed="max"/>
+
+</routes>
