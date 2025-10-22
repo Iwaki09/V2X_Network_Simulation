@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- 車両タイプの定義 -->
+    <vType id="car" accel="2.6" decel="4.5" sigma="0.5" length="5.0" minGap="2.5" maxSpeed="30.0" color="1,1,0"/>
+
+    <!-- ルート定義 -->
+    <route id="route0" edges="A0B0"/>
+
+    <!-- 6台の車両定義（出発時刻順にソート） -->
+    <!-- 車両1: 開始時刻=0s, 初期位置=0m, 速度=15m/s -->
+    <vehicle id="veh0" type="car" route="route0" depart="0.0" departPos="0.0" departSpeed="15.0" color="1,0,0"/>
+
+    <!-- 車両6: 開始時刻=1s, 初期位置=80m, 速度=16m/s -->
+    <vehicle id="veh5" type="car" route="route0" depart="1.0" departPos="80.0" departSpeed="16.0" color="0,1,1"/>
+
+    <!-- 車両2: 開始時刻=2s, 初期位置=50m, 速度=20m/s -->
+    <vehicle id="veh1" type="car" route="route0" depart="2.0" departPos="50.0" departSpeed="20.0" color="0,1,0"/>
+
+    <!-- 車両4: 開始時刻=3s, 初期位置=150m, 速度=12m/s -->
+    <vehicle id="veh3" type="car" route="route0" depart="3.0" departPos="150.0" departSpeed="12.0" color="1,1,0"/>
+
+    <!-- 車両3: 開始時刻=5s, 初期位置=100m, 速度=18m/s -->
+    <vehicle id="veh2" type="car" route="route0" depart="5.0" departPos="100.0" departSpeed="18.0" color="0,0,1"/>
+
+    <!-- 車両5: 開始時刻=7s, 初期位置=200m, 速度=22m/s -->
+    <vehicle id="veh4" type="car" route="route0" depart="7.0" departPos="200.0" departSpeed="22.0" color="1,0,1"/>
+
+</routes>
