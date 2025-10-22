@@ -145,7 +145,8 @@ def create_frame(timestamp: float,
         timestamp_data: そのタイムステップのデータ
         output_path: 出力ファイルパス
     """
-    fig, ax = plt.subplots(figsize=(12, 6))
+    # figsizeを調整して、最終的な画像サイズが2で割り切れるようにする
+    fig, ax = plt.subplots(figsize=(14, 6))
 
     # 静的オブジェクトを描画
     draw_static_objects(ax)
@@ -174,9 +175,9 @@ def create_frame(timestamp: float,
     ax.legend(by_label.values(), by_label.keys(),
               loc='upper right', fontsize=10)
 
-    # 保存
+    # 保存（DPI=100で1400x600ピクセル、両方とも2で割り切れる）
     plt.tight_layout()
-    plt.savefig(output_path, dpi=100, bbox_inches='tight')
+    plt.savefig(output_path, dpi=100)
     plt.close(fig)
 
 
