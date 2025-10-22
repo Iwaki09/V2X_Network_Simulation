@@ -10,6 +10,7 @@
 2. **FCD出力**: 車両の位置情報をXML形式で出力
 3. **SIONNA RTレイトレーシング**: 建物遮蔽を考慮した電波伝搬シミュレーション
 4. **リンク品質評価**: 受信電力、パスロス、遅延スプレッド、LOS/NLOS判定をCSV出力
+5. **時系列可視化**: 車両位置と通信リンク（LoS/NLoS）を時系列でプロット
 
 ---
 
@@ -56,6 +57,38 @@ cd simulation
 
 - **`output/fcd_output.xml`**: SUMOが生成した車両位置情報（FCD形式）
 - **`output/link_quality_results.csv`**: レイトレーシング結果（CSV形式）
+
+### 可視化
+
+シミュレーション結果を時系列で可視化するスクリプトも用意されています。
+
+#### 可視化の実行
+
+```bash
+cd simulation
+python visualize.py
+```
+
+#### 出力
+
+- **`frames/frame_XXXX.png`**: 各タイムステップの可視化画像（連番PNG、100フレーム）
+  - 基地局（青い三角マーカー）
+  - 建物（灰色の四角形）
+  - 車両（黒い丸マーカー）
+  - 通信リンク（緑=LoS、赤=NLoS）
+  - タイムスタンプ表示
+
+#### アニメーション作成
+
+生成されたフレームをffmpegでアニメーションに変換できます。
+
+```bash
+# MP4形式のアニメーション生成（フレームレート10fps）
+ffmpeg -r 10 -i frames/frame_%04d.png -vcodec libx264 -pix_fmt yuv420p animation.mp4
+
+# GIF形式のアニメーション生成
+ffmpeg -r 10 -i frames/frame_%04d.png animation.gif
+```
 
 ---
 
@@ -162,12 +195,18 @@ simulation/
 ├── output/
 │   ├── fcd_output.xml         # SUMO FCD出力
 │   └── link_quality_results.csv  # Ray Tracing結果
+├── frames/                    # 可視化フレーム出力
+│   ├── frame_0000.png         # タイムステップ0
+│   ├── frame_0001.png         # タイムステップ1
+│   └── ...
 ├── fcd_parser.py              # FCDパーサー
 ├── raytracing_simulation.py   # SIONNA RTシミュレーション
 ├── run_raytracing.py          # 統合実行スクリプト
 ├── run_simulation.sh          # シェル実行管理スクリプト
+├── visualize.py               # 可視化スクリプト
 ├── README.md                  # 本ドキュメント
-└── IMPLEMENTATION_PLAN.md     # 実装計画
+├── IMPLEMENTATION_PLAN.md     # 実装計画
+└── VISUALIZATION_PLAN.md      # 可視化実装計画
 ```
 
 ---
