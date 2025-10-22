@@ -62,9 +62,9 @@
 - [x] アニメーション作成方法の記載（ffmpeg例など）
 
 ### Phase 8: 最終確認とコミット
-- [ ] コード品質確認（docstring、コメント）
-- [ ] 全体動作確認
-- [ ] 各Phase完了時にgit commit作成
+- [x] コード品質確認（docstring、コメント）
+- [x] 全体動作確認
+- [x] 各Phase完了時にgit commit作成
 
 ---
 
