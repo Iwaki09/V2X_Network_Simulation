@@ -2,15 +2,19 @@
 
 ## 概要
 
-本プロジェクトは、交通流シミュレータ**SUMO**とレイトレーシング無線伝搬シミュレータ**SIONNA RT**を連携させたV2Xシミュレーション環境です。SUMOが生成する車両の動的な位置情報を基に、SIONNA RTによって28GHz帯ミリ波における基地局-車両間（V2I）の通信リンク品質を計算します。
+本プロジェクトは、交通流シミュレータ**SUMO**とレイトレーシング無線伝搬シミュレータ**SIONNA RT**を連携させたV2Xシミュレーション環境です。SUMOが生成する車両の動的な位置情報を基に、SIONNA RTによって28GHz帯ミリ波における以下の通信リンク品質を計算します：
+
+- **V2I (Vehicle-to-Infrastructure)**: 基地局-車両間の通信
+- **V2V (Vehicle-to-Vehicle)**: 車両間の直接通信
 
 ## 主な機能
 
 1. **SUMO交通流シミュレーション**: 片側1車線×2の直線道路で15〜20台の車両が走行
 2. **FCD出力**: 車両の位置情報をXML形式で出力
 3. **SIONNA RTレイトレーシング**: 建物遮蔽を考慮した電波伝搬シミュレーション
-4. **リンク品質評価**: 受信電力、パスロス、遅延スプレッド、LOS/NLOS判定をCSV出力
-5. **時系列可視化**: 車両位置と通信リンク（LoS/NLoS）を時系列でプロット
+4. **V2I/V2Vリンク品質評価**: 基地局-車両間および車両間のリンク品質を計算
+5. **リンク品質評価**: 受信電力、パスロス、遅延スプレッド、LOS/NLOS判定をCSV出力
+6. **時系列可視化**: 車両位置と通信リンク（LoS/NLoS）を時系列でプロット
 
 ---
 
@@ -146,6 +150,9 @@ ffmpeg -r 10 -i frames/frame_%04d.png animation.gif
 
 - **周波数**: 28 GHz（ミリ波）
 - **アンテナモデル**: 等方性（Isotropic）
+- **送信電力**:
+  - V2I（基地局）: 30 dBm
+  - V2V（車両）: 23 dBm
 - **計算項目**:
   - 受信電力（Received Power）[dBm]
   - パスロス（Path Loss）[dB]
@@ -158,29 +165,37 @@ ffmpeg -r 10 -i frames/frame_%04d.png animation.gif
 
 ### `link_quality_results.csv`
 
-各タイムステップにおける基地局（BS_1）と全車両間のリンク品質が記録されます。
+各タイムステップにおける全リンク（V2I + V2V）の品質が記録されます。
 
 #### 列定義
 
 | 列名 | データ型 | 説明 |
 |------|----------|------|
 | `timestamp` | float | タイムステップ [秒] |
-| `vehicle_id` | string | 車両ID（SUMOが付与） |
-| `tx_id` | string | 送信局ID（常に`BS_1`） |
+| `link_type` | string | リンク種別（`V2I` または `V2V`） |
+| `tx_id` | string | 送信機のID（V2Iの場合は `BS_1`、V2Vの場合は車両ID） |
+| `rx_id` | string | 受信機のID（常に車両ID） |
 | `received_power` | float | 受信電力 [dBm] |
-| `delay_spread` | float | 遅延スプレッド [ns] |
 | `path_loss` | float | パスロス [dB] |
+| `delay_spread` | float | 遅延スプレッド [ns] |
 | `is_line_of_sight` | boolean | 見通し内通信（True）/ 遮蔽あり（False） |
 
 #### サンプル出力
 
 ```csv
-timestamp,vehicle_id,tx_id,received_power,delay_spread,path_loss,is_line_of_sight
-0.0,vehicle_0,BS_1,-65.2,12.3,95.2,True
-0.0,vehicle_1,BS_1,-78.5,45.6,108.5,False
-1.0,vehicle_0,BS_1,-66.1,13.1,96.1,True
-1.0,vehicle_1,BS_1,-75.2,38.2,105.2,False
+timestamp,link_type,tx_id,rx_id,received_power,path_loss,delay_spread,is_line_of_sight
+0.0,V2I,BS_1,vehicle_0,-65.2,95.2,12.3,True
+0.0,V2I,BS_1,vehicle_1,-78.5,108.5,45.6,False
+0.0,V2V,vehicle_0,vehicle_1,-45.2,68.2,8.5,True
+0.0,V2V,vehicle_1,vehicle_0,-45.2,68.2,8.5,True
+1.0,V2I,BS_1,vehicle_0,-66.1,96.1,13.1,True
+1.0,V2I,BS_1,vehicle_1,-75.2,105.2,38.2,False
 ```
+
+**注意事項**:
+- V2Iリンクは基地局から各車両へのリンク（車両数 N に対して N 個のリンク）
+- V2Vリンクは全車両間のペアリンク（車両数 N に対して N×(N-1) 個のリンク）
+- V2V送信電力は 23 dBm、V2I送信電力は 30 dBm で計算されます
 
 ---
 

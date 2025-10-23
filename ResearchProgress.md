@@ -28,3 +28,11 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - 構築済みパイプライン: run_simulation.shによりSUMO再実行オプションを含む一括実行を提供し、FCD解析→遮蔽判定付きリンク品質算出→link_quality_results.csv集計→visualize.pyによるLoS/NLoS可視化フレーム生成まで接続。
 - 物理シナリオ: 基地局(500,150,30m)、建物遮蔽物(500,50,20×20×100m)、車両アンテナ高1.5mを固定し、遮蔽物貫通時の追加損失を含めた受信電力・パスロス評価を実施。
 - 取得可能な成果物: タイムステップごとのtimestamp/vehicle_id/受信電力/遅延スプレッド/パスロス/LoSフラグを含むCSVと、基地局-車両リンク状態を描いた連番PNGを生成し、集中制御アルゴリズムの検証データとして利用可能な状態に整理。
+
+## 2025-10-23
+- V2I（基地局-車両）シミュレーションを拡張し、V2V（車両間）通信のリンク品質計算を追加実装。
+- raytracing_simulation.pyを修正: LinkQualityデータクラスにlink_type（"V2I"/"V2V"）とrx_id（旧vehicle_id）フィールドを追加。_calculate_single_linkメソッドで単一リンク計算を共通化し、V2Iとv2vの両方を統一的に処理。
+- V2V送信電力を23dBm、V2I送信電力を30dBmに設定し、calculate_link_qualityメソッドで各タイムステップにおいてN台の車両に対し、N個のV2Iリンク+N×(N-1)個のV2Vリンクを計算するよう変更。
+- run_raytracing.pyのCSV出力フォーマットを変更: timestamp/link_type/tx_id/rx_id/received_power/path_loss/delay_spread/is_line_of_sightの順に列を再構成し、V2I/V2Vリンクの統計情報をサマリー表示に追加。
+- simulation/README.mdを更新: 概要にV2V通信の追加を明記、無線パラメータセクションにV2V送信電力（23dBm）を追記、link_quality_results.csvの列定義とサンプル出力を新フォーマットに更新、V2Iは車両数N個、V2Vは N×(N-1)個のリンクが生成されることを注釈で説明。
+- これにより、集中制御アルゴリズムはV2IとV2Vの両リンク品質を統合的に活用した動的ネットワーク最適化が可能となり、車両間の直接通信を含めたより現実的なV2Xシナリオでの検証が可能に。
