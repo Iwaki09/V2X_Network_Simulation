@@ -30,11 +30,12 @@ def save_link_quality_csv(link_qualities: List[LinkQuality], output_path: str):
     with open(output_path, 'w', newline='') as csvfile:
         fieldnames = [
             'timestamp',
-            'vehicle_id',
+            'link_type',
             'tx_id',
+            'rx_id',
             'received_power',
-            'delay_spread',
             'path_loss',
+            'delay_spread',
             'is_line_of_sight'
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
@@ -43,11 +44,12 @@ def save_link_quality_csv(link_qualities: List[LinkQuality], output_path: str):
         for lq in link_qualities:
             writer.writerow({
                 'timestamp': lq.timestamp,
-                'vehicle_id': lq.vehicle_id,
+                'link_type': lq.link_type,
                 'tx_id': lq.tx_id,
+                'rx_id': lq.rx_id,
                 'received_power': f"{lq.received_power_dbm:.2f}",
-                'delay_spread': f"{lq.delay_spread_ns:.2f}",
                 'path_loss': f"{lq.path_loss_db:.2f}",
+                'delay_spread': f"{lq.delay_spread_ns:.2f}",
                 'is_line_of_sight': str(lq.is_line_of_sight)
             })
 
@@ -150,8 +152,15 @@ def main():
         print("\n  Sample results (first 5 records):")
         for lq in all_link_qualities[:5]:
             los_str = "LOS" if lq.is_line_of_sight else "NLOS"
-            print(f"    t={lq.timestamp:.1f}s, {lq.vehicle_id} -> {lq.tx_id}: "
+            print(f"    t={lq.timestamp:.1f}s, {lq.link_type}: {lq.tx_id} -> {lq.rx_id}: "
                   f"Rx={lq.received_power_dbm:.2f}dBm, PL={lq.path_loss_db:.2f}dB ({los_str})")
+
+        # V2I/V2Vリンク数の統計
+        v2i_count = sum(1 for lq in all_link_qualities if lq.link_type == "V2I")
+        v2v_count = sum(1 for lq in all_link_qualities if lq.link_type == "V2V")
+        print(f"\n  Link statistics:")
+        print(f"    V2I links: {v2i_count}")
+        print(f"    V2V links: {v2v_count}")
 
     print("\n" + "=" * 80)
     print("✅ Simulation completed successfully!")
