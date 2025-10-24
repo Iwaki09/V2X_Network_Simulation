@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!-- generated on 2025-10-24 10:31:40 by Eclipse SUMO sumo Version 1.12.0
+<!-- generated on 2025-10-22 20:18:15 by Eclipse SUMO sumo Version 1.20.0
 <configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
 
     <input>
@@ -29,10 +29,6 @@
         <no-warnings value="true"/>
         <no-step-log value="false"/>
     </report>
-
-    <gui_only>
-        <tracker-interval value="1.0"/>
-    </gui_only>
 
 </configuration>
 -->
@@ -130,7 +126,7 @@
     <timestep time="17.00">
         <vehicle id="flow_west.0" x="175.51" y="1.60" angle="270.00" type="passenger_car" speed="16.28" pos="824.49" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="322.80" y="-1.60" angle="90.00" type="passenger_car" speed="16.36" pos="322.80" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="282.54" y="-1.60" angle="90.00" type="passenger_car" speed="14.59" pos="282.54" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="282.53" y="-1.60" angle="90.00" type="passenger_car" speed="14.59" pos="282.53" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="391.84" y="-1.60" angle="90.00" type="passenger_car" speed="15.93" pos="391.84" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="18.00">
@@ -154,7 +150,7 @@
         <vehicle id="vehicle_2" x="439.72" y="-1.60" angle="90.00" type="passenger_car" speed="15.42" pos="439.72" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="21.00">
-        <vehicle id="flow_east.1" x="59.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.62" pos="59.09" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="59.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.61" pos="59.09" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.0" x="111.40" y="1.60" angle="270.00" type="passenger_car" speed="16.08" pos="888.60" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="492.89" y="1.60" angle="270.00" type="passenger_car" speed="15.66" pos="507.11" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="387.10" y="-1.60" angle="90.00" type="passenger_car" speed="16.45" pos="387.10" lane="A0B0_0" slope="0.00"/>
@@ -162,7 +158,7 @@
         <vehicle id="vehicle_2" x="455.63" y="-1.60" angle="90.00" type="passenger_car" speed="15.92" pos="455.63" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="22.00">
-        <vehicle id="flow_east.1" x="72.59" y="-1.60" angle="90.00" type="passenger_car" speed="13.49" pos="72.59" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="72.58" y="-1.60" angle="90.00" type="passenger_car" speed="13.49" pos="72.58" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.0" x="95.11" y="1.60" angle="270.00" type="passenger_car" speed="16.30" pos="904.89" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="477.29" y="1.60" angle="270.00" type="passenger_car" speed="15.60" pos="522.71" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="403.57" y="-1.60" angle="90.00" type="passenger_car" speed="16.47" pos="403.57" lane="A0B0_0" slope="0.00"/>
@@ -170,7 +166,7 @@
         <vehicle id="vehicle_2" x="471.47" y="-1.60" angle="90.00" type="passenger_car" speed="15.84" pos="471.47" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="23.00">
-        <vehicle id="flow_east.1" x="86.21" y="-1.60" angle="90.00" type="passenger_car" speed="13.62" pos="86.21" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="86.20" y="-1.60" angle="90.00" type="passenger_car" speed="13.62" pos="86.20" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.0" x="79.04" y="1.60" angle="270.00" type="passenger_car" speed="16.07" pos="920.96" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="461.51" y="1.60" angle="270.00" type="passenger_car" speed="15.78" pos="538.49" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="419.03" y="-1.60" angle="90.00" type="passenger_car" speed="15.46" pos="419.03" lane="A0B0_0" slope="0.00"/>
@@ -182,7 +178,7 @@
         <vehicle id="flow_west.0" x="62.82" y="1.60" angle="270.00" type="passenger_car" speed="16.22" pos="937.18" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="445.53" y="1.60" angle="270.00" type="passenger_car" speed="15.98" pos="554.47" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="435.29" y="-1.60" angle="90.00" type="passenger_car" speed="16.26" pos="435.29" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="387.44" y="-1.60" angle="90.00" type="passenger_car" speed="15.20" pos="387.44" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="387.43" y="-1.60" angle="90.00" type="passenger_car" speed="15.20" pos="387.43" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="502.81" y="-1.60" angle="90.00" type="passenger_car" speed="15.38" pos="502.81" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="25.00">
@@ -194,11 +190,11 @@
         <vehicle id="vehicle_2" x="518.74" y="-1.60" angle="90.00" type="passenger_car" speed="15.93" pos="518.74" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="26.00">
-        <vehicle id="flow_east.1" x="127.22" y="-1.60" angle="90.00" type="passenger_car" speed="13.48" pos="127.22" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="127.21" y="-1.60" angle="90.00" type="passenger_car" speed="13.48" pos="127.21" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.0" x="30.66" y="1.60" angle="270.00" type="passenger_car" speed="16.55" pos="969.34" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="413.77" y="1.60" angle="270.00" type="passenger_car" speed="15.76" pos="586.23" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="467.43" y="-1.60" angle="90.00" type="passenger_car" speed="15.73" pos="467.43" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="418.03" y="-1.60" angle="90.00" type="passenger_car" speed="15.18" pos="418.03" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="418.02" y="-1.60" angle="90.00" type="passenger_car" speed="15.18" pos="418.02" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="535.31" y="-1.60" angle="90.00" type="passenger_car" speed="16.57" pos="535.31" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="27.00">
@@ -213,18 +209,18 @@
         <vehicle id="flow_east.1" x="153.36" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="153.36" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="381.86" y="1.60" angle="270.00" type="passenger_car" speed="16.49" pos="618.14" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="499.22" y="-1.60" angle="90.00" type="passenger_car" speed="16.00" pos="499.22" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="447.69" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="447.69" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="447.68" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="447.68" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="567.86" y="-1.60" angle="90.00" type="passenger_car" speed="16.16" pos="567.86" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="29.00">
-        <vehicle id="flow_east.1" x="167.19" y="-1.60" angle="90.00" type="passenger_car" speed="13.82" pos="167.19" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="167.18" y="-1.60" angle="90.00" type="passenger_car" speed="13.82" pos="167.18" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="365.48" y="1.60" angle="270.00" type="passenger_car" speed="16.38" pos="634.52" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="515.41" y="-1.60" angle="90.00" type="passenger_car" speed="16.20" pos="515.41" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="462.06" y="-1.60" angle="90.00" type="passenger_car" speed="14.37" pos="462.06" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="583.99" y="-1.60" angle="90.00" type="passenger_car" speed="16.13" pos="583.99" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="30.00">
-        <vehicle id="flow_east.1" x="180.23" y="-1.60" angle="90.00" type="passenger_car" speed="13.04" pos="180.23" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="180.22" y="-1.60" angle="90.00" type="passenger_car" speed="13.04" pos="180.22" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="589.95" y="-1.60" angle="90.00" type="passenger_car" speed="12.88" pos="589.95" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="349.02" y="1.60" angle="270.00" type="passenger_car" speed="16.46" pos="650.98" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="956.39" y="1.60" angle="270.00" type="passenger_car" speed="15.63" pos="43.61" lane="B0A0_0" slope="0.00"/>
@@ -233,7 +229,7 @@
         <vehicle id="vehicle_2" x="600.27" y="-1.60" angle="90.00" type="passenger_car" speed="16.28" pos="600.27" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="31.00">
-        <vehicle id="flow_east.1" x="193.49" y="-1.60" angle="90.00" type="passenger_car" speed="13.26" pos="193.49" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="193.48" y="-1.60" angle="90.00" type="passenger_car" speed="13.26" pos="193.48" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="602.19" y="-1.60" angle="90.00" type="passenger_car" speed="12.24" pos="602.19" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="332.80" y="1.60" angle="270.00" type="passenger_car" speed="16.22" pos="667.20" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="941.49" y="1.60" angle="270.00" type="passenger_car" speed="14.90" pos="58.51" lane="B0A0_0" slope="0.00"/>
@@ -242,7 +238,7 @@
         <vehicle id="vehicle_2" x="615.73" y="-1.60" angle="90.00" type="passenger_car" speed="15.47" pos="615.73" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="32.00">
-        <vehicle id="flow_east.1" x="206.81" y="-1.60" angle="90.00" type="passenger_car" speed="13.32" pos="206.81" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="206.80" y="-1.60" angle="90.00" type="passenger_car" speed="13.32" pos="206.80" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="614.60" y="-1.60" angle="90.00" type="passenger_car" speed="12.40" pos="614.60" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="316.29" y="1.60" angle="270.00" type="passenger_car" speed="16.51" pos="683.71" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="926.90" y="1.60" angle="270.00" type="passenger_car" speed="14.58" pos="73.10" lane="B0A0_0" slope="0.00"/>
@@ -251,7 +247,7 @@
         <vehicle id="vehicle_2" x="631.27" y="-1.60" angle="90.00" type="passenger_car" speed="15.53" pos="631.27" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="33.00">
-        <vehicle id="flow_east.1" x="219.80" y="-1.60" angle="90.00" type="passenger_car" speed="12.99" pos="219.80" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="219.79" y="-1.60" angle="90.00" type="passenger_car" speed="12.99" pos="219.79" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="627.75" y="-1.60" angle="90.00" type="passenger_car" speed="13.16" pos="627.75" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="300.11" y="1.60" angle="270.00" type="passenger_car" speed="16.17" pos="699.89" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="912.36" y="1.60" angle="270.00" type="passenger_car" speed="14.55" pos="87.64" lane="B0A0_0" slope="0.00"/>
@@ -260,7 +256,7 @@
         <vehicle id="vehicle_2" x="647.49" y="-1.60" angle="90.00" type="passenger_car" speed="16.22" pos="647.49" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="34.00">
-        <vehicle id="flow_east.1" x="232.73" y="-1.60" angle="90.00" type="passenger_car" speed="12.93" pos="232.73" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="232.72" y="-1.60" angle="90.00" type="passenger_car" speed="12.93" pos="232.72" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="642.16" y="-1.60" angle="90.00" type="passenger_car" speed="14.40" pos="642.16" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="284.70" y="1.60" angle="270.00" type="passenger_car" speed="15.42" pos="715.30" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="897.38" y="1.60" angle="270.00" type="passenger_car" speed="14.98" pos="102.62" lane="B0A0_0" slope="0.00"/>
@@ -269,16 +265,16 @@
         <vehicle id="vehicle_2" x="663.15" y="-1.60" angle="90.00" type="passenger_car" speed="15.65" pos="663.15" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="35.00">
-        <vehicle id="flow_east.1" x="246.52" y="-1.60" angle="90.00" type="passenger_car" speed="13.80" pos="246.52" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="246.51" y="-1.60" angle="90.00" type="passenger_car" speed="13.80" pos="246.51" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="655.78" y="-1.60" angle="90.00" type="passenger_car" speed="13.62" pos="655.78" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="268.13" y="1.60" angle="270.00" type="passenger_car" speed="16.57" pos="731.87" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="881.99" y="1.60" angle="270.00" type="passenger_car" speed="15.39" pos="118.01" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="611.94" y="-1.60" angle="90.00" type="passenger_car" speed="16.19" pos="611.94" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="552.07" y="-1.60" angle="90.00" type="passenger_car" speed="15.02" pos="552.07" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="552.06" y="-1.60" angle="90.00" type="passenger_car" speed="15.02" pos="552.06" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="679.63" y="-1.60" angle="90.00" type="passenger_car" speed="16.49" pos="679.63" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="36.00">
-        <vehicle id="flow_east.1" x="260.18" y="-1.60" angle="90.00" type="passenger_car" speed="13.65" pos="260.18" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="260.17" y="-1.60" angle="90.00" type="passenger_car" speed="13.65" pos="260.17" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="669.67" y="-1.60" angle="90.00" type="passenger_car" speed="13.89" pos="669.67" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="252.42" y="1.60" angle="270.00" type="passenger_car" speed="15.71" pos="747.58" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="867.46" y="1.60" angle="270.00" type="passenger_car" speed="14.53" pos="132.54" lane="B0A0_0" slope="0.00"/>
@@ -287,44 +283,44 @@
         <vehicle id="vehicle_2" x="695.80" y="-1.60" angle="90.00" type="passenger_car" speed="16.16" pos="695.80" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="37.00">
-        <vehicle id="flow_east.1" x="273.27" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="273.27" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="273.25" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="273.25" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="684.00" y="-1.60" angle="90.00" type="passenger_car" speed="14.32" pos="684.00" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="236.59" y="1.60" angle="270.00" type="passenger_car" speed="15.82" pos="763.41" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="853.07" y="1.60" angle="270.00" type="passenger_car" speed="14.39" pos="146.93" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="853.07" y="1.60" angle="270.00" type="passenger_car" speed="14.40" pos="146.93" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="643.15" y="-1.60" angle="90.00" type="passenger_car" speed="15.81" pos="643.15" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="581.69" y="-1.60" angle="90.00" type="passenger_car" speed="15.08" pos="581.69" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="711.29" y="-1.60" angle="90.00" type="passenger_car" speed="15.49" pos="711.29" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="38.00">
-        <vehicle id="flow_east.1" x="286.37" y="-1.60" angle="90.00" type="passenger_car" speed="13.11" pos="286.37" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="286.36" y="-1.60" angle="90.00" type="passenger_car" speed="13.11" pos="286.36" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="698.27" y="-1.60" angle="90.00" type="passenger_car" speed="14.28" pos="698.27" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="220.84" y="1.60" angle="270.00" type="passenger_car" speed="15.75" pos="779.16" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="838.24" y="1.60" angle="270.00" type="passenger_car" speed="14.82" pos="161.76" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="838.24" y="1.60" angle="270.00" type="passenger_car" speed="14.83" pos="161.76" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="658.93" y="-1.60" angle="90.00" type="passenger_car" speed="15.78" pos="658.93" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="596.56" y="-1.60" angle="90.00" type="passenger_car" speed="14.87" pos="596.56" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="727.60" y="-1.60" angle="90.00" type="passenger_car" speed="16.31" pos="727.60" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="39.00">
-        <vehicle id="flow_east.1" x="299.00" y="-1.60" angle="90.00" type="passenger_car" speed="12.63" pos="299.00" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="298.99" y="-1.60" angle="90.00" type="passenger_car" speed="12.62" pos="298.99" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="711.93" y="-1.60" angle="90.00" type="passenger_car" speed="13.66" pos="711.93" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="204.37" y="1.60" angle="270.00" type="passenger_car" speed="16.47" pos="795.63" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="823.39" y="1.60" angle="270.00" type="passenger_car" speed="14.85" pos="176.61" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="674.77" y="-1.60" angle="90.00" type="passenger_car" speed="15.84" pos="674.77" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="611.14" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="611.14" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="611.13" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="611.13" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="744.14" y="-1.60" angle="90.00" type="passenger_car" speed="16.54" pos="744.14" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="40.00">
-        <vehicle id="flow_east.1" x="312.23" y="-1.60" angle="90.00" type="passenger_car" speed="13.23" pos="312.23" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="312.21" y="-1.60" angle="90.00" type="passenger_car" speed="13.23" pos="312.21" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="726.68" y="-1.60" angle="90.00" type="passenger_car" speed="14.75" pos="726.68" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="188.35" y="1.60" angle="270.00" type="passenger_car" speed="16.02" pos="811.65" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="808.73" y="1.60" angle="270.00" type="passenger_car" speed="14.67" pos="191.27" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="752.50" y="1.60" angle="270.00" type="passenger_car" speed="16.67" pos="247.50" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="690.16" y="-1.60" angle="90.00" type="passenger_car" speed="15.39" pos="690.16" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="625.63" y="-1.60" angle="90.00" type="passenger_car" speed="14.49" pos="625.63" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="625.62" y="-1.60" angle="90.00" type="passenger_car" speed="14.49" pos="625.62" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="760.09" y="-1.60" angle="90.00" type="passenger_car" speed="15.96" pos="760.09" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="41.00">
-        <vehicle id="flow_east.1" x="325.47" y="-1.60" angle="90.00" type="passenger_car" speed="13.24" pos="325.47" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="325.45" y="-1.60" angle="90.00" type="passenger_car" speed="13.24" pos="325.45" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="741.23" y="-1.60" angle="90.00" type="passenger_car" speed="14.55" pos="741.23" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="545.28" y="-1.60" angle="90.00" type="passenger_car" speed="14.28" pos="545.28" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="171.88" y="1.60" angle="270.00" type="passenger_car" speed="16.47" pos="828.12" lane="B0A0_0" slope="0.00"/>
@@ -335,29 +331,29 @@
         <vehicle id="vehicle_2" x="775.59" y="-1.60" angle="90.00" type="passenger_car" speed="15.50" pos="775.59" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="42.00">
-        <vehicle id="flow_east.1" x="338.69" y="-1.60" angle="90.00" type="passenger_car" speed="13.22" pos="338.69" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="338.67" y="-1.60" angle="90.00" type="passenger_car" speed="13.22" pos="338.67" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="756.00" y="-1.60" angle="90.00" type="passenger_car" speed="14.77" pos="756.00" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="559.55" y="-1.60" angle="90.00" type="passenger_car" speed="14.27" pos="559.55" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="559.54" y="-1.60" angle="90.00" type="passenger_car" speed="14.27" pos="559.54" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="155.63" y="1.60" angle="270.00" type="passenger_car" speed="16.25" pos="844.37" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="778.99" y="1.60" angle="270.00" type="passenger_car" speed="14.92" pos="221.01" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="778.98" y="1.60" angle="270.00" type="passenger_car" speed="14.92" pos="221.02" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="720.53" y="1.60" angle="270.00" type="passenger_car" speed="15.96" pos="279.47" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="722.20" y="-1.60" angle="90.00" type="passenger_car" speed="15.81" pos="722.20" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="654.68" y="-1.60" angle="90.00" type="passenger_car" speed="14.45" pos="654.68" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="654.67" y="-1.60" angle="90.00" type="passenger_car" speed="14.45" pos="654.67" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="791.82" y="-1.60" angle="90.00" type="passenger_car" speed="16.23" pos="791.82" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="43.00">
-        <vehicle id="flow_east.1" x="352.03" y="-1.60" angle="90.00" type="passenger_car" speed="13.34" pos="352.03" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="352.01" y="-1.60" angle="90.00" type="passenger_car" speed="13.34" pos="352.01" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="770.23" y="-1.60" angle="90.00" type="passenger_car" speed="14.23" pos="770.23" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="572.76" y="-1.60" angle="90.00" type="passenger_car" speed="13.22" pos="572.76" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="140.10" y="1.60" angle="270.00" type="passenger_car" speed="15.53" pos="859.90" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="763.97" y="1.60" angle="270.00" type="passenger_car" speed="15.02" pos="236.03" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="763.96" y="1.60" angle="270.00" type="passenger_car" speed="15.02" pos="236.04" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="704.73" y="1.60" angle="270.00" type="passenger_car" speed="15.80" pos="295.27" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="738.72" y="-1.60" angle="90.00" type="passenger_car" speed="16.52" pos="738.72" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="669.21" y="-1.60" angle="90.00" type="passenger_car" speed="14.53" pos="669.21" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="807.31" y="-1.60" angle="90.00" type="passenger_car" speed="15.49" pos="807.31" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="44.00">
-        <vehicle id="flow_east.1" x="364.79" y="-1.60" angle="90.00" type="passenger_car" speed="12.76" pos="364.79" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="364.77" y="-1.60" angle="90.00" type="passenger_car" speed="12.76" pos="364.77" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="784.37" y="-1.60" angle="90.00" type="passenger_car" speed="14.14" pos="784.37" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="586.45" y="-1.60" angle="90.00" type="passenger_car" speed="13.68" pos="586.45" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="124.58" y="1.60" angle="270.00" type="passenger_car" speed="15.52" pos="875.42" lane="B0A0_0" slope="0.00"/>
@@ -368,7 +364,7 @@
         <vehicle id="vehicle_2" x="822.68" y="-1.60" angle="90.00" type="passenger_car" speed="15.37" pos="822.68" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="45.00">
-        <vehicle id="flow_east.1" x="377.70" y="-1.60" angle="90.00" type="passenger_car" speed="12.91" pos="377.70" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="377.68" y="-1.60" angle="90.00" type="passenger_car" speed="12.91" pos="377.68" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="798.87" y="-1.60" angle="90.00" type="passenger_car" speed="14.50" pos="798.87" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="600.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.86" pos="600.31" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="108.27" y="1.60" angle="270.00" type="passenger_car" speed="16.31" pos="891.73" lane="B0A0_0" slope="0.00"/>
@@ -379,7 +375,7 @@
         <vehicle id="vehicle_2" x="838.92" y="-1.60" angle="90.00" type="passenger_car" speed="16.24" pos="838.92" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="46.00">
-        <vehicle id="flow_east.1" x="391.39" y="-1.60" angle="90.00" type="passenger_car" speed="13.69" pos="391.39" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="391.37" y="-1.60" angle="90.00" type="passenger_car" speed="13.68" pos="391.37" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="813.16" y="-1.60" angle="90.00" type="passenger_car" speed="14.29" pos="813.16" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="613.84" y="-1.60" angle="90.00" type="passenger_car" speed="13.53" pos="613.84" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="92.67" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="907.33" lane="B0A0_0" slope="0.00"/>
@@ -390,31 +386,31 @@
         <vehicle id="vehicle_2" x="855.01" y="-1.60" angle="90.00" type="passenger_car" speed="16.09" pos="855.01" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="47.00">
-        <vehicle id="flow_east.1" x="404.99" y="-1.60" angle="90.00" type="passenger_car" speed="13.60" pos="404.99" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="404.97" y="-1.60" angle="90.00" type="passenger_car" speed="13.60" pos="404.97" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="827.78" y="-1.60" angle="90.00" type="passenger_car" speed="14.62" pos="827.78" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="627.83" y="-1.60" angle="90.00" type="passenger_car" speed="13.99" pos="627.83" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="76.97" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="923.03" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="703.05" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="296.95" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="703.04" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="296.96" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="640.63" y="1.60" angle="270.00" type="passenger_car" speed="16.02" pos="359.37" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="801.32" y="-1.60" angle="90.00" type="passenger_car" speed="15.74" pos="801.32" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="729.68" y="-1.60" angle="90.00" type="passenger_car" speed="15.35" pos="729.68" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="870.65" y="-1.60" angle="90.00" type="passenger_car" speed="15.64" pos="870.65" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="48.00">
-        <vehicle id="flow_east.1" x="418.59" y="-1.60" angle="90.00" type="passenger_car" speed="13.61" pos="418.59" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="418.57" y="-1.60" angle="90.00" type="passenger_car" speed="13.61" pos="418.57" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="842.14" y="-1.60" angle="90.00" type="passenger_car" speed="14.35" pos="842.14" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="641.51" y="-1.60" angle="90.00" type="passenger_car" speed="13.68" pos="641.51" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="60.35" y="1.60" angle="270.00" type="passenger_car" speed="16.62" pos="939.65" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="688.49" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="311.51" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="688.48" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="311.52" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="624.53" y="1.60" angle="270.00" type="passenger_car" speed="16.10" pos="375.47" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="816.82" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="816.82" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="744.21" y="-1.60" angle="90.00" type="passenger_car" speed="14.54" pos="744.21" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="886.13" y="-1.60" angle="90.00" type="passenger_car" speed="15.47" pos="886.13" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="49.00">
-        <vehicle id="flow_east.1" x="431.41" y="-1.60" angle="90.00" type="passenger_car" speed="12.82" pos="431.41" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="431.39" y="-1.60" angle="90.00" type="passenger_car" speed="12.82" pos="431.39" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="855.68" y="-1.60" angle="90.00" type="passenger_car" speed="13.55" pos="855.68" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="655.06" y="-1.60" angle="90.00" type="passenger_car" speed="13.55" pos="655.06" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="655.05" y="-1.60" angle="90.00" type="passenger_car" speed="13.55" pos="655.05" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="44.85" y="1.60" angle="270.00" type="passenger_car" speed="15.50" pos="955.15" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="673.92" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="326.08" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="608.93" y="1.60" angle="270.00" type="passenger_car" speed="15.60" pos="391.07" lane="B0A0_0" slope="0.00"/>
@@ -423,9 +419,9 @@
         <vehicle id="vehicle_2" x="902.49" y="-1.60" angle="90.00" type="passenger_car" speed="16.36" pos="902.49" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="50.00">
-        <vehicle id="flow_east.1" x="444.30" y="-1.60" angle="90.00" type="passenger_car" speed="12.89" pos="444.30" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="444.28" y="-1.60" angle="90.00" type="passenger_car" speed="12.89" pos="444.28" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="870.34" y="-1.60" angle="90.00" type="passenger_car" speed="14.66" pos="870.34" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="668.37" y="-1.60" angle="90.00" type="passenger_car" speed="13.31" pos="668.37" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="668.36" y="-1.60" angle="90.00" type="passenger_car" speed="13.31" pos="668.36" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="745.12" y="-1.60" angle="90.00" type="passenger_car" speed="16.67" pos="745.12" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="29.07" y="1.60" angle="270.00" type="passenger_car" speed="15.78" pos="970.93" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="659.13" y="1.60" angle="270.00" type="passenger_car" speed="14.79" pos="340.87" lane="B0A0_0" slope="0.00"/>
@@ -436,12 +432,12 @@
         <vehicle id="vehicle_2" x="918.63" y="-1.60" angle="90.00" type="passenger_car" speed="16.15" pos="918.63" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="51.00">
-        <vehicle id="flow_east.1" x="457.60" y="-1.60" angle="90.00" type="passenger_car" speed="13.29" pos="457.60" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="457.58" y="-1.60" angle="90.00" type="passenger_car" speed="13.29" pos="457.58" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="884.96" y="-1.60" angle="90.00" type="passenger_car" speed="14.61" pos="884.96" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="682.54" y="-1.60" angle="90.00" type="passenger_car" speed="14.17" pos="682.54" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="761.02" y="-1.60" angle="90.00" type="passenger_car" speed="15.91" pos="761.02" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.1" x="12.55" y="1.60" angle="270.00" type="passenger_car" speed="16.52" pos="987.45" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="644.21" y="1.60" angle="270.00" type="passenger_car" speed="14.92" pos="355.79" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="644.20" y="1.60" angle="270.00" type="passenger_car" speed="14.92" pos="355.80" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="576.58" y="1.60" angle="270.00" type="passenger_car" speed="16.05" pos="423.42" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="977.95" y="1.60" angle="270.00" type="passenger_car" speed="16.01" pos="22.05" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="860.36" y="-1.60" angle="90.00" type="passenger_car" speed="14.86" pos="860.36" lane="A0B0_0" slope="0.00"/>
@@ -449,46 +445,46 @@
         <vehicle id="vehicle_2" x="934.44" y="-1.60" angle="90.00" type="passenger_car" speed="15.80" pos="934.44" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="52.00">
-        <vehicle id="flow_east.1" x="471.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.71" pos="471.31" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.2" x="898.77" y="-1.60" angle="90.00" type="passenger_car" speed="13.81" pos="898.77" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="471.29" y="-1.60" angle="90.00" type="passenger_car" speed="13.71" pos="471.29" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.2" x="898.76" y="-1.60" angle="90.00" type="passenger_car" speed="13.81" pos="898.76" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="696.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.77" pos="696.31" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="776.42" y="-1.60" angle="90.00" type="passenger_car" speed="15.39" pos="776.42" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="629.08" y="1.60" angle="270.00" type="passenger_car" speed="15.13" pos="370.92" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="560.65" y="1.60" angle="270.00" type="passenger_car" speed="15.93" pos="439.35" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="962.12" y="1.60" angle="270.00" type="passenger_car" speed="15.83" pos="37.88" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_0" x="874.94" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="874.94" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="805.29" y="-1.60" angle="90.00" type="passenger_car" speed="15.39" pos="805.29" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_0" x="874.93" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="874.93" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="805.28" y="-1.60" angle="90.00" type="passenger_car" speed="15.39" pos="805.28" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="950.08" y="-1.60" angle="90.00" type="passenger_car" speed="15.64" pos="950.08" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="53.00">
-        <vehicle id="flow_east.1" x="483.99" y="-1.60" angle="90.00" type="passenger_car" speed="12.68" pos="483.99" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="483.96" y="-1.60" angle="90.00" type="passenger_car" speed="12.68" pos="483.96" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="913.52" y="-1.60" angle="90.00" type="passenger_car" speed="14.75" pos="913.52" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="709.38" y="-1.60" angle="90.00" type="passenger_car" speed="13.06" pos="709.38" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="709.37" y="-1.60" angle="90.00" type="passenger_car" speed="13.06" pos="709.37" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="792.38" y="-1.60" angle="90.00" type="passenger_car" speed="15.96" pos="792.38" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="613.95" y="1.60" angle="270.00" type="passenger_car" speed="15.13" pos="386.05" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="613.94" y="1.60" angle="270.00" type="passenger_car" speed="15.13" pos="386.06" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="545.17" y="1.60" angle="270.00" type="passenger_car" speed="15.48" pos="454.83" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="945.90" y="1.60" angle="270.00" type="passenger_car" speed="16.21" pos="54.10" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="888.75" y="-1.60" angle="90.00" type="passenger_car" speed="13.81" pos="888.75" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="820.63" y="-1.60" angle="90.00" type="passenger_car" speed="15.34" pos="820.63" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="820.62" y="-1.60" angle="90.00" type="passenger_car" speed="15.34" pos="820.62" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="966.06" y="-1.60" angle="90.00" type="passenger_car" speed="15.98" pos="966.06" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="54.00">
-        <vehicle id="flow_east.1" x="497.26" y="-1.60" angle="90.00" type="passenger_car" speed="13.27" pos="497.26" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="497.23" y="-1.60" angle="90.00" type="passenger_car" speed="13.27" pos="497.23" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="927.10" y="-1.60" angle="90.00" type="passenger_car" speed="13.58" pos="927.10" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="723.32" y="-1.60" angle="90.00" type="passenger_car" speed="13.94" pos="723.32" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="723.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.94" pos="723.31" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="808.60" y="-1.60" angle="90.00" type="passenger_car" speed="16.22" pos="808.60" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="599.39" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="400.61" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="529.76" y="1.60" angle="270.00" type="passenger_car" speed="15.41" pos="470.24" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="929.94" y="1.60" angle="270.00" type="passenger_car" speed="15.97" pos="70.06" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_0" x="903.96" y="-1.60" angle="90.00" type="passenger_car" speed="15.21" pos="903.96" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_0" x="903.95" y="-1.60" angle="90.00" type="passenger_car" speed="15.21" pos="903.95" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="836.02" y="-1.60" angle="90.00" type="passenger_car" speed="15.40" pos="836.02" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_2" x="982.44" y="-1.60" angle="90.00" type="passenger_car" speed="16.38" pos="982.44" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="55.00">
-        <vehicle id="flow_east.1" x="511.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.84" pos="511.09" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="511.07" y="-1.60" angle="90.00" type="passenger_car" speed="13.84" pos="511.07" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="940.88" y="-1.60" angle="90.00" type="passenger_car" speed="13.78" pos="940.88" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="737.13" y="-1.60" angle="90.00" type="passenger_car" speed="13.81" pos="737.13" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="824.03" y="-1.60" angle="90.00" type="passenger_car" speed="15.44" pos="824.03" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="737.12" y="-1.60" angle="90.00" type="passenger_car" speed="13.81" pos="737.12" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="824.03" y="-1.60" angle="90.00" type="passenger_car" speed="15.43" pos="824.03" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="584.41" y="1.60" angle="270.00" type="passenger_car" speed="14.98" pos="415.59" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="513.40" y="1.60" angle="270.00" type="passenger_car" speed="16.36" pos="486.60" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="914.15" y="1.60" angle="270.00" type="passenger_car" speed="15.79" pos="85.85" lane="B0A0_0" slope="0.00"/>
@@ -497,445 +493,445 @@
         <vehicle id="vehicle_2" x="998.72" y="-1.60" angle="90.00" type="passenger_car" speed="16.28" pos="998.72" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="56.00">
-        <vehicle id="flow_east.1" x="524.69" y="-1.60" angle="90.00" type="passenger_car" speed="13.59" pos="524.69" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="524.66" y="-1.60" angle="90.00" type="passenger_car" speed="13.59" pos="524.66" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="954.90" y="-1.60" angle="90.00" type="passenger_car" speed="14.02" pos="954.90" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="750.22" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="750.22" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="840.48" y="-1.60" angle="90.00" type="passenger_car" speed="16.45" pos="840.48" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="569.72" y="1.60" angle="270.00" type="passenger_car" speed="14.69" pos="430.28" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="750.21" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="750.21" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="840.48" y="-1.60" angle="90.00" type="passenger_car" speed="16.44" pos="840.48" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="569.71" y="1.60" angle="270.00" type="passenger_car" speed="14.69" pos="430.29" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="497.96" y="1.60" angle="270.00" type="passenger_car" speed="15.44" pos="502.04" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="897.95" y="1.60" angle="270.00" type="passenger_car" speed="16.19" pos="102.05" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_0" x="931.57" y="-1.60" angle="90.00" type="passenger_car" speed="14.47" pos="931.57" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_0" x="931.56" y="-1.60" angle="90.00" type="passenger_car" speed="14.47" pos="931.56" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="866.86" y="-1.60" angle="90.00" type="passenger_car" speed="15.60" pos="866.86" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="57.00">
-        <vehicle id="flow_east.1" x="537.78" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="537.78" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.2" x="969.23" y="-1.60" angle="90.00" type="passenger_car" speed="14.32" pos="969.23" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="537.75" y="-1.60" angle="90.00" type="passenger_car" speed="13.09" pos="537.75" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.2" x="969.22" y="-1.60" angle="90.00" type="passenger_car" speed="14.32" pos="969.22" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="763.79" y="-1.60" angle="90.00" type="passenger_car" speed="13.58" pos="763.79" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="855.99" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="855.99" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="554.32" y="1.60" angle="270.00" type="passenger_car" speed="15.40" pos="445.68" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="481.46" y="1.60" angle="270.00" type="passenger_car" speed="16.50" pos="518.54" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="881.86" y="1.60" angle="270.00" type="passenger_car" speed="16.09" pos="118.14" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_0" x="945.80" y="-1.60" angle="90.00" type="passenger_car" speed="14.23" pos="945.80" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_0" x="945.79" y="-1.60" angle="90.00" type="passenger_car" speed="14.23" pos="945.79" lane="A0B0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="882.45" y="-1.60" angle="90.00" type="passenger_car" speed="15.59" pos="882.45" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="58.00">
-        <vehicle id="flow_east.1" x="551.13" y="-1.60" angle="90.00" type="passenger_car" speed="13.35" pos="551.13" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.2" x="983.34" y="-1.60" angle="90.00" type="passenger_car" speed="14.11" pos="983.34" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="777.46" y="-1.60" angle="90.00" type="passenger_car" speed="13.66" pos="777.46" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="551.11" y="-1.60" angle="90.00" type="passenger_car" speed="13.35" pos="551.11" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.2" x="983.33" y="-1.60" angle="90.00" type="passenger_car" speed="14.11" pos="983.33" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="777.45" y="-1.60" angle="90.00" type="passenger_car" speed="13.66" pos="777.45" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="871.51" y="-1.60" angle="90.00" type="passenger_car" speed="15.52" pos="871.51" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.2" x="538.81" y="1.60" angle="270.00" type="passenger_car" speed="15.51" pos="461.19" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="465.22" y="1.60" angle="270.00" type="passenger_car" speed="16.25" pos="534.78" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="866.35" y="1.60" angle="270.00" type="passenger_car" speed="15.52" pos="133.65" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="960.03" y="-1.60" angle="90.00" type="passenger_car" speed="14.23" pos="960.03" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="897.18" y="-1.60" angle="90.00" type="passenger_car" speed="14.73" pos="897.18" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="897.17" y="-1.60" angle="90.00" type="passenger_car" speed="14.73" pos="897.17" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="59.00">
-        <vehicle id="flow_east.1" x="564.57" y="-1.60" angle="90.00" type="passenger_car" speed="13.44" pos="564.57" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="564.54" y="-1.60" angle="90.00" type="passenger_car" speed="13.44" pos="564.54" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.2" x="997.66" y="-1.60" angle="90.00" type="passenger_car" speed="14.33" pos="997.66" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="791.46" y="-1.60" angle="90.00" type="passenger_car" speed="14.00" pos="791.46" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="887.03" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="887.03" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="524.05" y="1.60" angle="270.00" type="passenger_car" speed="14.77" pos="475.95" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="791.45" y="-1.60" angle="90.00" type="passenger_car" speed="14.00" pos="791.45" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="887.02" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="887.02" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="524.04" y="1.60" angle="270.00" type="passenger_car" speed="14.77" pos="475.96" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="449.32" y="1.60" angle="270.00" type="passenger_car" speed="15.90" pos="550.68" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="850.01" y="1.60" angle="270.00" type="passenger_car" speed="16.33" pos="149.99" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_0" x="973.53" y="-1.60" angle="90.00" type="passenger_car" speed="13.51" pos="973.53" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="912.44" y="-1.60" angle="90.00" type="passenger_car" speed="15.26" pos="912.44" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="912.43" y="-1.60" angle="90.00" type="passenger_car" speed="15.26" pos="912.43" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="60.00">
-        <vehicle id="flow_east.1" x="578.36" y="-1.60" angle="90.00" type="passenger_car" speed="13.79" pos="578.36" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="578.33" y="-1.60" angle="90.00" type="passenger_car" speed="13.79" pos="578.33" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="804.89" y="-1.60" angle="90.00" type="passenger_car" speed="13.43" pos="804.89" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="901.91" y="-1.60" angle="90.00" type="passenger_car" speed="14.89" pos="901.91" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="673.00" y="-1.60" angle="90.00" type="passenger_car" speed="16.67" pos="673.00" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="508.44" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="491.56" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="508.43" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="491.57" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="433.64" y="1.60" angle="270.00" type="passenger_car" speed="15.68" pos="566.36" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="833.41" y="1.60" angle="270.00" type="passenger_car" speed="16.60" pos="166.59" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.5" x="533.84" y="1.60" angle="270.00" type="passenger_car" speed="16.31" pos="466.16" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_0" x="988.25" y="-1.60" angle="90.00" type="passenger_car" speed="14.71" pos="988.25" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="926.79" y="-1.60" angle="90.00" type="passenger_car" speed="14.35" pos="926.79" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_0" x="988.24" y="-1.60" angle="90.00" type="passenger_car" speed="14.71" pos="988.24" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="926.78" y="-1.60" angle="90.00" type="passenger_car" speed="14.35" pos="926.78" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="61.00">
-        <vehicle id="flow_east.1" x="591.21" y="-1.60" angle="90.00" type="passenger_car" speed="12.85" pos="591.21" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="591.18" y="-1.60" angle="90.00" type="passenger_car" speed="12.85" pos="591.18" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="818.71" y="-1.60" angle="90.00" type="passenger_car" speed="13.82" pos="818.71" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="917.13" y="-1.60" angle="90.00" type="passenger_car" speed="15.22" pos="917.13" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="917.12" y="-1.60" angle="90.00" type="passenger_car" speed="15.22" pos="917.12" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="688.48" y="-1.60" angle="90.00" type="passenger_car" speed="15.48" pos="688.48" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="493.42" y="1.60" angle="270.00" type="passenger_car" speed="15.02" pos="506.58" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="493.41" y="1.60" angle="270.00" type="passenger_car" speed="15.02" pos="506.59" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="417.39" y="1.60" angle="270.00" type="passenger_car" speed="16.24" pos="582.61" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="816.98" y="1.60" angle="270.00" type="passenger_car" speed="16.43" pos="183.02" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.5" x="518.33" y="1.60" angle="270.00" type="passenger_car" speed="15.51" pos="481.67" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="941.47" y="-1.60" angle="90.00" type="passenger_car" speed="14.68" pos="941.47" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="941.46" y="-1.60" angle="90.00" type="passenger_car" speed="14.68" pos="941.46" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="62.00">
-        <vehicle id="flow_east.1" x="604.45" y="-1.60" angle="90.00" type="passenger_car" speed="13.24" pos="604.45" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="604.42" y="-1.60" angle="90.00" type="passenger_car" speed="13.24" pos="604.42" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.3" x="832.96" y="-1.60" angle="90.00" type="passenger_car" speed="14.25" pos="832.96" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="931.44" y="-1.60" angle="90.00" type="passenger_car" speed="14.31" pos="931.44" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="931.43" y="-1.60" angle="90.00" type="passenger_car" speed="14.31" pos="931.43" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="704.40" y="-1.60" angle="90.00" type="passenger_car" speed="15.92" pos="704.40" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="478.22" y="1.60" angle="270.00" type="passenger_car" speed="15.20" pos="521.78" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="478.21" y="1.60" angle="270.00" type="passenger_car" speed="15.20" pos="521.79" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="401.24" y="1.60" angle="270.00" type="passenger_car" speed="16.15" pos="598.76" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="800.73" y="1.60" angle="270.00" type="passenger_car" speed="16.25" pos="199.27" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.5" x="502.87" y="1.60" angle="270.00" type="passenger_car" speed="15.46" pos="497.13" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="vehicle_1" x="956.15" y="-1.60" angle="90.00" type="passenger_car" speed="14.68" pos="956.15" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="vehicle_1" x="956.14" y="-1.60" angle="90.00" type="passenger_car" speed="14.68" pos="956.14" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="63.00">
-        <vehicle id="flow_east.1" x="617.46" y="-1.60" angle="90.00" type="passenger_car" speed="13.01" pos="617.46" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="846.56" y="-1.60" angle="90.00" type="passenger_car" speed="13.60" pos="846.56" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="617.43" y="-1.60" angle="90.00" type="passenger_car" speed="13.01" pos="617.43" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="846.55" y="-1.60" angle="90.00" type="passenger_car" speed="13.60" pos="846.55" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="946.63" y="-1.60" angle="90.00" type="passenger_car" speed="15.20" pos="946.63" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="719.97" y="-1.60" angle="90.00" type="passenger_car" speed="15.57" pos="719.97" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="462.80" y="1.60" angle="270.00" type="passenger_car" speed="15.42" pos="537.20" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="462.79" y="1.60" angle="270.00" type="passenger_car" speed="15.42" pos="537.21" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="385.01" y="1.60" angle="270.00" type="passenger_car" speed="16.23" pos="614.99" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="784.11" y="1.60" angle="270.00" type="passenger_car" speed="16.62" pos="215.89" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="487.15" y="1.60" angle="270.00" type="passenger_car" speed="15.72" pos="512.85" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="487.14" y="1.60" angle="270.00" type="passenger_car" speed="15.72" pos="512.86" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="971.27" y="-1.60" angle="90.00" type="passenger_car" speed="15.13" pos="971.27" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="64.00">
-        <vehicle id="flow_east.1" x="630.79" y="-1.60" angle="90.00" type="passenger_car" speed="13.32" pos="630.79" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="859.68" y="-1.60" angle="90.00" type="passenger_car" speed="13.12" pos="859.68" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.4" x="962.08" y="-1.60" angle="90.00" type="passenger_car" speed="15.44" pos="962.08" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="630.76" y="-1.60" angle="90.00" type="passenger_car" speed="13.32" pos="630.76" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="859.67" y="-1.60" angle="90.00" type="passenger_car" speed="13.12" pos="859.67" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.4" x="962.07" y="-1.60" angle="90.00" type="passenger_car" speed="15.44" pos="962.07" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="735.99" y="-1.60" angle="90.00" type="passenger_car" speed="16.01" pos="735.99" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="447.37" y="1.60" angle="270.00" type="passenger_car" speed="15.43" pos="552.63" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="447.36" y="1.60" angle="270.00" type="passenger_car" speed="15.43" pos="552.64" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="368.66" y="1.60" angle="270.00" type="passenger_car" speed="16.36" pos="631.34" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="767.65" y="1.60" angle="270.00" type="passenger_car" speed="16.46" pos="232.35" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="472.22" y="1.60" angle="270.00" type="passenger_car" speed="14.93" pos="527.78" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="472.21" y="1.60" angle="270.00" type="passenger_car" speed="14.94" pos="527.79" lane="B0A0_0" slope="0.00"/>
         <vehicle id="vehicle_1" x="985.71" y="-1.60" angle="90.00" type="passenger_car" speed="14.44" pos="985.71" lane="A0B0_0" slope="0.00"/>
     </timestep>
     <timestep time="65.00">
-        <vehicle id="flow_east.1" x="643.90" y="-1.60" angle="90.00" type="passenger_car" speed="13.11" pos="643.90" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="872.73" y="-1.60" angle="90.00" type="passenger_car" speed="13.04" pos="872.73" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="643.87" y="-1.60" angle="90.00" type="passenger_car" speed="13.11" pos="643.87" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="872.72" y="-1.60" angle="90.00" type="passenger_car" speed="13.04" pos="872.72" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="975.89" y="-1.60" angle="90.00" type="passenger_car" speed="13.82" pos="975.89" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="751.75" y="-1.60" angle="90.00" type="passenger_car" speed="15.77" pos="751.75" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="432.99" y="1.60" angle="270.00" type="passenger_car" speed="14.38" pos="567.01" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="432.98" y="1.60" angle="270.00" type="passenger_car" speed="14.38" pos="567.02" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="352.68" y="1.60" angle="270.00" type="passenger_car" speed="15.98" pos="647.32" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="751.94" y="1.60" angle="270.00" type="passenger_car" speed="15.71" pos="248.06" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="456.99" y="1.60" angle="270.00" type="passenger_car" speed="15.23" pos="543.01" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="456.98" y="1.60" angle="270.00" type="passenger_car" speed="15.23" pos="543.02" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="66.00">
-        <vehicle id="flow_east.1" x="656.73" y="-1.60" angle="90.00" type="passenger_car" speed="12.83" pos="656.73" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="885.74" y="-1.60" angle="90.00" type="passenger_car" speed="13.02" pos="885.74" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="656.69" y="-1.60" angle="90.00" type="passenger_car" speed="12.83" pos="656.69" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="885.73" y="-1.60" angle="90.00" type="passenger_car" speed="13.02" pos="885.73" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.4" x="991.88" y="-1.60" angle="90.00" type="passenger_car" speed="15.99" pos="991.88" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="767.24" y="-1.60" angle="90.00" type="passenger_car" speed="15.49" pos="767.24" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="418.30" y="1.60" angle="270.00" type="passenger_car" speed="14.68" pos="581.70" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="418.29" y="1.60" angle="270.00" type="passenger_car" speed="14.68" pos="581.71" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="336.21" y="1.60" angle="270.00" type="passenger_car" speed="16.47" pos="663.79" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="735.68" y="1.60" angle="270.00" type="passenger_car" speed="16.26" pos="264.32" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="443.03" y="1.60" angle="270.00" type="passenger_car" speed="13.96" pos="556.97" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="443.02" y="1.60" angle="270.00" type="passenger_car" speed="13.96" pos="556.98" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="67.00">
-        <vehicle id="flow_east.1" x="669.33" y="-1.60" angle="90.00" type="passenger_car" speed="12.61" pos="669.33" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="900.01" y="-1.60" angle="90.00" type="passenger_car" speed="14.26" pos="900.01" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="669.30" y="-1.60" angle="90.00" type="passenger_car" speed="12.61" pos="669.30" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="900.00" y="-1.60" angle="90.00" type="passenger_car" speed="14.26" pos="900.00" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="783.36" y="-1.60" angle="90.00" type="passenger_car" speed="16.11" pos="783.36" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="403.45" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="596.55" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="403.44" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="596.56" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="320.19" y="1.60" angle="270.00" type="passenger_car" speed="16.02" pos="679.81" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="719.46" y="1.60" angle="270.00" type="passenger_car" speed="16.22" pos="280.54" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.5" x="427.71" y="1.60" angle="270.00" type="passenger_car" speed="15.31" pos="572.29" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="68.00">
-        <vehicle id="flow_east.1" x="683.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.75" pos="683.09" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="913.13" y="-1.60" angle="90.00" type="passenger_car" speed="13.13" pos="913.13" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="683.05" y="-1.60" angle="90.00" type="passenger_car" speed="13.75" pos="683.05" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="913.12" y="-1.60" angle="90.00" type="passenger_car" speed="13.13" pos="913.12" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="799.61" y="-1.60" angle="90.00" type="passenger_car" speed="16.25" pos="799.61" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="388.00" y="1.60" angle="270.00" type="passenger_car" speed="15.45" pos="612.00" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="387.99" y="1.60" angle="270.00" type="passenger_car" speed="15.45" pos="612.01" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="303.98" y="1.60" angle="270.00" type="passenger_car" speed="16.21" pos="696.02" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="703.81" y="1.60" angle="270.00" type="passenger_car" speed="15.65" pos="296.19" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="412.82" y="1.60" angle="270.00" type="passenger_car" speed="14.89" pos="587.18" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="412.81" y="1.60" angle="270.00" type="passenger_car" speed="14.89" pos="587.19" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="69.00">
-        <vehicle id="flow_east.1" x="696.93" y="-1.60" angle="90.00" type="passenger_car" speed="13.84" pos="696.93" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="926.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.18" pos="926.31" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="696.89" y="-1.60" angle="90.00" type="passenger_car" speed="13.84" pos="696.89" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="926.30" y="-1.60" angle="90.00" type="passenger_car" speed="13.18" pos="926.30" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="815.83" y="-1.60" angle="90.00" type="passenger_car" speed="16.22" pos="815.83" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="373.37" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="626.63" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="373.36" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="626.64" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="287.64" y="1.60" angle="270.00" type="passenger_car" speed="16.35" pos="712.36" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="687.77" y="1.60" angle="270.00" type="passenger_car" speed="16.05" pos="312.23" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="397.12" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="602.88" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="397.11" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="602.89" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="70.00">
-        <vehicle id="flow_east.1" x="710.60" y="-1.60" angle="90.00" type="passenger_car" speed="13.67" pos="710.60" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="939.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.00" pos="939.31" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="710.56" y="-1.60" angle="90.00" type="passenger_car" speed="13.67" pos="710.56" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="939.30" y="-1.60" angle="90.00" type="passenger_car" speed="13.00" pos="939.30" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="831.38" y="-1.60" angle="90.00" type="passenger_car" speed="15.56" pos="831.38" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="452.11" y="-1.60" angle="90.00" type="passenger_car" speed="15.45" pos="452.11" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="357.93" y="1.60" angle="270.00" type="passenger_car" speed="15.43" pos="642.07" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="357.92" y="1.60" angle="270.00" type="passenger_car" speed="15.43" pos="642.08" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="271.31" y="1.60" angle="270.00" type="passenger_car" speed="16.33" pos="728.69" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="671.16" y="1.60" angle="270.00" type="passenger_car" speed="16.61" pos="328.84" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="382.08" y="1.60" angle="270.00" type="passenger_car" speed="15.04" pos="617.92" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="382.07" y="1.60" angle="270.00" type="passenger_car" speed="15.04" pos="617.93" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="433.72" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="566.28" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="71.00">
-        <vehicle id="flow_east.1" x="724.12" y="-1.60" angle="90.00" type="passenger_car" speed="13.53" pos="724.12" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="953.52" y="-1.60" angle="90.00" type="passenger_car" speed="14.21" pos="953.52" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="724.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.53" pos="724.09" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="953.51" y="-1.60" angle="90.00" type="passenger_car" speed="14.21" pos="953.51" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="847.97" y="-1.60" angle="90.00" type="passenger_car" speed="16.59" pos="847.97" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="467.51" y="-1.60" angle="90.00" type="passenger_car" speed="15.39" pos="467.51" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="343.01" y="1.60" angle="270.00" type="passenger_car" speed="14.93" pos="656.99" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="342.99" y="1.60" angle="270.00" type="passenger_car" speed="14.93" pos="657.01" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="255.22" y="1.60" angle="270.00" type="passenger_car" speed="16.09" pos="744.78" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="654.65" y="1.60" angle="270.00" type="passenger_car" speed="16.51" pos="345.35" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="366.38" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="633.62" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="366.37" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="633.63" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="420.13" y="1.60" angle="270.00" type="passenger_car" speed="13.59" pos="579.87" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="72.00">
-        <vehicle id="flow_east.1" x="737.06" y="-1.60" angle="90.00" type="passenger_car" speed="12.94" pos="737.06" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="967.10" y="-1.60" angle="90.00" type="passenger_car" speed="13.58" pos="967.10" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="737.02" y="-1.60" angle="90.00" type="passenger_car" speed="12.94" pos="737.02" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="967.09" y="-1.60" angle="90.00" type="passenger_car" speed="13.58" pos="967.09" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="863.76" y="-1.60" angle="90.00" type="passenger_car" speed="15.78" pos="863.76" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="481.80" y="-1.60" angle="90.00" type="passenger_car" speed="14.29" pos="481.80" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="327.98" y="1.60" angle="270.00" type="passenger_car" speed="15.03" pos="672.02" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="327.97" y="1.60" angle="270.00" type="passenger_car" speed="15.03" pos="672.03" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="239.38" y="1.60" angle="270.00" type="passenger_car" speed="15.84" pos="760.62" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="638.04" y="1.60" angle="270.00" type="passenger_car" speed="16.61" pos="361.96" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="351.87" y="1.60" angle="270.00" type="passenger_car" speed="14.51" pos="648.13" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="351.86" y="1.60" angle="270.00" type="passenger_car" speed="14.51" pos="648.14" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="406.21" y="1.60" angle="270.00" type="passenger_car" speed="13.92" pos="593.79" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="73.00">
-        <vehicle id="flow_east.1" x="749.75" y="-1.60" angle="90.00" type="passenger_car" speed="12.68" pos="749.75" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="981.10" y="-1.60" angle="90.00" type="passenger_car" speed="14.00" pos="981.10" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="749.71" y="-1.60" angle="90.00" type="passenger_car" speed="12.68" pos="749.71" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="981.09" y="-1.60" angle="90.00" type="passenger_car" speed="14.00" pos="981.09" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="879.44" y="-1.60" angle="90.00" type="passenger_car" speed="15.68" pos="879.44" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="496.47" y="-1.60" angle="90.00" type="passenger_car" speed="14.68" pos="496.47" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="313.60" y="1.60" angle="270.00" type="passenger_car" speed="14.38" pos="686.40" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="496.47" y="-1.60" angle="90.00" type="passenger_car" speed="14.67" pos="496.47" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="313.59" y="1.60" angle="270.00" type="passenger_car" speed="14.38" pos="686.41" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="223.00" y="1.60" angle="270.00" type="passenger_car" speed="16.39" pos="777.00" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="621.87" y="1.60" angle="270.00" type="passenger_car" speed="16.17" pos="378.13" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="337.04" y="1.60" angle="270.00" type="passenger_car" speed="14.83" pos="662.96" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="337.03" y="1.60" angle="270.00" type="passenger_car" speed="14.83" pos="662.97" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="392.40" y="1.60" angle="270.00" type="passenger_car" speed="13.81" pos="607.60" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="74.00">
-        <vehicle id="flow_east.1" x="763.10" y="-1.60" angle="90.00" type="passenger_car" speed="13.36" pos="763.10" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.3" x="995.05" y="-1.60" angle="90.00" type="passenger_car" speed="13.95" pos="995.05" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="763.07" y="-1.60" angle="90.00" type="passenger_car" speed="13.36" pos="763.07" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.3" x="995.03" y="-1.60" angle="90.00" type="passenger_car" speed="13.94" pos="995.03" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="895.22" y="-1.60" angle="90.00" type="passenger_car" speed="15.79" pos="895.22" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="510.86" y="-1.60" angle="90.00" type="passenger_car" speed="14.39" pos="510.86" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="298.35" y="1.60" angle="270.00" type="passenger_car" speed="15.25" pos="701.65" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="298.34" y="1.60" angle="270.00" type="passenger_car" speed="15.25" pos="701.66" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="207.57" y="1.60" angle="270.00" type="passenger_car" speed="15.43" pos="792.43" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="606.25" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="393.75" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="323.05" y="1.60" angle="270.00" type="passenger_car" speed="13.99" pos="676.95" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="378.61" y="1.60" angle="270.00" type="passenger_car" speed="13.79" pos="621.39" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="323.04" y="1.60" angle="270.00" type="passenger_car" speed="13.99" pos="676.96" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="378.62" y="1.60" angle="270.00" type="passenger_car" speed="13.79" pos="621.38" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="75.00">
-        <vehicle id="flow_east.1" x="776.29" y="-1.60" angle="90.00" type="passenger_car" speed="13.19" pos="776.29" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="776.25" y="-1.60" angle="90.00" type="passenger_car" speed="13.19" pos="776.25" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="911.54" y="-1.60" angle="90.00" type="passenger_car" speed="16.31" pos="911.54" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="526.17" y="-1.60" angle="90.00" type="passenger_car" speed="15.30" pos="526.17" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="283.84" y="1.60" angle="270.00" type="passenger_car" speed="14.51" pos="716.16" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="526.16" y="-1.60" angle="90.00" type="passenger_car" speed="15.30" pos="526.16" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="283.83" y="1.60" angle="270.00" type="passenger_car" speed="14.51" pos="716.17" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="191.56" y="1.60" angle="270.00" type="passenger_car" speed="16.00" pos="808.44" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="590.44" y="1.60" angle="270.00" type="passenger_car" speed="15.81" pos="409.56" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="308.38" y="1.60" angle="270.00" type="passenger_car" speed="14.67" pos="691.62" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="308.37" y="1.60" angle="270.00" type="passenger_car" speed="14.67" pos="691.63" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="364.72" y="1.60" angle="270.00" type="passenger_car" speed="13.90" pos="635.28" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="76.00">
-        <vehicle id="flow_east.1" x="790.04" y="-1.60" angle="90.00" type="passenger_car" speed="13.75" pos="790.04" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="790.00" y="-1.60" angle="90.00" type="passenger_car" speed="13.75" pos="790.00" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="928.10" y="-1.60" angle="90.00" type="passenger_car" speed="16.56" pos="928.10" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="541.35" y="-1.60" angle="90.00" type="passenger_car" speed="15.19" pos="541.35" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="268.73" y="1.60" angle="270.00" type="passenger_car" speed="15.11" pos="731.27" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="268.72" y="1.60" angle="270.00" type="passenger_car" speed="15.11" pos="731.28" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="176.05" y="1.60" angle="270.00" type="passenger_car" speed="15.52" pos="823.95" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="574.57" y="1.60" angle="270.00" type="passenger_car" speed="15.88" pos="425.43" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="294.11" y="1.60" angle="270.00" type="passenger_car" speed="14.27" pos="705.89" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="350.60" y="1.60" angle="270.00" type="passenger_car" speed="14.12" pos="649.40" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="294.10" y="1.60" angle="270.00" type="passenger_car" speed="14.27" pos="705.90" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="350.61" y="1.60" angle="270.00" type="passenger_car" speed="14.11" pos="649.39" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="77.00">
-        <vehicle id="flow_east.1" x="803.34" y="-1.60" angle="90.00" type="passenger_car" speed="13.30" pos="803.34" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="803.30" y="-1.60" angle="90.00" type="passenger_car" speed="13.30" pos="803.30" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="943.68" y="-1.60" angle="90.00" type="passenger_car" speed="15.58" pos="943.68" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="555.63" y="-1.60" angle="90.00" type="passenger_car" speed="14.28" pos="555.63" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="254.09" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="745.91" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="254.08" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="745.92" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="160.40" y="1.60" angle="270.00" type="passenger_car" speed="15.64" pos="839.60" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="558.41" y="1.60" angle="270.00" type="passenger_car" speed="16.16" pos="441.59" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="278.86" y="1.60" angle="270.00" type="passenger_car" speed="15.25" pos="721.14" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="336.55" y="1.60" angle="270.00" type="passenger_car" speed="14.05" pos="663.45" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="278.85" y="1.60" angle="270.00" type="passenger_car" speed="15.25" pos="721.15" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="336.56" y="1.60" angle="270.00" type="passenger_car" speed="14.05" pos="663.44" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="78.00">
-        <vehicle id="flow_east.1" x="817.12" y="-1.60" angle="90.00" type="passenger_car" speed="13.78" pos="817.12" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="817.08" y="-1.60" angle="90.00" type="passenger_car" speed="13.77" pos="817.08" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="959.08" y="-1.60" angle="90.00" type="passenger_car" speed="15.40" pos="959.08" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="569.94" y="-1.60" angle="90.00" type="passenger_car" speed="14.30" pos="569.94" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="239.09" y="1.60" angle="270.00" type="passenger_car" speed="15.00" pos="760.91" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="569.93" y="-1.60" angle="90.00" type="passenger_car" speed="14.30" pos="569.93" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="239.08" y="1.60" angle="270.00" type="passenger_car" speed="15.00" pos="760.92" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="144.32" y="1.60" angle="270.00" type="passenger_car" speed="16.08" pos="855.68" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="541.74" y="1.60" angle="270.00" type="passenger_car" speed="16.66" pos="458.26" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="264.20" y="1.60" angle="270.00" type="passenger_car" speed="14.66" pos="735.80" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="322.95" y="1.60" angle="270.00" type="passenger_car" speed="13.60" pos="677.05" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="264.19" y="1.60" angle="270.00" type="passenger_car" speed="14.66" pos="735.81" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="322.96" y="1.60" angle="270.00" type="passenger_car" speed="13.60" pos="677.04" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="79.00">
-        <vehicle id="flow_east.1" x="830.82" y="-1.60" angle="90.00" type="passenger_car" speed="13.70" pos="830.82" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="830.77" y="-1.60" angle="90.00" type="passenger_car" speed="13.70" pos="830.77" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="975.06" y="-1.60" angle="90.00" type="passenger_car" speed="15.98" pos="975.06" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="584.71" y="-1.60" angle="90.00" type="passenger_car" speed="14.77" pos="584.71" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="223.75" y="1.60" angle="270.00" type="passenger_car" speed="15.34" pos="776.25" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="584.70" y="-1.60" angle="90.00" type="passenger_car" speed="14.77" pos="584.70" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="223.73" y="1.60" angle="270.00" type="passenger_car" speed="15.34" pos="776.27" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="128.46" y="1.60" angle="270.00" type="passenger_car" speed="15.86" pos="871.54" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="525.11" y="1.60" angle="270.00" type="passenger_car" speed="16.63" pos="474.89" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="249.34" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="750.66" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="249.33" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="750.67" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="309.56" y="1.60" angle="270.00" type="passenger_car" speed="13.39" pos="690.44" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="80.00">
-        <vehicle id="flow_east.1" x="843.56" y="-1.60" angle="90.00" type="passenger_car" speed="12.74" pos="843.56" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="843.52" y="-1.60" angle="90.00" type="passenger_car" speed="12.74" pos="843.52" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.5" x="991.27" y="-1.60" angle="90.00" type="passenger_car" speed="16.20" pos="991.27" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.6" x="599.81" y="-1.60" angle="90.00" type="passenger_car" speed="15.10" pos="599.81" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="264.52" y="-1.60" angle="90.00" type="passenger_car" speed="15.69" pos="264.52" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="209.18" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="790.82" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="209.16" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="790.84" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="111.80" y="1.60" angle="270.00" type="passenger_car" speed="16.67" pos="888.20" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="509.28" y="1.60" angle="270.00" type="passenger_car" speed="15.84" pos="490.72" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="234.33" y="1.60" angle="270.00" type="passenger_car" speed="15.01" pos="765.67" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="295.80" y="1.60" angle="270.00" type="passenger_car" speed="13.75" pos="704.20" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="234.32" y="1.60" angle="270.00" type="passenger_car" speed="15.01" pos="765.68" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="295.81" y="1.60" angle="270.00" type="passenger_car" speed="13.75" pos="704.19" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="939.74" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="60.26" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="81.00">
-        <vehicle id="flow_east.1" x="857.10" y="-1.60" angle="90.00" type="passenger_car" speed="13.55" pos="857.10" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="614.97" y="-1.60" angle="90.00" type="passenger_car" speed="15.15" pos="614.97" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="857.06" y="-1.60" angle="90.00" type="passenger_car" speed="13.54" pos="857.06" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="614.96" y="-1.60" angle="90.00" type="passenger_car" speed="15.15" pos="614.96" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="278.99" y="-1.60" angle="90.00" type="passenger_car" speed="14.48" pos="278.99" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="194.56" y="1.60" angle="270.00" type="passenger_car" speed="14.62" pos="805.44" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="194.54" y="1.60" angle="270.00" type="passenger_car" speed="14.62" pos="805.46" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="95.70" y="1.60" angle="270.00" type="passenger_car" speed="16.10" pos="904.30" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="493.44" y="1.60" angle="270.00" type="passenger_car" speed="15.84" pos="506.56" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="219.93" y="1.60" angle="270.00" type="passenger_car" speed="14.40" pos="780.07" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="282.27" y="1.60" angle="270.00" type="passenger_car" speed="13.53" pos="717.73" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="219.92" y="1.60" angle="270.00" type="passenger_car" speed="14.40" pos="780.08" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="282.28" y="1.60" angle="270.00" type="passenger_car" speed="13.53" pos="717.72" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="924.80" y="1.60" angle="270.00" type="passenger_car" speed="14.94" pos="75.20" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="82.00">
-        <vehicle id="flow_east.1" x="869.70" y="-1.60" angle="90.00" type="passenger_car" speed="12.59" pos="869.70" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="629.63" y="-1.60" angle="90.00" type="passenger_car" speed="14.67" pos="629.63" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="869.65" y="-1.60" angle="90.00" type="passenger_car" speed="12.59" pos="869.65" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="629.62" y="-1.60" angle="90.00" type="passenger_car" speed="14.67" pos="629.62" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="293.57" y="-1.60" angle="90.00" type="passenger_car" speed="14.58" pos="293.57" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="179.00" y="1.60" angle="270.00" type="passenger_car" speed="15.55" pos="821.00" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="178.99" y="1.60" angle="270.00" type="passenger_car" speed="15.55" pos="821.01" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="80.30" y="1.60" angle="270.00" type="passenger_car" speed="15.40" pos="919.70" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="477.09" y="1.60" angle="270.00" type="passenger_car" speed="16.35" pos="522.91" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="205.31" y="1.60" angle="270.00" type="passenger_car" speed="14.62" pos="794.69" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="268.27" y="1.60" angle="270.00" type="passenger_car" speed="14.00" pos="731.73" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="205.30" y="1.60" angle="270.00" type="passenger_car" speed="14.62" pos="794.70" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="268.28" y="1.60" angle="270.00" type="passenger_car" speed="14.00" pos="731.72" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="909.42" y="1.60" angle="270.00" type="passenger_car" speed="15.37" pos="90.58" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="83.00">
-        <vehicle id="flow_east.1" x="882.26" y="-1.60" angle="90.00" type="passenger_car" speed="12.57" pos="882.26" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="644.26" y="-1.60" angle="90.00" type="passenger_car" speed="14.62" pos="644.26" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="882.22" y="-1.60" angle="90.00" type="passenger_car" speed="12.57" pos="882.22" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="644.25" y="-1.60" angle="90.00" type="passenger_car" speed="14.62" pos="644.25" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="308.59" y="-1.60" angle="90.00" type="passenger_car" speed="15.02" pos="308.59" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="164.21" y="1.60" angle="270.00" type="passenger_car" speed="14.79" pos="835.79" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="164.20" y="1.60" angle="270.00" type="passenger_car" speed="14.79" pos="835.80" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="64.59" y="1.60" angle="270.00" type="passenger_car" speed="15.71" pos="935.41" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="460.66" y="1.60" angle="270.00" type="passenger_car" speed="16.43" pos="539.34" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="189.93" y="1.60" angle="270.00" type="passenger_car" speed="15.38" pos="810.07" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="189.91" y="1.60" angle="270.00" type="passenger_car" speed="15.38" pos="810.09" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.6" x="254.64" y="1.60" angle="270.00" type="passenger_car" speed="13.63" pos="745.36" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="894.56" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="105.44" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="84.00">
-        <vehicle id="flow_east.1" x="895.31" y="-1.60" angle="90.00" type="passenger_car" speed="13.05" pos="895.31" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="659.70" y="-1.60" angle="90.00" type="passenger_car" speed="15.44" pos="659.70" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="895.27" y="-1.60" angle="90.00" type="passenger_car" speed="13.05" pos="895.27" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="659.69" y="-1.60" angle="90.00" type="passenger_car" speed="15.44" pos="659.69" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="323.58" y="-1.60" angle="90.00" type="passenger_car" speed="14.99" pos="323.58" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="149.56" y="1.60" angle="270.00" type="passenger_car" speed="14.65" pos="850.44" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="149.55" y="1.60" angle="270.00" type="passenger_car" speed="14.65" pos="850.45" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="48.13" y="1.60" angle="270.00" type="passenger_car" speed="16.46" pos="951.87" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="444.68" y="1.60" angle="270.00" type="passenger_car" speed="15.98" pos="555.32" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="174.93" y="1.60" angle="270.00" type="passenger_car" speed="14.99" pos="825.07" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="240.96" y="1.60" angle="270.00" type="passenger_car" speed="13.67" pos="759.04" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="174.92" y="1.60" angle="270.00" type="passenger_car" speed="14.99" pos="825.08" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="240.97" y="1.60" angle="270.00" type="passenger_car" speed="13.67" pos="759.03" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="878.95" y="1.60" angle="270.00" type="passenger_car" speed="15.61" pos="121.05" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="85.00">
-        <vehicle id="flow_east.1" x="908.03" y="-1.60" angle="90.00" type="passenger_car" speed="12.72" pos="908.03" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="674.20" y="-1.60" angle="90.00" type="passenger_car" speed="14.50" pos="674.20" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="907.99" y="-1.60" angle="90.00" type="passenger_car" speed="12.72" pos="907.99" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="674.19" y="-1.60" angle="90.00" type="passenger_car" speed="14.50" pos="674.19" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="338.85" y="-1.60" angle="90.00" type="passenger_car" speed="15.27" pos="338.85" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="134.68" y="1.60" angle="270.00" type="passenger_car" speed="14.88" pos="865.32" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="134.67" y="1.60" angle="270.00" type="passenger_car" speed="14.88" pos="865.33" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="31.66" y="1.60" angle="270.00" type="passenger_car" speed="16.47" pos="968.34" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="429.18" y="1.60" angle="270.00" type="passenger_car" speed="15.50" pos="570.82" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="160.59" y="1.60" angle="270.00" type="passenger_car" speed="14.34" pos="839.41" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="227.23" y="1.60" angle="270.00" type="passenger_car" speed="13.73" pos="772.77" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="160.58" y="1.60" angle="270.00" type="passenger_car" speed="14.34" pos="839.42" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="227.24" y="1.60" angle="270.00" type="passenger_car" speed="13.73" pos="772.76" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="864.31" y="1.60" angle="270.00" type="passenger_car" speed="14.64" pos="135.69" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="86.00">
-        <vehicle id="flow_east.1" x="920.79" y="-1.60" angle="90.00" type="passenger_car" speed="12.75" pos="920.79" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="689.46" y="-1.60" angle="90.00" type="passenger_car" speed="15.26" pos="689.46" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="920.74" y="-1.60" angle="90.00" type="passenger_car" speed="12.75" pos="920.74" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="689.45" y="-1.60" angle="90.00" type="passenger_car" speed="15.26" pos="689.45" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="353.80" y="-1.60" angle="90.00" type="passenger_car" speed="14.95" pos="353.80" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="119.89" y="1.60" angle="270.00" type="passenger_car" speed="14.79" pos="880.11" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="119.87" y="1.60" angle="270.00" type="passenger_car" speed="14.79" pos="880.13" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.3" x="16.18" y="1.60" angle="270.00" type="passenger_car" speed="15.48" pos="983.82" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="412.93" y="1.60" angle="270.00" type="passenger_car" speed="16.25" pos="587.07" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="145.32" y="1.60" angle="270.00" type="passenger_car" speed="15.27" pos="854.68" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="213.70" y="1.60" angle="270.00" type="passenger_car" speed="13.53" pos="786.30" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="145.30" y="1.60" angle="270.00" type="passenger_car" speed="15.28" pos="854.70" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="213.71" y="1.60" angle="270.00" type="passenger_car" speed="13.53" pos="786.29" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="849.85" y="1.60" angle="270.00" type="passenger_car" speed="14.46" pos="150.15" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="87.00">
-        <vehicle id="flow_east.1" x="934.62" y="-1.60" angle="90.00" type="passenger_car" speed="13.83" pos="934.62" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="704.75" y="-1.60" angle="90.00" type="passenger_car" speed="15.30" pos="704.75" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="934.58" y="-1.60" angle="90.00" type="passenger_car" speed="13.83" pos="934.58" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="704.74" y="-1.60" angle="90.00" type="passenger_car" speed="15.29" pos="704.74" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="368.50" y="-1.60" angle="90.00" type="passenger_car" speed="14.70" pos="368.50" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="104.56" y="1.60" angle="270.00" type="passenger_car" speed="15.32" pos="895.44" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="104.55" y="1.60" angle="270.00" type="passenger_car" speed="15.32" pos="895.45" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="396.58" y="1.60" angle="270.00" type="passenger_car" speed="16.35" pos="603.42" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="130.76" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="869.24" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="199.46" y="1.60" angle="270.00" type="passenger_car" speed="14.24" pos="800.54" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="130.75" y="1.60" angle="270.00" type="passenger_car" speed="14.56" pos="869.25" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="199.47" y="1.60" angle="270.00" type="passenger_car" speed="14.24" pos="800.53" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="834.28" y="1.60" angle="270.00" type="passenger_car" speed="15.57" pos="165.72" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="88.00">
-        <vehicle id="flow_east.1" x="947.42" y="-1.60" angle="90.00" type="passenger_car" speed="12.80" pos="947.42" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="720.15" y="-1.60" angle="90.00" type="passenger_car" speed="15.40" pos="720.15" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.7" x="384.01" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="384.01" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="89.63" y="1.60" angle="270.00" type="passenger_car" speed="14.94" pos="910.37" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="947.37" y="-1.60" angle="90.00" type="passenger_car" speed="12.80" pos="947.37" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="720.14" y="-1.60" angle="90.00" type="passenger_car" speed="15.40" pos="720.14" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.7" x="384.02" y="-1.60" angle="90.00" type="passenger_car" speed="15.51" pos="384.02" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="89.61" y="1.60" angle="270.00" type="passenger_car" speed="14.94" pos="910.39" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="380.16" y="1.60" angle="270.00" type="passenger_car" speed="16.42" pos="619.84" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="115.04" y="1.60" angle="270.00" type="passenger_car" speed="15.71" pos="884.96" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="185.24" y="1.60" angle="270.00" type="passenger_car" speed="14.21" pos="814.76" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="115.03" y="1.60" angle="270.00" type="passenger_car" speed="15.72" pos="884.97" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="185.25" y="1.60" angle="270.00" type="passenger_car" speed="14.21" pos="814.75" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="819.87" y="1.60" angle="270.00" type="passenger_car" speed="14.41" pos="180.13" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="89.00">
-        <vehicle id="flow_east.1" x="961.21" y="-1.60" angle="90.00" type="passenger_car" speed="13.79" pos="961.21" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="734.34" y="-1.60" angle="90.00" type="passenger_car" speed="14.19" pos="734.34" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="961.16" y="-1.60" angle="90.00" type="passenger_car" speed="13.78" pos="961.16" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="734.33" y="-1.60" angle="90.00" type="passenger_car" speed="14.19" pos="734.33" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="398.47" y="-1.60" angle="90.00" type="passenger_car" speed="14.46" pos="398.47" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="75.24" y="1.60" angle="270.00" type="passenger_car" speed="14.39" pos="924.76" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="75.22" y="1.60" angle="270.00" type="passenger_car" speed="14.39" pos="924.78" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="364.37" y="1.60" angle="270.00" type="passenger_car" speed="15.79" pos="635.63" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="100.01" y="1.60" angle="270.00" type="passenger_car" speed="15.03" pos="899.99" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="170.70" y="1.60" angle="270.00" type="passenger_car" speed="14.55" pos="829.30" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="100.00" y="1.60" angle="270.00" type="passenger_car" speed="15.03" pos="900.00" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="170.71" y="1.60" angle="270.00" type="passenger_car" speed="14.54" pos="829.29" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="804.67" y="1.60" angle="270.00" type="passenger_car" speed="15.20" pos="195.33" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="90.00">
-        <vehicle id="flow_east.1" x="974.22" y="-1.60" angle="90.00" type="passenger_car" speed="13.02" pos="974.22" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="748.91" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="748.91" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="974.17" y="-1.60" angle="90.00" type="passenger_car" speed="13.02" pos="974.17" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="748.90" y="-1.60" angle="90.00" type="passenger_car" speed="14.57" pos="748.90" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="413.19" y="-1.60" angle="90.00" type="passenger_car" speed="14.72" pos="413.19" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="59.87" y="1.60" angle="270.00" type="passenger_car" speed="15.36" pos="940.13" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="59.86" y="1.60" angle="270.00" type="passenger_car" speed="15.36" pos="940.14" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="348.27" y="1.60" angle="270.00" type="passenger_car" speed="16.10" pos="651.73" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="85.39" y="1.60" angle="270.00" type="passenger_car" speed="14.63" pos="914.61" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="156.85" y="1.60" angle="270.00" type="passenger_car" speed="13.84" pos="843.15" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="85.37" y="1.60" angle="270.00" type="passenger_car" speed="14.63" pos="914.63" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="156.87" y="1.60" angle="270.00" type="passenger_car" speed="13.84" pos="843.13" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="789.54" y="1.60" angle="270.00" type="passenger_car" speed="15.13" pos="210.46" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="91.00">
-        <vehicle id="flow_east.1" x="987.39" y="-1.60" angle="90.00" type="passenger_car" speed="13.17" pos="987.39" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.6" x="764.09" y="-1.60" angle="90.00" type="passenger_car" speed="15.18" pos="764.09" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.1" x="987.34" y="-1.60" angle="90.00" type="passenger_car" speed="13.17" pos="987.34" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="764.08" y="-1.60" angle="90.00" type="passenger_car" speed="15.18" pos="764.08" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="427.86" y="-1.60" angle="90.00" type="passenger_car" speed="14.67" pos="427.86" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="44.29" y="1.60" angle="270.00" type="passenger_car" speed="15.58" pos="955.71" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="44.28" y="1.60" angle="270.00" type="passenger_car" speed="15.58" pos="955.72" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="332.54" y="1.60" angle="270.00" type="passenger_car" speed="15.73" pos="667.46" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="70.32" y="1.60" angle="270.00" type="passenger_car" speed="15.07" pos="929.68" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="142.82" y="1.60" angle="270.00" type="passenger_car" speed="14.03" pos="857.18" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="70.30" y="1.60" angle="270.00" type="passenger_car" speed="15.07" pos="929.70" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="142.83" y="1.60" angle="270.00" type="passenger_car" speed="14.03" pos="857.17" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="774.24" y="1.60" angle="270.00" type="passenger_car" speed="15.30" pos="225.76" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="92.00">
-        <vehicle id="flow_east.6" x="778.99" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="778.99" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.7" x="442.99" y="-1.60" angle="90.00" type="passenger_car" speed="15.14" pos="442.99" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="29.15" y="1.60" angle="270.00" type="passenger_car" speed="15.15" pos="970.85" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="778.98" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="778.98" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.7" x="443.00" y="-1.60" angle="90.00" type="passenger_car" speed="15.14" pos="443.00" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="29.13" y="1.60" angle="270.00" type="passenger_car" speed="15.15" pos="970.87" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="316.47" y="1.60" angle="270.00" type="passenger_car" speed="16.07" pos="683.53" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="54.52" y="1.60" angle="270.00" type="passenger_car" speed="15.80" pos="945.48" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="129.02" y="1.60" angle="270.00" type="passenger_car" speed="13.80" pos="870.98" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.7" x="759.82" y="1.60" angle="270.00" type="passenger_car" speed="14.41" pos="240.18" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="54.50" y="1.60" angle="270.00" type="passenger_car" speed="15.80" pos="945.50" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="129.03" y="1.60" angle="270.00" type="passenger_car" speed="13.80" pos="870.97" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.7" x="759.83" y="1.60" angle="270.00" type="passenger_car" speed="14.41" pos="240.17" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="93.00">
-        <vehicle id="flow_east.6" x="793.77" y="-1.60" angle="90.00" type="passenger_car" speed="14.78" pos="793.77" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="793.75" y="-1.60" angle="90.00" type="passenger_car" speed="14.78" pos="793.75" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="458.01" y="-1.60" angle="90.00" type="passenger_car" speed="15.01" pos="458.01" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_west.2" x="14.29" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="985.71" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.2" x="14.27" y="1.60" angle="270.00" type="passenger_car" speed="14.86" pos="985.73" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="300.29" y="1.60" angle="270.00" type="passenger_car" speed="16.18" pos="699.71" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="38.57" y="1.60" angle="270.00" type="passenger_car" speed="15.94" pos="961.43" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="114.98" y="1.60" angle="270.00" type="passenger_car" speed="14.04" pos="885.02" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="38.56" y="1.60" angle="270.00" type="passenger_car" speed="15.94" pos="961.44" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="114.99" y="1.60" angle="270.00" type="passenger_car" speed="14.04" pos="885.01" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="744.32" y="1.60" angle="270.00" type="passenger_car" speed="15.50" pos="255.68" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="94.00">
-        <vehicle id="flow_east.6" x="808.51" y="-1.60" angle="90.00" type="passenger_car" speed="14.74" pos="808.51" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.7" x="473.50" y="-1.60" angle="90.00" type="passenger_car" speed="15.50" pos="473.50" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="808.49" y="-1.60" angle="90.00" type="passenger_car" speed="14.74" pos="808.49" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.7" x="473.51" y="-1.60" angle="90.00" type="passenger_car" speed="15.50" pos="473.51" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="284.56" y="1.60" angle="270.00" type="passenger_car" speed="15.73" pos="715.44" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="23.56" y="1.60" angle="270.00" type="passenger_car" speed="15.01" pos="976.44" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="100.75" y="1.60" angle="270.00" type="passenger_car" speed="14.23" pos="899.25" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.7" x="728.96" y="1.60" angle="270.00" type="passenger_car" speed="15.35" pos="271.04" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="23.55" y="1.60" angle="270.00" type="passenger_car" speed="15.01" pos="976.45" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="100.77" y="1.60" angle="270.00" type="passenger_car" speed="14.22" pos="899.23" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.7" x="728.97" y="1.60" angle="270.00" type="passenger_car" speed="15.35" pos="271.03" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="95.00">
-        <vehicle id="flow_east.6" x="823.41" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="823.41" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.7" x="488.47" y="-1.60" angle="90.00" type="passenger_car" speed="14.97" pos="488.47" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="823.39" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="823.39" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.7" x="488.48" y="-1.60" angle="90.00" type="passenger_car" speed="14.97" pos="488.48" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="268.93" y="1.60" angle="270.00" type="passenger_car" speed="15.63" pos="731.07" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.5" x="7.96" y="1.60" angle="270.00" type="passenger_car" speed="15.60" pos="992.04" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="87.37" y="1.60" angle="270.00" type="passenger_car" speed="13.38" pos="912.63" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.7" x="714.09" y="1.60" angle="270.00" type="passenger_car" speed="14.87" pos="285.91" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.5" x="7.95" y="1.60" angle="270.00" type="passenger_car" speed="15.60" pos="992.05" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="87.38" y="1.60" angle="270.00" type="passenger_car" speed="13.38" pos="912.62" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.7" x="714.10" y="1.60" angle="270.00" type="passenger_car" speed="14.87" pos="285.90" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="96.00">
-        <vehicle id="flow_east.6" x="837.57" y="-1.60" angle="90.00" type="passenger_car" speed="14.16" pos="837.57" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="837.55" y="-1.60" angle="90.00" type="passenger_car" speed="14.16" pos="837.55" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="504.06" y="-1.60" angle="90.00" type="passenger_car" speed="15.59" pos="504.06" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="252.94" y="1.60" angle="270.00" type="passenger_car" speed="15.99" pos="747.06" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="72.79" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="927.21" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="72.81" y="1.60" angle="270.00" type="passenger_car" speed="14.57" pos="927.19" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="698.80" y="1.60" angle="270.00" type="passenger_car" speed="15.30" pos="301.20" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="97.00">
-        <vehicle id="flow_east.6" x="852.68" y="-1.60" angle="90.00" type="passenger_car" speed="15.11" pos="852.68" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="852.66" y="-1.60" angle="90.00" type="passenger_car" speed="15.11" pos="852.66" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="519.60" y="-1.60" angle="90.00" type="passenger_car" speed="15.54" pos="519.60" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="236.79" y="1.60" angle="270.00" type="passenger_car" speed="16.16" pos="763.21" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="59.41" y="1.60" angle="270.00" type="passenger_car" speed="13.38" pos="940.59" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="59.43" y="1.60" angle="270.00" type="passenger_car" speed="13.38" pos="940.57" lane="B0A0_0" slope="0.00"/>
         <vehicle id="flow_west.7" x="684.20" y="1.60" angle="270.00" type="passenger_car" speed="14.60" pos="315.80" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="98.00">
-        <vehicle id="flow_east.6" x="866.93" y="-1.60" angle="90.00" type="passenger_car" speed="14.24" pos="866.93" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="866.91" y="-1.60" angle="90.00" type="passenger_car" speed="14.24" pos="866.91" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_east.7" x="534.08" y="-1.60" angle="90.00" type="passenger_car" speed="14.48" pos="534.08" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="221.08" y="1.60" angle="270.00" type="passenger_car" speed="15.70" pos="778.92" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="45.95" y="1.60" angle="270.00" type="passenger_car" speed="13.46" pos="954.05" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.7" x="669.42" y="1.60" angle="270.00" type="passenger_car" speed="14.77" pos="330.58" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="45.97" y="1.60" angle="270.00" type="passenger_car" speed="13.46" pos="954.03" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.7" x="669.43" y="1.60" angle="270.00" type="passenger_car" speed="14.77" pos="330.57" lane="B0A0_0" slope="0.00"/>
     </timestep>
     <timestep time="99.00">
-        <vehicle id="flow_east.6" x="882.21" y="-1.60" angle="90.00" type="passenger_car" speed="15.28" pos="882.21" lane="A0B0_0" slope="0.00"/>
-        <vehicle id="flow_east.7" x="548.97" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="548.97" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.6" x="882.19" y="-1.60" angle="90.00" type="passenger_car" speed="15.28" pos="882.19" lane="A0B0_0" slope="0.00"/>
+        <vehicle id="flow_east.7" x="548.98" y="-1.60" angle="90.00" type="passenger_car" speed="14.90" pos="548.98" lane="A0B0_0" slope="0.00"/>
         <vehicle id="flow_west.4" x="205.64" y="1.60" angle="270.00" type="passenger_car" speed="15.44" pos="794.36" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.6" x="32.49" y="1.60" angle="270.00" type="passenger_car" speed="13.46" pos="967.51" lane="B0A0_0" slope="0.00"/>
-        <vehicle id="flow_west.7" x="654.11" y="1.60" angle="270.00" type="passenger_car" speed="15.31" pos="345.89" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.6" x="32.51" y="1.60" angle="270.00" type="passenger_car" speed="13.46" pos="967.49" lane="B0A0_0" slope="0.00"/>
+        <vehicle id="flow_west.7" x="654.12" y="1.60" angle="270.00" type="passenger_car" speed="15.31" pos="345.88" lane="B0A0_0" slope="0.00"/>
     </timestep>
 </fcd-export>
