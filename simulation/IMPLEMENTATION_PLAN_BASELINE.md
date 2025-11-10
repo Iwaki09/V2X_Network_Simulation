@@ -43,8 +43,8 @@
 - [x] コミット作成: "docs: 分散型ベースライン仕様を追加"
 
 ### Phase 5: 研究進捗の記録
-- [ ] `ResearchProgress.md` を更新（日付入り）
-- [ ] コミット作成: "docs: 研究進捗を更新"
+- [x] `ResearchProgress.md` を更新（日付入り）
+- [x] コミット作成: "docs: 研究進捗を更新"
 
 ### Phase 6: PR作成
 - [ ] Pull Requestを作成
