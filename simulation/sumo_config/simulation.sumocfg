@@ -19,7 +19,7 @@
     </time>
 
     <output>
-        <fcd-output value="../output/fcd_output.xml"/>
+        <fcd-output value="../output/fcd/fcd_output.xml"/>
         <fcd-output.geo value="false"/>
     </output>
 

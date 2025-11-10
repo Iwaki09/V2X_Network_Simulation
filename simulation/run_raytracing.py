@@ -61,8 +61,8 @@ def main():
     print("=" * 80)
 
     # パス設定
-    fcd_file = "output/fcd_output.xml"
-    output_csv = "output/link_quality_results.csv"
+    fcd_file = "output/fcd/fcd_output.xml"
+    output_csv = "output/raytracing/link_quality_results.csv"
 
     # FCDファイルの存在確認
     if not Path(fcd_file).exists():
