@@ -234,6 +234,56 @@ python plot_network_summary.py
 
 - **`output/visualizations/network_performance_summary.png`**: 時系列での総スループットグラフ
 
+### 分散型制御ベースラインの評価
+
+従来の「分散型・局所最適」な制御をシミュレートし、理論的最大値との比較を行います。
+
+#### 1. 分散型制御シミュレーション
+
+各車両が他車の状況を考慮せず、自身にとって最強のV2Iリンクを1つだけ選択する局所最適アプローチをシミュレートします。
+
+```bash
+cd simulation
+python simulate_distributed_control.py
+```
+
+**アルゴリズム設計の特徴:**
+- **局所最適な意思決定**: 各車両は自身のスループットのみを最大化
+- **複数基地局シナリオへの拡張性**: 将来的にBS_1, BS_2...と基地局が増えた場合にも対応可能な設計
+- **各時刻・各車両ごとのグループ化**: タイムスタンプとrx_id（車両ID）でグループ化し、各グループで最大スループットのV2Iリンクを選択
+
+#### 出力ファイル
+
+- **`baseline_distributed_results.csv`**: 各タイムスタンプでの分散型V2I総スループット
+
+#### 2. ベースライン性能の可視化
+
+理論的最大値（天井）と分散型ベースラインを比較したグラフを生成します。
+
+```bash
+cd simulation
+python plot_baseline_comparison.py
+```
+
+**グラフの見方:**
+- **緑の破線（Theoretical Maximum）**: V2I + V2Vを全て活用した場合の理論的最大値（グローバル最適の上限）
+- **青の実線（Baseline）**: 各車両が局所最適に動いた場合の分散型V2I総スループット
+- **グレーエリア（Optimization Potential）**: 両者のギャップ = グローバル最適化手法が改善を目指す領域
+
+このギャップこそが、我々のグローバル最適化手法（今後実装予定）が改善を目指す性能向上の余地を示しています。
+
+#### 出力ファイル
+
+- **`baseline_comparison.png`**: 理論的最大値とベースラインの比較グラフ
+
+#### 期待される研究成果
+
+実験結果によると、分散型ベースラインと理論的最大値の間には**平均84.5%の改善余地**が存在します。これは、以下を意味します：
+
+1. **分散型制御の限界**: 各車両が独立に最適化を行うだけでは、システム全体の性能向上には限界がある
+2. **V2Vリンクの未活用**: 分散型制御ではV2Iリンクのみを利用し、高品質なV2Vリンクが活用されていない
+3. **グローバル最適化の必要性**: 基地局（またはエッジサーバ）が全車両の状態を把握し、V2I/V2Vを協調制御することで大幅な性能向上が期待できる
+
 ---
 
 ## 出力フォーマット
@@ -303,8 +353,13 @@ simulation/
 ├── visualize.py                          # V2I/V2V可視化スクリプト
 ├── estimate_theoretical_throughput.py    # スループット計算スクリプト
 ├── plot_network_summary.py               # スループットグラフ生成
+├── simulate_distributed_control.py       # 分散型制御シミュレータ
+├── plot_baseline_comparison.py           # ベースライン比較可視化
+├── baseline_distributed_results.csv      # 分散型ベースライン結果
+├── baseline_comparison.png               # ベースライン比較グラフ
 ├── README.md                             # 本ドキュメント
 ├── IMPLEMENTATION_PLAN.md                # 実装計画
+├── IMPLEMENTATION_PLAN_BASELINE.md       # ベースライン実装計画
 └── VISUALIZATION_PLAN.md                 # 可視化実装計画
 ```
 
