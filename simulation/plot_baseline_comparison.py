@@ -124,8 +124,9 @@ def main():
     # パス設定
     script_dir = Path(__file__).parent
     theoretical_csv = script_dir / "output" / "throughput" / "theoretical_network_results.csv"
-    baseline_csv = script_dir / "baseline_distributed_results.csv"
-    output_png = script_dir / "baseline_comparison.png"
+    baseline_dir = script_dir / "output" / "baseline"
+    baseline_csv = baseline_dir / "baseline_distributed_results.csv"
+    output_png = baseline_dir / "baseline_comparison.png"
 
     print("=" * 60)
     print("ベースライン性能可視化")

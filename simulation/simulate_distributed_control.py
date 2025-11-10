@@ -104,7 +104,9 @@ def main():
     # パス設定
     script_dir = Path(__file__).parent
     input_csv = script_dir / "output" / "throughput" / "theoretical_network_results.csv"
-    output_csv = script_dir / "baseline_distributed_results.csv"
+    output_dir = script_dir / "output" / "baseline"
+    output_dir.mkdir(parents=True, exist_ok=True)
+    output_csv = output_dir / "baseline_distributed_results.csv"
 
     print("=" * 60)
     print("分散型制御シミュレータ")

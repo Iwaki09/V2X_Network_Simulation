@@ -254,7 +254,7 @@ python simulate_distributed_control.py
 
 #### 出力ファイル
 
-- **`baseline_distributed_results.csv`**: 各タイムスタンプでの分散型V2I総スループット
+- **`output/baseline/baseline_distributed_results.csv`**: 各タイムスタンプでの分散型V2I総スループット
 
 #### 2. ベースライン性能の可視化
 
@@ -274,7 +274,7 @@ python plot_baseline_comparison.py
 
 #### 出力ファイル
 
-- **`baseline_comparison.png`**: 理論的最大値とベースラインの比較グラフ
+- **`output/baseline/baseline_comparison.png`**: 理論的最大値とベースラインの比較グラフ
 
 #### 期待される研究成果
 
@@ -339,6 +339,9 @@ simulation/
 │   │   └── link_quality_results.csv      # Ray Tracing結果
 │   ├── throughput/
 │   │   └── theoretical_network_results.csv  # スループット計算結果
+│   ├── baseline/
+│   │   ├── baseline_distributed_results.csv  # 分散型ベースライン結果
+│   │   └── baseline_comparison.png       # ベースライン比較グラフ
 │   └── visualizations/
 │       ├── frames/                       # 可視化フレーム出力
 │       │   ├── frame_0000.png            # タイムステップ0
@@ -355,8 +358,6 @@ simulation/
 ├── plot_network_summary.py               # スループットグラフ生成
 ├── simulate_distributed_control.py       # 分散型制御シミュレータ
 ├── plot_baseline_comparison.py           # ベースライン比較可視化
-├── baseline_distributed_results.csv      # 分散型ベースライン結果
-├── baseline_comparison.png               # ベースライン比較グラフ
 ├── README.md                             # 本ドキュメント
 ├── IMPLEMENTATION_PLAN.md                # 実装計画
 ├── IMPLEMENTATION_PLAN_BASELINE.md       # ベースライン実装計画
