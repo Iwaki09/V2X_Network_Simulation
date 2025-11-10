@@ -59,8 +59,8 @@ cd simulation
 
 ### 出力ファイル
 
-- **`output/fcd_output.xml`**: SUMOが生成した車両位置情報（FCD形式）
-- **`output/link_quality_results.csv`**: レイトレーシング結果（CSV形式）
+- **`output/fcd/fcd_output.xml`**: SUMOが生成した車両位置情報（FCD形式）
+- **`output/raytracing/link_quality_results.csv`**: レイトレーシング結果（CSV形式）
 
 ### 可視化
 
@@ -75,11 +75,12 @@ python visualize.py
 
 #### 出力
 
-- **`frames/frame_XXXX.png`**: 各タイムステップの可視化画像（連番PNG、100フレーム）
+- **`output/visualizations/frames/frame_XXXX.png`**: 各タイムステップの可視化画像（連番PNG、100フレーム）
   - 基地局（青い三角マーカー）
   - 建物（灰色の四角形）
   - 車両（黒い丸マーカー）
-  - 通信リンク（緑=LoS、赤=NLoS）
+  - V2I通信リンク（緑=LoS、赤=NLoS、実線）
+  - V2V通信リンク（cyan=LoS、orange=NLoS、破線）
   - タイムスタンプ表示
 
 #### アニメーション作成
@@ -88,10 +89,10 @@ python visualize.py
 
 ```bash
 # MP4形式のアニメーション生成（フレームレート10fps）
-ffmpeg -r 10 -i frames/frame_%04d.png -vcodec libx264 -pix_fmt yuv420p animation.mp4
+ffmpeg -r 10 -i output/visualizations/frames/frame_%04d.png -vcodec libx264 -pix_fmt yuv420p output/visualizations/animation.mp4
 
 # GIF形式のアニメーション生成
-ffmpeg -r 10 -i frames/frame_%04d.png animation.gif
+ffmpeg -r 10 -i output/visualizations/frames/frame_%04d.png output/visualizations/animation.gif
 ```
 
 ---
@@ -161,6 +162,80 @@ ffmpeg -r 10 -i frames/frame_%04d.png animation.gif
 
 ---
 
+## 理論的スループット計算
+
+### 概要
+
+SIONNA RTによるレイトレーシングの出力（受信電力）を基に、**シャノンのチャネル容量公式**を用いて各リンクの理論的最大スループットを計算します。
+
+### 計算式
+
+```
+C = B * log2(1 + SNR)
+```
+
+- **C**: チャネル容量 [bps]
+- **B**: 帯域幅 [Hz]
+- **SNR**: 信号対雑音比 (Signal-to-Noise Ratio)
+
+### 前提条件
+
+| パラメータ | 値 | 説明 |
+|------------|-----|------|
+| 帯域幅 (B) | 100 MHz | V2I/V2Vリンクが利用可能な周波数帯域幅 |
+| 受信機温度 (T) | 290 K | 受信機の絶対温度（約17°C） |
+| ボルツマン定数 (k_B) | 1.38 × 10⁻²³ J/K | 物理定数 |
+| 熱雑音電力 (P_N) | k_B × T × B | 計算値: 約 -84 dBm |
+
+### 研究上の重要な仮定
+
+**干渉 (Interference) をゼロと仮定:**
+- 本シミュレーションでは、他の車両や基地局からの干渉電力を0と仮定します。
+- したがって、SINR (信号対干渉雑音電力比) ≈ SNR (信号対雑音電力比) として計算します。
+- これは、システム全体の上限性能を評価する理想的なシナリオを想定したものです。
+
+### スループット計算の実行
+
+#### 1. 理論的スループット計算
+
+既存の `link_quality_results.csv` から、シャノン公式に基づくスループットを計算します。
+
+```bash
+cd simulation
+python estimate_theoretical_throughput.py
+```
+
+#### 出力ファイル
+
+- **`output/throughput/theoretical_network_results.csv`**: 各リンクの理論的スループット（Mbps）を含むCSV
+
+#### 出力フォーマット
+
+元の `link_quality_results.csv` の全列に加え、以下の列が追加されます：
+
+| 列名 | データ型 | 説明 |
+|------|----------|------|
+| `received_power_watts` | float | 受信電力 [Watts] |
+| `snr` | float | 信号対雑音比（線形値） |
+| `snr_db` | float | 信号対雑音比 [dB] |
+| `theoretical_throughput_bps` | float | 理論的スループット [bps] |
+| `theoretical_throughput_mbps` | float | 理論的スループット [Mbps] |
+
+#### 2. ネットワーク性能サマリーの可視化
+
+時系列での総スループット（全リンクの合計）をグラフ化します。
+
+```bash
+cd simulation
+python plot_network_summary.py
+```
+
+#### 出力ファイル
+
+- **`output/visualizations/network_performance_summary.png`**: 時系列での総スループットグラフ
+
+---
+
 ## 出力フォーマット
 
 ### `link_quality_results.csv`
@@ -204,24 +279,33 @@ timestamp,link_type,tx_id,rx_id,received_power,path_loss,delay_spread,is_line_of
 ```
 simulation/
 ├── sumo_config/
-│   ├── road.net.xml           # 道路ネットワーク定義
-│   ├── traffic.rou.xml        # 車両ルート定義
-│   └── simulation.sumocfg     # SUMO設定ファイル
+│   ├── road.net.xml                      # 道路ネットワーク定義
+│   ├── traffic.rou.xml                   # 車両ルート定義
+│   └── simulation.sumocfg                # SUMO設定ファイル
 ├── output/
-│   ├── fcd_output.xml         # SUMO FCD出力
-│   └── link_quality_results.csv  # Ray Tracing結果
-├── frames/                    # 可視化フレーム出力
-│   ├── frame_0000.png         # タイムステップ0
-│   ├── frame_0001.png         # タイムステップ1
-│   └── ...
-├── fcd_parser.py              # FCDパーサー
-├── raytracing_simulation.py   # SIONNA RTシミュレーション
-├── run_raytracing.py          # 統合実行スクリプト
-├── run_simulation.sh          # シェル実行管理スクリプト
-├── visualize.py               # 可視化スクリプト
-├── README.md                  # 本ドキュメント
-├── IMPLEMENTATION_PLAN.md     # 実装計画
-└── VISUALIZATION_PLAN.md      # 可視化実装計画
+│   ├── fcd/
+│   │   └── fcd_output.xml                # SUMO FCD出力
+│   ├── raytracing/
+│   │   └── link_quality_results.csv      # Ray Tracing結果
+│   ├── throughput/
+│   │   └── theoretical_network_results.csv  # スループット計算結果
+│   └── visualizations/
+│       ├── frames/                       # 可視化フレーム出力
+│       │   ├── frame_0000.png            # タイムステップ0
+│       │   ├── frame_0001.png            # タイムステップ1
+│       │   └── ...
+│       ├── network_performance_summary.png  # スループットグラフ
+│       └── animation.mp4                 # アニメーション（オプション）
+├── fcd_parser.py                         # FCDパーサー
+├── raytracing_simulation.py              # SIONNA RTシミュレーション
+├── run_raytracing.py                     # 統合実行スクリプト
+├── run_simulation.sh                     # シェル実行管理スクリプト
+├── visualize.py                          # V2I/V2V可視化スクリプト
+├── estimate_theoretical_throughput.py    # スループット計算スクリプト
+├── plot_network_summary.py               # スループットグラフ生成
+├── README.md                             # 本ドキュメント
+├── IMPLEMENTATION_PLAN.md                # 実装計画
+└── VISUALIZATION_PLAN.md                 # 可視化実装計画
 ```
 
 ---

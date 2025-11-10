@@ -271,9 +271,9 @@ def generate_frames(v2i_merged_df: pd.DataFrame,
 def main():
     """メイン処理"""
     # ファイルパス
-    fcd_file = 'output/fcd_output.xml'
-    csv_file = 'output/link_quality_results.csv'
-    output_dir = 'frames'
+    fcd_file = 'output/fcd/fcd_output.xml'
+    csv_file = 'output/raytracing/link_quality_results.csv'
+    output_dir = 'output/visualizations/frames'
 
     print("=" * 60)
     print("V2X Communication Visualization (V2I + V2V)")
