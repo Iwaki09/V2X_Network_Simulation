@@ -15,7 +15,7 @@ MAX_BS_CONNECTIONS = 10  # 基地局が同時に処理できる最大ユーザ�
 
 # ファイルパス
 INPUT_FILE = Path(__file__).parent / "output" / "throughput" / "theoretical_network_results.csv"
-OUTPUT_FILE = Path(__file__).parent / "global_optimization_results.csv"
+OUTPUT_FILE = Path(__file__).parent / "output" / "baseline" / "global_optimization_results.csv"
 
 
 def solve_global_optimization():

@@ -12,8 +12,8 @@ from pathlib import Path
 
 # ファイルパス
 BASELINE_FILE = Path(__file__).parent / "output" / "baseline" / "baseline_distributed_results.csv"
-OPTIMIZATION_FILE = Path(__file__).parent / "global_optimization_results.csv"
-OUTPUT_FILE = Path(__file__).parent / "final_performance_comparison.png"
+OPTIMIZATION_FILE = Path(__file__).parent / "output" / "baseline" / "global_optimization_results.csv"
+OUTPUT_FILE = Path(__file__).parent / "output" / "visualizations" / "final_performance_comparison.png"
 
 
 def plot_final_comparison():
