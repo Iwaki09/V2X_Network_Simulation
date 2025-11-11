@@ -53,7 +53,7 @@ def plot_final_comparison():
     # ベースライン（分散型）
     plt.plot(
         baseline_df['timestamp'],
-        baseline_df['total_v2i_capacity_mbps'],
+        baseline_df['total_v2i_throughput_mbps'],
         label='Baseline (Distributed)',
         color='#A23B72',
         linewidth=2.5,
@@ -79,14 +79,14 @@ def plot_final_comparison():
     print(f"    * 最小: {optimization_df['optimized_total_throughput_mbps'].min():.2f} Mbps")
 
     print(f"  - ベースライン:")
-    print(f"    * 平均: {baseline_df['total_v2i_capacity_mbps'].mean():.2f} Mbps")
-    print(f"    * 最大: {baseline_df['total_v2i_capacity_mbps'].max():.2f} Mbps")
-    print(f"    * 最小: {baseline_df['total_v2i_capacity_mbps'].min():.2f} Mbps")
+    print(f"    * 平均: {baseline_df['total_v2i_throughput_mbps'].mean():.2f} Mbps")
+    print(f"    * 最大: {baseline_df['total_v2i_throughput_mbps'].max():.2f} Mbps")
+    print(f"    * 最小: {baseline_df['total_v2i_throughput_mbps'].min():.2f} Mbps")
 
     # 性能向上率の計算
     improvement_ratio = (
         optimization_df['optimized_total_throughput_mbps'].mean() /
-        baseline_df['total_v2i_capacity_mbps'].mean()
+        baseline_df['total_v2i_throughput_mbps'].mean()
     )
     print(f"\n  - 性能向上率: {improvement_ratio:.2f}x ({(improvement_ratio-1)*100:.1f}% 向上)")
 

@@ -37,8 +37,8 @@
 - [x] `final_performance_comparison.png` の出力
 
 ### Phase 5: グラフ生成の動作確認
-- [ ] スクリプトの実行テスト
-- [ ] 出力画像の確認
+- [x] スクリプトの実行テスト
+- [x] 出力画像の確認
 
 ### Phase 6: ドキュメント更新
 - [ ] `simulation/README.md` の更新
