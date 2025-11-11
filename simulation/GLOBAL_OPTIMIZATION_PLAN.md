@@ -28,13 +28,13 @@
 - [x] 結果の妥当性確認
 
 ### Phase 4: 比較グラフ作成
-- [ ] `plot_final_comparison.py` の作成
-- [ ] データ読み込み処理の実装
-- [ ] matplotlibによるグラフ描画
-  - [ ] 提案手法（グローバル最適化）の折れ線グラフ
-  - [ ] ベースライン（分散型）の折れ線グラフ
-  - [ ] 軸ラベル、タイトル、凡例の設定
-- [ ] `final_performance_comparison.png` の出力
+- [x] `plot_final_comparison.py` の作成
+- [x] データ読み込み処理の実装
+- [x] matplotlibによるグラフ描画
+  - [x] 提案手法（グローバル最適化）の折れ線グラフ
+  - [x] ベースライン（分散型）の折れ線グラフ
+  - [x] 軸ラベル、タイトル、凡例の設定
+- [x] `final_performance_comparison.png` の出力
 
 ### Phase 5: グラフ生成の動作確認
 - [ ] スクリプトの実行テスト
