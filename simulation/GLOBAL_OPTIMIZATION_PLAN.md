@@ -48,9 +48,9 @@
   - [x] 比較グラフの意義説明追加
 
 ### Phase 7: 最終確認とPR作成
-- [ ] 全体の動作確認
-- [ ] ResearchProgress.mdの更新
-- [ ] Pull Requestの作成
+- [x] 全体の動作確認
+- [x] ResearchProgress.mdの更新
+- [x] Pull Requestの作成
 
 ## パラメータ設定
 - `MAX_BS_CONNECTIONS = 10`: 基地局が同時に処理できる最大ユーザー数
