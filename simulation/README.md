@@ -338,7 +338,7 @@ python solve_global_optimization.py
 
 #### 出力ファイル
 
-- **`global_optimization_results.csv`**: 各タイムスタンプでの最適化されたシステム総スループット
+- **`output/baseline/global_optimization_results.csv`**: 各タイムスタンプでの最適化されたシステム総スループット
 
 #### 出力フォーマット
 
@@ -358,7 +358,7 @@ python plot_final_comparison.py
 
 #### 出力ファイル
 
-- **`final_performance_comparison.png`**: 提案手法 vs. ベースラインの比較グラフ
+- **`output/visualizations/final_performance_comparison.png`**: 提案手法 vs. ベースラインの比較グラフ
 
 **このグラフは、本研究における最も重要な結果を示しています。**
 
@@ -444,13 +444,15 @@ simulation/
 │   │   └── theoretical_network_results.csv  # スループット計算結果
 │   ├── baseline/
 │   │   ├── baseline_distributed_results.csv  # 分散型ベースライン結果
-│   │   └── baseline_comparison.png       # ベースライン比較グラフ
+│   │   ├── baseline_comparison.png       # ベースライン比較グラフ
+│   │   └── global_optimization_results.csv  # グローバル最適化結果
 │   └── visualizations/
 │       ├── frames/                       # 可視化フレーム出力
 │       │   ├── frame_0000.png            # タイムステップ0
 │       │   ├── frame_0001.png            # タイムステップ1
 │       │   └── ...
 │       ├── network_performance_summary.png  # スループットグラフ
+│       ├── final_performance_comparison.png  # 最終性能比較グラフ
 │       └── animation.mp4                 # アニメーション（オプション）
 ├── fcd_parser.py                         # FCDパーサー
 ├── raytracing_simulation.py              # SIONNA RTシミュレーション
@@ -463,8 +465,6 @@ simulation/
 ├── plot_baseline_comparison.py           # ベースライン比較可視化
 ├── solve_global_optimization.py          # グローバル最適化ソルバー（ILP）
 ├── plot_final_comparison.py              # 最終性能比較グラフ生成
-├── global_optimization_results.csv       # グローバル最適化結果
-├── final_performance_comparison.png      # 最終性能比較グラフ
 ├── requirements.txt                      # Python依存パッケージ
 ├── README.md                             # 本ドキュメント
 ├── IMPLEMENTATION_PLAN.md                # 実装計画
