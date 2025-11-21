@@ -389,6 +389,108 @@ python plot_final_comparison.py
 
 ---
 
+## トポロジー解析と可視化
+
+### 概要
+
+グローバル最適化結果におけるV2Vリンクの役割を定量的に評価し、視覚的に理解するための機能です。各タイムステップで、車両を以下の4つのカテゴリに分類します：
+
+1. **Direct V2I Users (青)**: 基地局と直接V2Iリンクで接続している車両
+2. **Relayed Users (緑)**: V2Vリンク経由で基地局に到達可能な車両（中継機能）
+3. **Island V2V Users (オレンジ)**: 基地局に到達できないが、他車両とV2Vで接続（ローカルクラスタ）
+4. **Disconnected (灰色)**: どのノードとも接続がない孤立車両
+
+### 実行方法
+
+#### 統合パイプライン実行
+
+全ての解析・可視化を一括実行する場合:
+
+```bash
+cd simulation
+./run_topology_analysis.sh
+```
+
+このスクリプトは以下を順次実行します:
+1. グローバル最適化（リンク選択情報を保存）
+2. トポロジー解析（車両の分類）
+3. トポロジー可視化（スナップショット生成）
+
+#### 個別実行
+
+必要に応じて各ステップを個別に実行することも可能です:
+
+```bash
+# ステップ1: グローバル最適化（拡張版）
+python solve_global_optimization.py
+
+# ステップ2: トポロジー解析
+python analyze_topology.py
+
+# ステップ3: トポロジー可視化
+python visualize_topology.py
+```
+
+### 出力ファイル
+
+#### 1. アクティブリンク詳細 (`output/baseline/global_optimization_links.csv`)
+
+グローバル最適化で選択された全リンク（アクティブ/非アクティブ）の詳細情報。
+
+| 列名 | データ型 | 説明 |
+|------|----------|------|
+| `timestamp` | float | タイムステップ [秒] |
+| `tx_id` | string | 送信機ID |
+| `rx_id` | string | 受信機ID |
+| `link_type` | string | リンク種別（`V2I` または `V2V`） |
+| `throughput_mbps` | float | 理論的スループット [Mbps] |
+| `is_active` | boolean | アクティブ化されたか（True/False） |
+
+#### 2. トポロジー分類結果 (`output/analysis/topology_classification.csv`)
+
+各タイムステップにおける車両のカテゴリ別統計。
+
+| 列名 | データ型 | 説明 |
+|------|----------|------|
+| `timestamp` | float | タイムステップ [秒] |
+| `total_vehicles` | int | 総車両数 |
+| `direct_v2i` | int | Direct V2I Users数 |
+| `relayed` | int | Relayed Users数 |
+| `island_v2v` | int | Island V2V Users数 |
+| `disconnected` | int | Disconnected車両数 |
+| `direct_v2i_ratio` | float | Direct V2I Usersの割合 |
+| `relayed_ratio` | float | Relayed Usersの割合 |
+| `island_v2v_ratio` | float | Island V2V Usersの割合 |
+| `disconnected_ratio` | float | Disconnected車両の割合 |
+
+#### 3. トポロジー可視化画像 (`output/visualizations/topology/*.png`)
+
+各タイムステップ（5秒間隔）のネットワークトポロジーを可視化したスナップショット画像。
+
+**可視化要素:**
+- **車両**: カテゴリ別に色分け（青/緑/オレンジ/灰色）
+- **基地局**: 赤い三角形マーカー
+- **建物**: 灰色の四角形
+- **V2Iリンク**: 青色の実線矢印
+- **V2Vリンク**: 緑色の点線矢印
+- **統計情報**: 画像左上にカテゴリ別の車両数と割合を表示
+
+### 研究的知見
+
+実験結果から、以下の重要な知見が得られました：
+
+1. **V2Vの役割**: 現在のグローバル最適化では、V2Vリンクは主に**ローカルなデータ交換（Island V2V）**として活用されており、**中継機能（Relayed）としては使用されていません**（Relayed Users: 0%）。
+
+2. **Direct V2I優先**: 平均72.9%の車両が基地局と直接V2Iリンクで接続しており、基地局のカバレッジ範囲内では直接接続が優先されています。
+
+3. **V2Vの補完的役割**: 残り27.1%の車両はV2V通信によってローカルなクラスタを形成し、基地局のリソース制約を回避しつつデータ交換を行っています。
+
+4. **中継機能の未活用**: Relayed Usersが0%であることから、現在のシナリオでは基地局のカバレッジが十分であり、V2V中継によって基地局に到達させる必要性が低いことが示唆されます。
+
+この知見は、V2Xネットワーク設計において、**基地局配置・カバレッジ計画とV2V通信の役割分担を適切に考慮する必要性**を示しています。
+
+---
+
 ## 出力フォーマット
 
 ### `link_quality_results.csv`
