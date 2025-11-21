@@ -16,6 +16,7 @@ MAX_BS_CONNECTIONS = 10  # 基地局が同時に処理できる最大ユーザ�
 # ファイルパス
 INPUT_FILE = Path(__file__).parent / "output" / "throughput" / "theoretical_network_results.csv"
 OUTPUT_FILE = Path(__file__).parent / "output" / "baseline" / "global_optimization_results.csv"
+OUTPUT_LINKS_FILE = Path(__file__).parent / "output" / "baseline" / "global_optimization_links.csv"
 
 
 def solve_global_optimization():
@@ -35,6 +36,7 @@ def solve_global_optimization():
 
     # タイムスタンプごとに最適化を実行
     results = []
+    active_links = []  # アクティブリンク情報を保存
     timestamps = sorted(df['timestamp'].unique())
 
     print(f"\n[2] 最適化実行（{len(timestamps)} タイムスタンプ）")
@@ -103,6 +105,18 @@ def solve_global_optimization():
         status = pulp.LpStatus[problem.status]
         if status == 'Optimal':
             optimized_throughput = pulp.value(problem.objective)
+
+            # アクティブ化されたリンク情報を保存
+            for idx, row in df_t.iterrows():
+                is_active = link_vars[idx].varValue == 1
+                active_links.append({
+                    'timestamp': timestamp,
+                    'tx_id': row['tx_id'],
+                    'rx_id': row['rx_id'],
+                    'link_type': row['link_type'],
+                    'throughput_mbps': row['theoretical_throughput_mbps'],
+                    'is_active': is_active
+                })
         else:
             optimized_throughput = 0.0
             print(f"  [警告] t={timestamp}: 最適解が見つかりませんでした (status={status})")
@@ -118,6 +132,7 @@ def solve_global_optimization():
 
     # 結果をDataFrameに変換
     results_df = pd.DataFrame(results)
+    active_links_df = pd.DataFrame(active_links)
 
     # 統計情報を表示
     print(f"\n[3] 最適化結果")
@@ -125,9 +140,25 @@ def solve_global_optimization():
     print(f"  - 最大スループット: {results_df['optimized_total_throughput_mbps'].max():.2f} Mbps")
     print(f"  - 最小スループット: {results_df['optimized_total_throughput_mbps'].min():.2f} Mbps")
 
+    # アクティブリンク統計
+    total_links = len(active_links_df)
+    active_count = active_links_df['is_active'].sum()
+    v2i_active = active_links_df[(active_links_df['is_active']) & (active_links_df['link_type'] == 'V2I')].shape[0]
+    v2v_active = active_links_df[(active_links_df['is_active']) & (active_links_df['link_type'] == 'V2V')].shape[0]
+
+    print(f"\n[4] アクティブリンク統計")
+    print(f"  - 総リンク数: {total_links}")
+    print(f"  - アクティブリンク: {active_count} ({100*active_count/total_links:.1f}%)")
+    print(f"  - V2Iアクティブ: {v2i_active}")
+    print(f"  - V2Vアクティブ: {v2v_active}")
+
     # CSV保存
     results_df.to_csv(OUTPUT_FILE, index=False)
-    print(f"\n[4] 出力ファイル: {OUTPUT_FILE}")
+    active_links_df.to_csv(OUTPUT_LINKS_FILE, index=False)
+
+    print(f"\n[5] 出力ファイル:")
+    print(f"  - {OUTPUT_FILE}")
+    print(f"  - {OUTPUT_LINKS_FILE}")
     print(f"  - 保存完了")
 
     print("\n" + "=" * 60)
