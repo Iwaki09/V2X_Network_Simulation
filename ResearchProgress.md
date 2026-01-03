@@ -65,3 +65,28 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
   4. 理論的最大値（20192.70 Mbps）とは依然として大きなギャップがあり、更なる改善余地が存在
 - simulation/README.mdを更新: 「グローバル最適化（提案手法）」セクションを追加し、ILP定式化の詳細（目的関数・制約条件）、実行方法、出力フォーマット、研究成果（性能向上率と主要な知見）を詳述。ディレクトリ構造も更新し、solve_global_optimization.py、plot_final_comparison.py、requirements.txtを追加。
 - これにより、本研究の核心である「集中制御型グローバル最適化」のベースライン実装が完了し、分散型制御との明確な性能差（7.6%向上）を定量的に示すことができた。今後は、GNNなどの機械学習手法による更なる性能向上や、動的環境での適応性向上を目指す。
+
+## 2026-01-03
+- **simulation/ディレクトリのリファクタリング完了**: Pythonファイルをモジュール構造に整理し、保守性と再利用性を向上させた。
+- **不要ファイルの削除**:
+  - frames/ ディレクトリ（output/visualizations/frames/と重複）
+  - 古いバックアップファイル（fcd_output.xml.backup.*）
+  - 古いアニメーション（animation.mp4 → animation2.mp4をリネーム）
+- **新ディレクトリ構造**:
+  ```
+  simulation/
+  ├── src/                    # ソースコードパッケージ
+  │   ├── parsers/           # fcd_parser.py
+  │   ├── core/              # raytracing.py, throughput.py
+  │   ├── optimization/      # distributed.py, global_optimizer.py
+  │   └── visualization/     # link_visualizer.py, plots.py
+  ├── scripts/               # 実行スクリプト
+  │   ├── run_raytracing.py
+  │   ├── run_throughput.py
+  │   ├── run_optimization.py
+  │   └── run_visualization.py
+  └── run_simulation.sh      # 統合実行スクリプト
+  ```
+- **可視化スクリプトの統合**: plot_network_summary.py, plot_baseline_comparison.py, plot_final_comparison.pyを1つのplots.pyモジュールに統合。
+- **README.mdを全面更新**: APIリファレンス、パラメータ一覧、出力フォーマット、トラブルシューティングを含む包括的なドキュメントを作成。
+- **SIONNA依存の分離**: src/core/__init__.pyでSIONNA依存のraytracingモジュールを遅延インポートに変更し、GPU環境がなくても他のモジュールが利用可能に。
