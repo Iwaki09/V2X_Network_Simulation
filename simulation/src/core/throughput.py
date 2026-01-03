@@ -194,8 +194,8 @@ def process_link_quality_data(input_csv: str, output_csv: str):
 def main():
     """メイン処理"""
     script_dir = Path(__file__).parent.parent.parent
-    input_csv = str(script_dir / 'output/raytracing/link_quality_results.csv')
-    output_csv = str(script_dir / 'output/throughput/theoretical_network_results.csv')
+    input_csv = str(script_dir / 'output/data/raytracing/link_quality_results.csv')
+    output_csv = str(script_dir / 'output/data/throughput/theoretical_network_results.csv')
 
     process_link_quality_data(input_csv, output_csv)
 

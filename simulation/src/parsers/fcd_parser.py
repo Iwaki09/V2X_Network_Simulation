@@ -137,7 +137,7 @@ if __name__ == "__main__":
 
     # スクリプトディレクトリを基準にパスを解決
     script_dir = Path(__file__).parent.parent.parent
-    fcd_file = sys.argv[1] if len(sys.argv) > 1 else str(script_dir / "output/fcd/fcd_output.xml")
+    fcd_file = sys.argv[1] if len(sys.argv) > 1 else str(script_dir / "output/data/fcd/fcd_output.xml")
 
     print(f"Parsing FCD file: {fcd_file}")
 

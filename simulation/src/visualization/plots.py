@@ -24,9 +24,9 @@ def plot_network_summary(input_csv: str = None, output_png: str = None):
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if input_csv is None:
-        input_csv = str(script_dir / 'output/throughput/theoretical_network_results.csv')
+        input_csv = str(script_dir / 'output/data/throughput/theoretical_network_results.csv')
     if output_png is None:
-        output_png = str(script_dir / 'output/visualizations/network_performance_summary.png')
+        output_png = str(script_dir / 'output/figures/analysis/throughput_summary.png')
 
     print("=" * 70)
     print("ネットワーク性能サマリー可視化")
@@ -103,11 +103,11 @@ def plot_baseline_comparison(theoretical_csv: str = None, baseline_csv: str = No
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if theoretical_csv is None:
-        theoretical_csv = str(script_dir / "output" / "throughput" / "theoretical_network_results.csv")
+        theoretical_csv = str(script_dir / "output" / "data" / "throughput" / "theoretical_network_results.csv")
     if baseline_csv is None:
-        baseline_csv = str(script_dir / "output" / "baseline" / "baseline_distributed_results.csv")
+        baseline_csv = str(script_dir / "output" / "data" / "optimization" / "baseline_distributed_results.csv")
     if output_png is None:
-        output_png = str(script_dir / "output" / "baseline" / "baseline_comparison.png")
+        output_png = str(script_dir / "output" / "figures" / "analysis" / "theoretical_potential.png")
 
     print("=" * 60)
     print("ベースライン性能可視化")
@@ -202,11 +202,11 @@ def plot_final_comparison(baseline_csv: str = None, optimization_csv: str = None
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if baseline_csv is None:
-        baseline_csv = str(script_dir / "output" / "baseline" / "baseline_distributed_results.csv")
+        baseline_csv = str(script_dir / "output" / "data" / "optimization" / "baseline_distributed_results.csv")
     if optimization_csv is None:
-        optimization_csv = str(script_dir / "output" / "baseline" / "global_optimization_results.csv")
+        optimization_csv = str(script_dir / "output" / "data" / "optimization" / "global_optimization_results.csv")
     if output_png is None:
-        output_png = str(script_dir / "output" / "visualizations" / "final_performance_comparison.png")
+        output_png = str(script_dir / "output" / "figures" / "analysis" / "method_comparison.png")
 
     print("=" * 60)
     print("最終比較グラフの作成")

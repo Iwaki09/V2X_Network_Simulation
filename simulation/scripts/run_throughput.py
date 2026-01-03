@@ -18,8 +18,8 @@ from src.core.throughput import process_link_quality_data
 
 def main():
     """メイン処理"""
-    input_csv = PROJECT_DIR / 'output/raytracing/link_quality_results.csv'
-    output_csv = PROJECT_DIR / 'output/throughput/theoretical_network_results.csv'
+    input_csv = PROJECT_DIR / 'output/data/raytracing/link_quality_results.csv'
+    output_csv = PROJECT_DIR / 'output/data/throughput/theoretical_network_results.csv'
 
     # 出力ディレクトリを作成
     output_csv.parent.mkdir(parents=True, exist_ok=True)
