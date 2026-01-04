@@ -90,3 +90,22 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - **可視化スクリプトの統合**: plot_network_summary.py, plot_baseline_comparison.py, plot_final_comparison.pyを1つのplots.pyモジュールに統合。
 - **README.mdを全面更新**: APIリファレンス、パラメータ一覧、出力フォーマット、トラブルシューティングを含む包括的なドキュメントを作成。
 - **SIONNA依存の分離**: src/core/__init__.pyでSIONNA依存のraytracingモジュールを遅延インポートに変更し、GPU環境がなくても他のモジュールが利用可能に。
+
+## 2026-01-04
+- **Propagation-Mode Switch (D/K) の実装**: link_quality_results.csvに伝搬モード指標を追加し、将来のマルチパス解析に備えた基盤を構築。
+- **新規ファイル追加**:
+  - `src/core/propagation_mode.py`: D/K計算のユーティリティモジュール。compute_dk()関数でパス電力リストからDominance (D)、K-factor (K)、伝搬モード (prop_mode) を計算。
+- **コード変更**:
+  - `src/core/raytracing.py`: LinkQualityデータクラスに7つの新フィールド（num_paths, p_tot_watts, p_max_watts, dominance, k_factor, k_factor_db, prop_mode）を追加。_calculate_single_link()でcompute_dk()を呼び出して各リンクのD/K値を計算。
+  - `scripts/run_raytracing.py`: CSV出力に新しい7列を追加。inf値の文字列変換に対応。
+- **新しいCSV列の定義**:
+  - `num_paths`: パス数（現状は常に1）
+  - `p_tot_watts`: 総受信電力 [Watts]
+  - `p_max_watts`: 最大パス電力 [Watts]
+  - `dominance`: Dominance指標 D = P_max / P_tot (0-1)
+  - `k_factor`: K-factor（線形値）。K = P_max / (P_tot - P_max)
+  - `k_factor_db`: K-factor [dB]
+  - `prop_mode`: 伝搬モード ("D" or "K")。D >= 0.5 なら "D"
+- **設計方針**: 現状の簡易パスロスモデル（フリスの式）では単一パスとして計算されるため、すべてのリンクでD=1.0、prop_mode="D"となる。将来的にSionna RTのCIR（Channel Impulse Response）から複数パス情報を取得する拡張に備えた設計。
+- **後方互換性**: 既存の列（timestamp, link_type, tx_id, rx_id, received_power, path_loss, delay_spread, is_line_of_sight）は変更なし。throughput/optimization/visualizationの後段パイプラインは正常に動作することを確認。
+- simulation/README.mdを更新: link_quality_results.csvの列定義に新しい7列を追加し、Propagation-Mode Switch (D/K) についての説明を追記。

@@ -298,6 +298,22 @@ V2Xリンク可視化フレームを生成します。
 | path_loss | float | パスロス [dB] |
 | delay_spread | float | 遅延スプレッド [ns] |
 | is_line_of_sight | boolean | LOS判定 |
+| num_paths | int | パス数（現状は常に1） |
+| p_tot_watts | float | 総受信電力 [Watts] |
+| p_max_watts | float | 最大パス電力 [Watts] |
+| dominance | float | Dominance指標 D = P_max / P_tot (0-1) |
+| k_factor | float | K-factor（線形値）。K = P_max / (P_tot - P_max) |
+| k_factor_db | float | K-factor [dB] |
+| prop_mode | string | 伝搬モード ("D" or "K")。D >= 0.5 なら "D" |
+
+**Propagation-Mode Switch (D/K) について:**
+
+Dominance (D) は最大パス電力が総受信電力に占める割合を示し、マルチパス環境における支配的パスの強さを表します：
+- D = 1.0: 単一パス（完全支配）
+- D > 0.5: 支配的パスが存在（"D" モード）
+- D <= 0.5: 散乱的なマルチパス環境（"K" モード）
+
+現状の簡易パスロスモデルでは単一パスとして計算されるため、すべてのリンクで D = 1.0、prop_mode = "D" となります。将来的にSionna RTのCIR（Channel Impulse Response）から複数パス情報を取得する拡張に備えた設計です。
 
 ### `theoretical_network_results.csv`
 

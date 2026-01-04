@@ -41,12 +41,24 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
             'received_power',
             'path_loss',
             'delay_spread',
-            'is_line_of_sight'
+            'is_line_of_sight',
+            # Propagation-Mode Switch (D/K) 関連列
+            'num_paths',
+            'p_tot_watts',
+            'p_max_watts',
+            'dominance',
+            'k_factor',
+            'k_factor_db',
+            'prop_mode'
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
         writer.writeheader()
         for lq in link_qualities:
+            # k_factor と k_factor_db は inf の可能性があるため文字列変換
+            k_factor_str = "inf" if lq.k_factor == float("inf") else f"{lq.k_factor:.6f}"
+            k_factor_db_str = "inf" if lq.k_factor_db == float("inf") else f"{lq.k_factor_db:.2f}"
+
             writer.writerow({
                 'timestamp': lq.timestamp,
                 'link_type': lq.link_type,
@@ -55,7 +67,15 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
                 'received_power': f"{lq.received_power_dbm:.2f}",
                 'path_loss': f"{lq.path_loss_db:.2f}",
                 'delay_spread': f"{lq.delay_spread_ns:.2f}",
-                'is_line_of_sight': str(lq.is_line_of_sight)
+                'is_line_of_sight': str(lq.is_line_of_sight),
+                # D/K 関連
+                'num_paths': lq.num_paths,
+                'p_tot_watts': f"{lq.p_tot_watts:.12e}",
+                'p_max_watts': f"{lq.p_max_watts:.12e}",
+                'dominance': f"{lq.dominance:.6f}",
+                'k_factor': k_factor_str,
+                'k_factor_db': k_factor_db_str,
+                'prop_mode': lq.prop_mode
             })
 
 

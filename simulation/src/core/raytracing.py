@@ -11,6 +11,8 @@ import numpy as np
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
+from .propagation_mode import compute_dk, dbm_to_watts
+
 
 @dataclass
 class BaseStation:
@@ -39,6 +41,14 @@ class LinkQuality:
     delay_spread_ns: float
     path_loss_db: float
     is_line_of_sight: bool
+    # Propagation-Mode Switch (D/K) 関連フィールド
+    num_paths: int = 1
+    p_tot_watts: float = 0.0
+    p_max_watts: float = 0.0
+    dominance: float = 1.0  # D = P_max / P_tot
+    k_factor: float = float("inf")  # K = P_max / (P_tot - P_max)
+    k_factor_db: float = float("inf")
+    prop_mode: str = "D"  # "D" or "K"
 
 
 class RayTracingSimulator:
@@ -211,6 +221,12 @@ class RayTracingSimulator:
         # 遅延スプレッド（簡易計算: 距離に比例）
         delay_spread_ns = distance / 3e8 * 1e9  # 伝搬時間をナノ秒で
 
+        # Propagation-Mode (D/K) 計算
+        # 現状の簡易パスロスモデルでは単一パスとして扱う
+        # 将来のSionna RT CIR拡張に備えて、path_powers_wattsを1要素のリストとして渡す
+        received_power_watts = dbm_to_watts(received_power_dbm)
+        dk_result = compute_dk([received_power_watts])
+
         return LinkQuality(
             timestamp=timestamp,
             link_type=link_type,
@@ -219,7 +235,15 @@ class RayTracingSimulator:
             received_power_dbm=received_power_dbm,
             delay_spread_ns=delay_spread_ns,
             path_loss_db=path_loss_db,
-            is_line_of_sight=is_los
+            is_line_of_sight=is_los,
+            # D/K関連フィールド
+            num_paths=dk_result["num_paths"],
+            p_tot_watts=dk_result["p_tot_watts"],
+            p_max_watts=dk_result["p_max_watts"],
+            dominance=dk_result["dominance"],
+            k_factor=dk_result["k_factor"],
+            k_factor_db=dk_result["k_factor_db"],
+            prop_mode=dk_result["prop_mode"]
         )
 
     def calculate_link_quality(
