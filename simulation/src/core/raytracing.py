@@ -190,6 +190,93 @@ class RayTracingSimulator:
         print(f"   - Added building: {bldg.id} at {bldg.center}")
         print("✅ Sionna RT scene setup complete")
 
+    def _create_box_mesh_obj(self, filename: str, center: List[float], size: List[float]):
+        """
+        直方体の三角メッシュを.obj形式で生成
+
+        Args:
+            filename: 出力ファイル名
+            center: 中心座標 [x, y, z]
+            size: サイズ [幅, 奥行き, 高さ]
+        """
+        cx, cy, cz = center
+        w, d, h = size
+        half_w = w / 2
+        half_d = d / 2
+        half_h = h / 2
+
+        # 8つの頂点（ボックスの角）
+        vertices = [
+            # 底面（z = cz）
+            [cx - half_w, cy - half_d, cz],  # v0
+            [cx + half_w, cy - half_d, cz],  # v1
+            [cx + half_w, cy + half_d, cz],  # v2
+            [cx - half_w, cy + half_d, cz],  # v3
+            # 上面（z = cz + h）
+            [cx - half_w, cy - half_d, cz + h],  # v4
+            [cx + half_w, cy - half_d, cz + h],  # v5
+            [cx + half_w, cy + half_d, cz + h],  # v6
+            [cx - half_w, cy + half_d, cz + h],  # v7
+        ]
+
+        # 12個の三角形（各面2つずつ、6面）
+        # OBJ形式では頂点インデックスは1から始まる
+        # 反時計回りの頂点順序で定義（外向き法線）
+        faces = [
+            # 底面（-Z方向、下向き）
+            [1, 3, 2], [1, 4, 3],
+            # 上面（+Z方向、上向き）
+            [5, 6, 7], [5, 7, 8],
+            # 前面（-Y方向）
+            [1, 2, 6], [1, 6, 5],
+            # 背面（+Y方向）
+            [4, 7, 3], [4, 8, 7],
+            # 左面（-X方向）
+            [1, 5, 8], [1, 8, 4],
+            # 右面（+X方向）
+            [2, 3, 7], [2, 7, 6],
+        ]
+
+        # .objファイルに書き出し
+        with open(filename, 'w') as f:
+            f.write("# Box mesh generated for SIONNA RT\n")
+            for v in vertices:
+                f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
+            for face in faces:
+                f.write(f"f {face[0]} {face[1]} {face[2]}\n")
+
+    def _create_ground_mesh_obj(self, filename: str, size: float = 1000.0):
+        """
+        地面の三角メッシュ（大きな平面）を.obj形式で生成
+
+        Args:
+            filename: 出力ファイル名
+            size: 平面のサイズ（正方形）
+        """
+        half_size = size / 2
+
+        # 4つの頂点（平面の角、z=0）
+        vertices = [
+            [-half_size, -half_size, 0.0],
+            [half_size, -half_size, 0.0],
+            [half_size, half_size, 0.0],
+            [-half_size, half_size, 0.0],
+        ]
+
+        # 2つの三角形
+        faces = [
+            [1, 2, 3],
+            [1, 3, 4],
+        ]
+
+        # .objファイルに書き出し
+        with open(filename, 'w') as f:
+            f.write("# Ground plane mesh generated for SIONNA RT\n")
+            for v in vertices:
+                f.write(f"v {v[0]:.6f} {v[1]:.6f} {v[2]:.6f}\n")
+            for face in faces:
+                f.write(f"f {face[0]} {face[1]} {face[2]}\n")
+
     def _create_scene_file(self):
         """
         Sionna RT用のシーンファイル（XML/Mitsuba形式）を動的に生成
@@ -200,40 +287,52 @@ class RayTracingSimulator:
         import os
 
         bldg = self.building
-        half_w = bldg.size[0] / 2
-        half_d = bldg.size[1] / 2
-        height = bldg.size[2]
-        cx, cy, cz = bldg.center
+
+        # 一時ディレクトリを作成
+        self.temp_dir = tempfile.mkdtemp()
+
+        # 地面メッシュを生成
+        ground_obj_path = os.path.join(self.temp_dir, "ground.obj")
+        self._create_ground_mesh_obj(ground_obj_path, size=1000.0)
+
+        # 建物メッシュを生成
+        building_obj_path = os.path.join(self.temp_dir, "building.obj")
+        self._create_box_mesh_obj(
+            building_obj_path,
+            center=bldg.center,
+            size=bldg.size
+        )
 
         # Mitsubaシーン形式のXMLを生成
+        # SIONNA RTのサンプルに基づいたフォーマット
         scene_xml = f'''<?xml version="1.0" encoding="utf-8"?>
-<scene version="2.0.0">
-    <!-- Ground plane -->
-    <shape type="rectangle">
-        <transform name="to_world">
-            <scale x="1000" y="1000" z="1"/>
-            <translate x="500" y="0" z="0"/>
-        </transform>
-        <bsdf type="diffuse">
-            <rgb name="reflectance" value="0.5, 0.5, 0.5"/>
-        </bsdf>
+<scene version="2.1.0">
+    <!-- Materials -->
+    <bsdf type="itu-radio-material" id="ground-mat">
+        <string name="type" value="concrete"/>
+    </bsdf>
+
+    <bsdf type="itu-radio-material" id="building-mat">
+        <string name="type" value="concrete"/>
+    </bsdf>
+
+    <!-- Shapes -->
+    <shape type="obj" id="ground">
+        <string name="filename" value="{ground_obj_path}"/>
+        <boolean name="face_normals" value="true"/>
+        <ref id="ground-mat" name="bsdf"/>
     </shape>
 
-    <!-- Building -->
-    <shape type="cube">
-        <transform name="to_world">
-            <scale x="{half_w}" y="{half_d}" z="{height/2}"/>
-            <translate x="{cx}" y="{cy}" z="{cz + height/2}"/>
-        </transform>
-        <bsdf type="diffuse">
-            <rgb name="reflectance" value="0.7, 0.7, 0.7"/>
-        </bsdf>
+    <shape type="obj" id="{bldg.id}">
+        <string name="filename" value="{building_obj_path}"/>
+        <boolean name="face_normals" value="true"/>
+        <ref id="building-mat" name="bsdf"/>
     </shape>
 </scene>
 '''
         # 一時ファイルに保存
         self.scene_file = tempfile.NamedTemporaryFile(
-            mode='w', suffix='.xml', delete=False
+            mode='w', suffix='.xml', delete=False, dir=self.temp_dir
         )
         self.scene_file.write(scene_xml)
         self.scene_file.close()
@@ -241,6 +340,10 @@ class RayTracingSimulator:
         # シーンをロード
         self.scene = sn.rt.load_scene(self.scene_file.name)
         self.scene.frequency = self.frequency_hz
+
+        print(f"   - Loaded scene from {self.scene_file.name}")
+        print(f"   - Ground mesh: {ground_obj_path}")
+        print(f"   - Building mesh: {building_obj_path}")
 
     def _compute_paths_sionna(
         self,
