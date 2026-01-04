@@ -128,3 +128,4 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - `Scene.compute_paths()`を使わず、`PathSolver`でのパス計算に統一してSionna RTのAPIに合わせた。
 - `paths.cir()`からCIRと遅延を抽出する処理に整理し、送受信機追加/削除を`try/finally`で保護。
 - `raytracing.py`で`scene.tx_array`/`scene.rx_array`を明示設定。
+- `PathSolver(num_samples=...)`が未対応の環境向けに`TypeError`フォールバックを追加。

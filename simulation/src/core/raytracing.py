@@ -108,7 +108,10 @@ class RayTracingSimulator:
         if self.use_sionna_rt:
             self._setup_sionna_scene()
             if hasattr(sn.rt, "PathSolver"):
-                self._path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
+                try:
+                    self._path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
+                except TypeError:
+                    self._path_solver = sn.rt.PathSolver()
 
         print("✅ RayTracingSimulator initialized")
         print(f"   - Mode: {'Sionna RT (multi-path)' if use_sionna_rt else 'Simple model (single-path)'}")
@@ -403,7 +406,10 @@ class RayTracingSimulator:
             # レイトレーシングを実行
             path_solver = self._path_solver
             if path_solver is None:
-                path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
+                try:
+                    path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
+                except TypeError:
+                    path_solver = sn.rt.PathSolver()
             paths = path_solver(scene=self.scene, max_depth=self.max_depth)
 
             def _as_tensor(value):
