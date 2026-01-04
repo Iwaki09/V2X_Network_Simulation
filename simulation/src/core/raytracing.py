@@ -104,8 +104,11 @@ class RayTracingSimulator:
 
         # Sionna RTシーンの初期化（use_sionna_rt=Trueの場合）
         self.scene = None
+        self._path_solver = None
         if self.use_sionna_rt:
             self._setup_sionna_scene()
+            if hasattr(sn.rt, "PathSolver"):
+                self._path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
 
         print("✅ RayTracingSimulator initialized")
         print(f"   - Mode: {'Sionna RT (multi-path)' if use_sionna_rt else 'Simple model (single-path)'}")
@@ -186,6 +189,13 @@ class RayTracingSimulator:
             # その場合はXMLシーンファイルをロードする方式に切り替え
             print("⚠️  Box primitive not available. Using scene file approach.")
             self._create_scene_file()
+
+        if self.scene is not None:
+            try:
+                self.scene.tx_array = self.tx_array
+                self.scene.rx_array = self.rx_array
+            except AttributeError:
+                pass
 
         print(f"   - Added building: {bldg.id} at {bldg.center}")
         print("✅ Sionna RT scene setup complete")
@@ -384,46 +394,70 @@ class RayTracingSimulator:
         self.scene.add(tx)
         self.scene.add(rx)
 
-        # レイトレーシングを実行
-        paths = self.scene.compute_paths(
-            max_depth=self.max_depth,
-            num_samples=self.num_samples
-        )
-
         # パス情報を抽出
         path_powers_watts = []
         delays_ns = []
         is_los = False
 
-        if paths is not None and paths.a is not None:
-            # paths.a: パス係数 [batch, num_rx, rx_ant, num_tx, tx_ant, max_num_paths]
-            # paths.tau: 遅延 [batch, num_rx, num_tx, max_num_paths]
-            # paths.types: パスタイプ（0=LOS, 1=反射, etc.）
+        try:
+            # レイトレーシングを実行
+            path_solver = self._path_solver
+            if path_solver is None:
+                path_solver = sn.rt.PathSolver(num_samples=self.num_samples)
+            paths = path_solver(scene=self.scene, max_depth=self.max_depth)
 
-            # パス係数から電力を計算
-            a = paths.a.numpy()  # 複素パス係数
-            tau = paths.tau.numpy()  # 遅延 [秒]
+            def _as_tensor(value):
+                if isinstance(value, (list, tuple)):
+                    if not value:
+                        return None
+                    value = value[0]
+                if tf.is_tensor(value):
+                    return value
+                return tf.convert_to_tensor(value)
 
-            # 送信電力をWattsに変換
-            tx_power_watts = dbm_to_watts(tx_power_dbm)
+            a_raw, tau_raw = paths.cir()
+            a_tf = _as_tensor(a_raw)
+            tau_tf = _as_tensor(tau_raw)
 
-            # 各パスの受信電力を計算
-            # |a|^2 * P_tx
-            for path_idx in range(a.shape[-1]):
-                # パス係数の絶対値の2乗
-                path_gain = np.abs(a[0, 0, 0, 0, 0, path_idx]) ** 2
-                if path_gain > 0:
-                    path_power_watts = path_gain * tx_power_watts
-                    path_powers_watts.append(float(path_power_watts))
-                    delays_ns.append(float(tau[0, 0, 0, path_idx] * 1e9))
+            if a_tf is not None and tau_tf is not None:
+                # a: (num_rx, num_rx_ant, num_tx, num_tx_ant, num_paths, num_time_steps)
+                a_paths = a_tf[0, 0, 0, 0, :, :]
+                path_gains = tf.reduce_sum(
+                    tf.square(tf.abs(a_paths)),
+                    axis=-1
+                ).numpy()
+                path_gains = np.atleast_1d(path_gains)
 
-            # LOSパスの判定（パスタイプ0がLOS）
-            if hasattr(paths, 'types') and paths.types is not None:
-                types = paths.types.numpy()
-                is_los = bool(np.any(types == 0))
+                tau_np = np.atleast_1d(np.squeeze(tau_tf.numpy()))
+                if tau_np.ndim > 1:
+                    tau_np = tau_np[..., 0]
+                tau_paths = np.ravel(tau_np)
+
+                tx_power_watts = dbm_to_watts(tx_power_dbm)
+                num_paths = min(len(path_gains), len(tau_paths)) if len(tau_paths) else len(path_gains)
+                for path_idx in range(num_paths):
+                    path_gain = path_gains[path_idx]
+                    if path_gain > 0:
+                        path_power_watts = path_gain * tx_power_watts
+                        path_powers_watts.append(float(path_power_watts))
+                        if len(tau_paths) > path_idx:
+                            delays_ns.append(float(tau_paths[path_idx] * 1e9))
+
+            types_tf = None
+            if hasattr(paths, "types") and paths.types is not None:
+                types_tf = _as_tensor(paths.types)
+            if types_tf is not None:
+                types_np = np.squeeze(types_tf.numpy())
+                if types_np.ndim > 1:
+                    types_np = types_np[..., 0]
+                is_los = bool(np.any(types_np == 0))
             elif len(path_powers_watts) > 0:
                 # パスタイプがない場合は、最初のパスが最強ならLOSと仮定
                 is_los = (path_powers_watts[0] == max(path_powers_watts))
+        finally:
+            # シーンから送受信機を削除（次の計算のため）
+            self.scene.remove("tx")
+            self.scene.remove("rx")
 
         # RMS遅延スプレッドを計算
         delay_spread_ns = 0.0
@@ -437,10 +471,6 @@ class RayTracingSimulator:
                 delay_spread_ns = float(np.sqrt(variance))
         elif len(delays_ns) == 1:
             delay_spread_ns = delays_ns[0]
-
-        # シーンから送受信機を削除（次の計算のため）
-        self.scene.remove("tx")
-        self.scene.remove("rx")
 
         return path_powers_watts, delay_spread_ns, is_los
 

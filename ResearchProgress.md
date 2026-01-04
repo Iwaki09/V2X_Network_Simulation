@@ -123,3 +123,8 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
   - `--num-samples`: レイサンプル数（デフォルト: 1000000）
 - **D/Kモデルの活用**: Sionna RTモードでは複数パスの電力リストからDominance (D) とK-factorを計算。散乱的なマルチパス環境（D < 0.5）では prop_mode = "K" となり、支配的パスがある環境（D >= 0.5）では prop_mode = "D" となる。
 - **注意**: Sionna RTモードはGPU環境（TensorFlow + CUDA）が必要。GPU環境がない場合は簡易モデルを使用。
+
+## 2026-01-05
+- `Scene.compute_paths()`を使わず、`PathSolver`でのパス計算に統一してSionna RTのAPIに合わせた。
+- `paths.cir()`からCIRと遅延を抽出する処理に整理し、送受信機追加/削除を`try/finally`で保護。
+- `raytracing.py`で`scene.tx_array`/`scene.rx_array`を明示設定。
