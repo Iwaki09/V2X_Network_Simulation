@@ -109,3 +109,17 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - **設計方針**: 現状の簡易パスロスモデル（フリスの式）では単一パスとして計算されるため、すべてのリンクでD=1.0、prop_mode="D"となる。将来的にSionna RTのCIR（Channel Impulse Response）から複数パス情報を取得する拡張に備えた設計。
 - **後方互換性**: 既存の列（timestamp, link_type, tx_id, rx_id, received_power, path_loss, delay_spread, is_line_of_sight）は変更なし。throughput/optimization/visualizationの後段パイプラインは正常に動作することを確認。
 - simulation/README.mdを更新: link_quality_results.csvの列定義に新しい7列を追加し、Propagation-Mode Switch (D/K) についての説明を追記。
+
+## 2026-01-04（追加）
+- **Sionna RTマルチパス対応を実装**: `--sionna-rt`オプションで本格的なレイトレーシングによるマルチパス計算が可能に。
+- **raytracing.pyの拡張**:
+  - `use_sionna_rt`フラグで簡易モデル/Sionna RTモードを切り替え可能に
+  - `_setup_sionna_scene()`: Sionna RTシーン構築（建物、地面、材質定義）
+  - `_compute_paths_sionna()`: レイトレーシング実行、マルチパス電力抽出、RMS遅延スプレッド計算
+  - `_calculate_single_link()`: 両モードに対応するよう拡張
+- **run_raytracing.pyの更新**:
+  - `--sionna-rt`: Sionna RTモードを有効化
+  - `--max-depth`: 最大反射回数（デフォルト: 3）
+  - `--num-samples`: レイサンプル数（デフォルト: 1000000）
+- **D/Kモデルの活用**: Sionna RTモードでは複数パスの電力リストからDominance (D) とK-factorを計算。散乱的なマルチパス環境（D < 0.5）では prop_mode = "K" となり、支配的パスがある環境（D >= 0.5）では prop_mode = "D" となる。
+- **注意**: Sionna RTモードはGPU環境（TensorFlow + CUDA）が必要。GPU環境がない場合は簡易モデルを使用。

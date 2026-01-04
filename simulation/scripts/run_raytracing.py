@@ -4,8 +4,13 @@
 
 SUMOのFCD出力を読み込み、SIONNA RTレイトレーシングシミュレーションを実行し、
 リンク品質結果をCSVファイルに出力します。
+
+オプション:
+  --sionna-rt: Sionna RTによる本格的なレイトレーシング（マルチパス対応）を使用
+               指定しない場合は簡易パスロスモデル（単一パス）を使用
 """
 
+import argparse
 import csv
 import sys
 from pathlib import Path
@@ -79,11 +84,39 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
             })
 
 
+def parse_args():
+    """コマンドライン引数をパース"""
+    parser = argparse.ArgumentParser(
+        description="SUMO + SIONNA RT統合レイトレーシングシミュレーション"
+    )
+    parser.add_argument(
+        "--sionna-rt",
+        action="store_true",
+        help="Sionna RTによるマルチパス計算を有効化（デフォルト: 簡易モデル）"
+    )
+    parser.add_argument(
+        "--max-depth",
+        type=int,
+        default=3,
+        help="レイトレーシングの最大反射回数（デフォルト: 3）"
+    )
+    parser.add_argument(
+        "--num-samples",
+        type=int,
+        default=1000000,
+        help="レイトレーシングのサンプル数（デフォルト: 1000000）"
+    )
+    return parser.parse_args()
+
+
 def main():
     """メイン実行関数"""
+    args = parse_args()
+
     print("=" * 80)
     print(" SUMO + SIONNA RT Integrated Simulation")
     print("=" * 80)
+    print(f"  Mode: {'Sionna RT (multi-path)' if args.sionna_rt else 'Simple model (single-path)'}")
 
     # パス設定
     fcd_file = PROJECT_DIR / "output/data/fcd/fcd_output.xml"
@@ -122,7 +155,10 @@ def main():
     simulator = RayTracingSimulator(
         base_station=base_station,
         building=building,
-        frequency_ghz=28.0
+        frequency_ghz=28.0,
+        use_sionna_rt=args.sionna_rt,
+        max_depth=args.max_depth,
+        num_samples=args.num_samples
     )
 
     # Step 3: 各タイムステップでリンク品質を計算

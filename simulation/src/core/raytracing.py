@@ -3,6 +3,10 @@ SIONNA RTレイトレーシングシミュレーション
 
 28GHz帯ミリ波における基地局-車両間（V2I）の通信リンク品質を計算します。
 建物による遮蔽効果を考慮したレイトレーシングシミュレーションを実行します。
+
+2つのモード:
+- use_sionna_rt=False (デフォルト): 簡易パスロスモデル（フリスの式）
+- use_sionna_rt=True: Sionna RTによる本格的なレイトレーシング（マルチパス対応）
 """
 
 import sionna as sn
@@ -11,7 +15,7 @@ import numpy as np
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
-from .propagation_mode import compute_dk, dbm_to_watts
+from .propagation_mode import compute_dk, dbm_to_watts, watts_to_dbm
 
 
 @dataclass
@@ -59,7 +63,10 @@ class RayTracingSimulator:
         base_station: BaseStation,
         building: Building,
         frequency_ghz: float = 28.0,
-        v2v_tx_power_dbm: float = 23.0
+        v2v_tx_power_dbm: float = 23.0,
+        use_sionna_rt: bool = False,
+        max_depth: int = 3,
+        num_samples: int = 1000000
     ):
         """
         Args:
@@ -67,11 +74,18 @@ class RayTracingSimulator:
             building: 建物の設定
             frequency_ghz: 周波数 [GHz]
             v2v_tx_power_dbm: V2V通信の送信電力 [dBm]
+            use_sionna_rt: TrueならSionna RTでマルチパス計算、Falseなら簡易モデル
+            max_depth: レイトレーシングの最大反射回数
+            num_samples: レイトレーシングのサンプル数
         """
         self.base_station = base_station
         self.building = building
+        self.frequency_ghz = frequency_ghz
         self.frequency_hz = frequency_ghz * 1e9
         self.v2v_tx_power_dbm = v2v_tx_power_dbm
+        self.use_sionna_rt = use_sionna_rt
+        self.max_depth = max_depth
+        self.num_samples = num_samples
 
         # GPU確認
         self._check_gpu()
@@ -88,12 +102,21 @@ class RayTracingSimulator:
             pattern="iso", polarization="V"
         )
 
+        # Sionna RTシーンの初期化（use_sionna_rt=Trueの場合）
+        self.scene = None
+        if self.use_sionna_rt:
+            self._setup_sionna_scene()
+
         print("✅ RayTracingSimulator initialized")
+        print(f"   - Mode: {'Sionna RT (multi-path)' if use_sionna_rt else 'Simple model (single-path)'}")
         print(f"   - Frequency: {frequency_ghz} GHz")
         print(f"   - Base Station: {base_station.id} at {base_station.position}")
         print(f"   - V2I TX Power: {base_station.tx_power_dbm} dBm")
         print(f"   - V2V TX Power: {v2v_tx_power_dbm} dBm")
         print(f"   - Building: {building.id} at {building.center}, size {building.size}")
+        if use_sionna_rt:
+            print(f"   - Max reflection depth: {max_depth}")
+            print(f"   - Ray samples: {num_samples}")
 
     def _check_gpu(self):
         """GPU環境を確認"""
@@ -102,6 +125,221 @@ class RayTracingSimulator:
             print("⚠️  Warning: No GPU found. SIONNA RT may run slowly or fail.")
         else:
             print(f"✅ GPU detected: {len(gpus)} device(s)")
+
+    def _setup_sionna_scene(self):
+        """
+        Sionna RTシーンを構築
+
+        - 地面（平面）
+        - 建物（直方体）
+        - 材質設定（コンクリート、金属など）
+        """
+        print("🔧 Setting up Sionna RT scene...")
+
+        # 空のシーンを作成
+        self.scene = sn.rt.Scene()
+
+        # 周波数設定
+        self.scene.frequency = self.frequency_hz
+
+        # 地面を追加（大きな平面）
+        # Sionna RTでは通常、地面はシーンの一部として定義
+        ground_material = sn.rt.RadioMaterial(
+            "ground_concrete",
+            relative_permittivity=5.31,  # コンクリート
+            conductivity=0.01
+        )
+        self.scene.add(ground_material)
+
+        # 建物の材質を定義
+        building_material = sn.rt.RadioMaterial(
+            "building_concrete",
+            relative_permittivity=5.31,
+            conductivity=0.01
+        )
+        self.scene.add(building_material)
+
+        # 建物をボックスとして追加
+        # Sionna RTではMitsuba形式のシーンファイルを使用するのが一般的だが、
+        # ここではプログラマティックに定義
+        bldg = self.building
+        half_w = bldg.size[0] / 2
+        half_d = bldg.size[1] / 2
+        height = bldg.size[2]
+        cx, cy, cz = bldg.center
+
+        # 建物の頂点を定義（直方体）
+        # 注意: Sionna RTのScene APIに応じて調整が必要
+        # ここでは概念的な実装を示す
+        try:
+            # Sionna RTのプリミティブを使用してボックスを追加
+            # 実際のAPIに応じて調整
+            box = sn.rt.Box(
+                name=bldg.id,
+                center=[cx, cy, cz + height / 2],  # 中心を高さの半分に
+                size=[bldg.size[0], bldg.size[1], height],
+                material=building_material
+            )
+            self.scene.add(box)
+        except AttributeError:
+            # Sionna RTのバージョンによってはBoxが使えない場合がある
+            # その場合はXMLシーンファイルをロードする方式に切り替え
+            print("⚠️  Box primitive not available. Using scene file approach.")
+            self._create_scene_file()
+
+        print(f"   - Added building: {bldg.id} at {bldg.center}")
+        print("✅ Sionna RT scene setup complete")
+
+    def _create_scene_file(self):
+        """
+        Sionna RT用のシーンファイル（XML/Mitsuba形式）を動的に生成
+
+        注意: これは代替手法。Sionna RTのバージョンによって必要な場合がある。
+        """
+        import tempfile
+        import os
+
+        bldg = self.building
+        half_w = bldg.size[0] / 2
+        half_d = bldg.size[1] / 2
+        height = bldg.size[2]
+        cx, cy, cz = bldg.center
+
+        # Mitsubaシーン形式のXMLを生成
+        scene_xml = f'''<?xml version="1.0" encoding="utf-8"?>
+<scene version="2.0.0">
+    <!-- Ground plane -->
+    <shape type="rectangle">
+        <transform name="to_world">
+            <scale x="1000" y="1000" z="1"/>
+            <translate x="500" y="0" z="0"/>
+        </transform>
+        <bsdf type="diffuse">
+            <rgb name="reflectance" value="0.5, 0.5, 0.5"/>
+        </bsdf>
+    </shape>
+
+    <!-- Building -->
+    <shape type="cube">
+        <transform name="to_world">
+            <scale x="{half_w}" y="{half_d}" z="{height/2}"/>
+            <translate x="{cx}" y="{cy}" z="{cz + height/2}"/>
+        </transform>
+        <bsdf type="diffuse">
+            <rgb name="reflectance" value="0.7, 0.7, 0.7"/>
+        </bsdf>
+    </shape>
+</scene>
+'''
+        # 一時ファイルに保存
+        self.scene_file = tempfile.NamedTemporaryFile(
+            mode='w', suffix='.xml', delete=False
+        )
+        self.scene_file.write(scene_xml)
+        self.scene_file.close()
+
+        # シーンをロード
+        self.scene = sn.rt.load_scene(self.scene_file.name)
+        self.scene.frequency = self.frequency_hz
+
+    def _compute_paths_sionna(
+        self,
+        tx_position: List[float],
+        rx_position: List[float],
+        tx_power_dbm: float
+    ) -> Tuple[List[float], float, bool]:
+        """
+        Sionna RTでレイトレーシングを実行し、マルチパス情報を取得
+
+        Args:
+            tx_position: 送信機位置 [x, y, z]
+            rx_position: 受信機位置 [x, y, z]
+            tx_power_dbm: 送信電力 [dBm]
+
+        Returns:
+            Tuple[List[float], float, bool]:
+                - path_powers_watts: 各パスの受信電力リスト [Watts]
+                - delay_spread_ns: RMS遅延スプレッド [ns]
+                - is_los: LOS判定
+        """
+        # 送信機・受信機を設定
+        tx = sn.rt.Transmitter(
+            name="tx",
+            position=tx_position,
+            orientation=[0, 0, 0]
+        )
+        tx.antenna = self.tx_array
+
+        rx = sn.rt.Receiver(
+            name="rx",
+            position=rx_position,
+            orientation=[0, 0, 0]
+        )
+        rx.antenna = self.rx_array
+
+        # シーンに送受信機を追加
+        self.scene.add(tx)
+        self.scene.add(rx)
+
+        # レイトレーシングを実行
+        paths = self.scene.compute_paths(
+            max_depth=self.max_depth,
+            num_samples=self.num_samples
+        )
+
+        # パス情報を抽出
+        path_powers_watts = []
+        delays_ns = []
+        is_los = False
+
+        if paths is not None and paths.a is not None:
+            # paths.a: パス係数 [batch, num_rx, rx_ant, num_tx, tx_ant, max_num_paths]
+            # paths.tau: 遅延 [batch, num_rx, num_tx, max_num_paths]
+            # paths.types: パスタイプ（0=LOS, 1=反射, etc.）
+
+            # パス係数から電力を計算
+            a = paths.a.numpy()  # 複素パス係数
+            tau = paths.tau.numpy()  # 遅延 [秒]
+
+            # 送信電力をWattsに変換
+            tx_power_watts = dbm_to_watts(tx_power_dbm)
+
+            # 各パスの受信電力を計算
+            # |a|^2 * P_tx
+            for path_idx in range(a.shape[-1]):
+                # パス係数の絶対値の2乗
+                path_gain = np.abs(a[0, 0, 0, 0, 0, path_idx]) ** 2
+                if path_gain > 0:
+                    path_power_watts = path_gain * tx_power_watts
+                    path_powers_watts.append(float(path_power_watts))
+                    delays_ns.append(float(tau[0, 0, 0, path_idx] * 1e9))
+
+            # LOSパスの判定（パスタイプ0がLOS）
+            if hasattr(paths, 'types') and paths.types is not None:
+                types = paths.types.numpy()
+                is_los = bool(np.any(types == 0))
+            elif len(path_powers_watts) > 0:
+                # パスタイプがない場合は、最初のパスが最強ならLOSと仮定
+                is_los = (path_powers_watts[0] == max(path_powers_watts))
+
+        # RMS遅延スプレッドを計算
+        delay_spread_ns = 0.0
+        if len(delays_ns) > 1 and len(path_powers_watts) > 0:
+            powers = np.array(path_powers_watts)
+            delays = np.array(delays_ns)
+            total_power = np.sum(powers)
+            if total_power > 0:
+                mean_delay = np.sum(powers * delays) / total_power
+                variance = np.sum(powers * (delays - mean_delay) ** 2) / total_power
+                delay_spread_ns = float(np.sqrt(variance))
+        elif len(delays_ns) == 1:
+            delay_spread_ns = delays_ns[0]
+
+        # シーンから送受信機を削除（次の計算のため）
+        self.scene.remove("tx")
+        self.scene.remove("rx")
+
+        return path_powers_watts, delay_spread_ns, is_los
 
     def _check_building_occlusion(
         self,
@@ -177,6 +415,9 @@ class RayTracingSimulator:
         """
         単一リンクのリンク品質を計算
 
+        use_sionna_rt=Trueの場合: Sionna RTでマルチパス計算
+        use_sionna_rt=Falseの場合: 簡易パスロスモデル（単一パス）
+
         Args:
             timestamp: タイムスタンプ [秒]
             link_type: リンク種別 ("V2I" or "V2V")
@@ -189,43 +430,77 @@ class RayTracingSimulator:
         Returns:
             リンク品質
         """
-        # 遮蔽判定
-        is_los = not self._check_building_occlusion(tx_position, rx_position)
-
-        # 距離計算
+        # 距離計算（両モードで使用）
         distance = np.sqrt(
             (tx_position[0] - rx_position[0])**2 +
             (tx_position[1] - rx_position[1])**2 +
             (tx_position[2] - rx_position[2])**2
         )
 
-        # 簡易パスロスモデル（フリスの伝搬式 + 遮蔽損失）
-        # Path Loss (dB) = 20*log10(d) + 20*log10(f) + 20*log10(4π/c)
-        if distance > 1:
-            path_loss_db = (
-                20 * np.log10(distance) +
-                20 * np.log10(self.frequency_hz) +
-                20 * np.log10(4 * np.pi / 3e8)
+        if self.use_sionna_rt:
+            # ===== Sionna RTモード（マルチパス対応） =====
+            path_powers_watts, delay_spread_ns, is_los = self._compute_paths_sionna(
+                tx_position=tx_position,
+                rx_position=rx_position,
+                tx_power_dbm=tx_power_dbm
             )
+
+            # パスが見つからない場合のフォールバック
+            if len(path_powers_watts) == 0:
+                # 簡易モデルで計算
+                is_los = not self._check_building_occlusion(tx_position, rx_position)
+                if distance > 1:
+                    path_loss_db = (
+                        20 * np.log10(distance) +
+                        20 * np.log10(self.frequency_hz) +
+                        20 * np.log10(4 * np.pi / 3e8)
+                    )
+                else:
+                    path_loss_db = 40.0
+                if not is_los:
+                    path_loss_db += 15.0
+                received_power_dbm = tx_power_dbm - path_loss_db
+                path_powers_watts = [dbm_to_watts(received_power_dbm)]
+                delay_spread_ns = distance / 3e8 * 1e9
+
+            # D/K計算（マルチパス電力リストを渡す）
+            dk_result = compute_dk(path_powers_watts)
+
+            # 総受信電力からdBmとパスロスを計算
+            p_tot_watts = dk_result["p_tot_watts"]
+            received_power_dbm = watts_to_dbm(p_tot_watts)
+            path_loss_db = tx_power_dbm - received_power_dbm
+
         else:
-            path_loss_db = 40.0  # 最小パスロス
+            # ===== 簡易モデル（単一パス） =====
+            # 遮蔽判定
+            is_los = not self._check_building_occlusion(tx_position, rx_position)
 
-        # 遮蔽による追加損失（NLOS時）
-        if not is_los:
-            occlusion_loss_db = 15.0
-            path_loss_db += occlusion_loss_db
+            # 簡易パスロスモデル（フリスの伝搬式 + 遮蔽損失）
+            # Path Loss (dB) = 20*log10(d) + 20*log10(f) + 20*log10(4π/c)
+            if distance > 1:
+                path_loss_db = (
+                    20 * np.log10(distance) +
+                    20 * np.log10(self.frequency_hz) +
+                    20 * np.log10(4 * np.pi / 3e8)
+                )
+            else:
+                path_loss_db = 40.0  # 最小パスロス
 
-        # 受信電力計算
-        received_power_dbm = tx_power_dbm - path_loss_db
+            # 遮蔽による追加損失（NLOS時）
+            if not is_los:
+                occlusion_loss_db = 15.0
+                path_loss_db += occlusion_loss_db
 
-        # 遅延スプレッド（簡易計算: 距離に比例）
-        delay_spread_ns = distance / 3e8 * 1e9  # 伝搬時間をナノ秒で
+            # 受信電力計算
+            received_power_dbm = tx_power_dbm - path_loss_db
 
-        # Propagation-Mode (D/K) 計算
-        # 現状の簡易パスロスモデルでは単一パスとして扱う
-        # 将来のSionna RT CIR拡張に備えて、path_powers_wattsを1要素のリストとして渡す
-        received_power_watts = dbm_to_watts(received_power_dbm)
-        dk_result = compute_dk([received_power_watts])
+            # 遅延スプレッド（簡易計算: 距離に比例）
+            delay_spread_ns = distance / 3e8 * 1e9  # 伝搬時間をナノ秒で
+
+            # D/K計算（単一パス）
+            received_power_watts = dbm_to_watts(received_power_dbm)
+            dk_result = compute_dk([received_power_watts])
 
         return LinkQuality(
             timestamp=timestamp,

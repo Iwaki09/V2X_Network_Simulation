@@ -112,8 +112,14 @@ pip install -r requirements.txt
 #### 個別スクリプト
 
 ```bash
-# レイトレーシング実行
+# レイトレーシング実行（簡易モデル - 単一パス）
 python scripts/run_raytracing.py
+
+# レイトレーシング実行（Sionna RT - マルチパス対応）
+python scripts/run_raytracing.py --sionna-rt
+
+# Sionna RTのパラメータ指定
+python scripts/run_raytracing.py --sionna-rt --max-depth 5 --num-samples 2000000
 
 # スループット計算
 python scripts/run_throughput.py
@@ -176,13 +182,18 @@ data = parse_fcd_xml("output/fcd/fcd_output.xml")
 
 #### `RayTracingSimulator`
 
-28GHz帯ミリ波レイトレーシングシミュレータ。
+28GHz帯ミリ波レイトレーシングシミュレータ。2つのモードをサポート:
+- **簡易モデル** (`use_sionna_rt=False`): フリスの伝搬式による単一パス計算
+- **Sionna RTモード** (`use_sionna_rt=True`): 本格的なレイトレーシングによるマルチパス計算
 
 **コンストラクタ引数:**
 - `base_station` (BaseStation): 基地局設定
 - `building` (Building): 建物設定
 - `frequency_ghz` (float, optional): 周波数 [GHz]. デフォルト: 28.0
 - `v2v_tx_power_dbm` (float, optional): V2V送信電力 [dBm]. デフォルト: 23.0
+- `use_sionna_rt` (bool, optional): Sionna RTモードを有効化. デフォルト: False
+- `max_depth` (int, optional): レイトレーシングの最大反射回数. デフォルト: 3
+- `num_samples` (int, optional): レイトレーシングのサンプル数. デフォルト: 1000000
 
 **主要メソッド:**
 - `calculate_link_quality(timestamp, vehicle_positions)`: 全リンク（V2I+V2V）の品質を計算
@@ -194,7 +205,15 @@ from src.core import RayTracingSimulator, BaseStation, Building
 bs = BaseStation(id="BS_1", position=[500.0, 150.0, 30.0], tx_power_dbm=30.0)
 bldg = Building(id="Building_1", center=[500.0, 50.0, 0.0], size=[20.0, 20.0, 100.0])
 
+# 簡易モデル（デフォルト）
 simulator = RayTracingSimulator(base_station=bs, building=bldg)
+
+# Sionna RTモード（マルチパス対応）
+simulator_rt = RayTracingSimulator(
+    base_station=bs, building=bldg,
+    use_sionna_rt=True, max_depth=5
+)
+
 link_qualities = simulator.calculate_link_quality(timestamp=0.0, vehicle_positions=positions)
 ```
 
@@ -412,5 +431,6 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
+- **2026-01-04**: Sionna RTマルチパス対応を追加。`--sionna-rt`オプションでマルチパス計算が可能に。Propagation-Mode Switch (D/K) 指標をlink_quality_results.csvに追加。
 - **2026-01-03**: モジュール構造をリファクタリング、READMEを更新
 - **2025-10-22**: 初版作成
