@@ -6,8 +6,37 @@
 各車両は他車の状況を考慮せず、自身にとって最強のV2Iリンクを1つだけ選択する。
 """
 
+import sys
 import pandas as pd
 from pathlib import Path
+
+# デフォルトのスループット列名
+DEFAULT_THROUGHPUT_COL = 'theoretical_throughput_mbps'
+
+# 許可されるスループット列
+VALID_THROUGHPUT_COLS = ['theoretical_throughput_mbps', 'throughput_mbps_mcs']
+
+
+def validate_throughput_column(df: pd.DataFrame, throughput_col: str) -> None:
+    """
+    スループット列の存在を検証し、不足時は分かりやすいエラーを出す
+
+    Args:
+        df: DataFrame
+        throughput_col: スループット列名
+
+    Raises:
+        SystemExit: 列が存在しない場合
+    """
+    if throughput_col not in df.columns:
+        print(f"\n❌ エラー: 指定されたスループット列 '{throughput_col}' が見つかりません。")
+        print(f"\n利用可能な列:")
+        for col in df.columns:
+            print(f"  - {col}")
+        print(f"\n有効なスループット列: {VALID_THROUGHPUT_COLS}")
+        print(f"\nヒント: --rate-model both でスループット計算を再実行してください:")
+        print(f"  python scripts/run_throughput.py --rate-model both")
+        sys.exit(1)
 
 
 def load_network_results(csv_path: Path) -> pd.DataFrame:
@@ -41,7 +70,10 @@ def filter_v2i_links(df: pd.DataFrame) -> pd.DataFrame:
     return v2i_df
 
 
-def select_best_v2i_per_vehicle(v2i_df: pd.DataFrame) -> pd.DataFrame:
+def select_best_v2i_per_vehicle(
+    v2i_df: pd.DataFrame,
+    throughput_col: str = DEFAULT_THROUGHPUT_COL
+) -> pd.DataFrame:
     """
     各車両が自身にとって最強のV2Iリンクを1つ選択（分散型・局所最適）
 
@@ -50,12 +82,13 @@ def select_best_v2i_per_vehicle(v2i_df: pd.DataFrame) -> pd.DataFrame:
 
     Args:
         v2i_df: V2IリンクのみのDataFrame
+        throughput_col: スループット列名
 
     Returns:
         各車両が選択した最強V2IリンクのみのDataFrame
     """
     # timestamp と rx_id (車両ID) でグループ化し、各グループで最大スループットの行を選択
-    idx_max = v2i_df.groupby(['timestamp', 'rx_id'])['theoretical_throughput_mbps'].idxmax()
+    idx_max = v2i_df.groupby(['timestamp', 'rx_id'])[throughput_col].idxmax()
     best_links_df = v2i_df.loc[idx_max].copy()
 
     print(f"選択された最強V2Iリンク数: {len(best_links_df)} 行")
@@ -65,17 +98,21 @@ def select_best_v2i_per_vehicle(v2i_df: pd.DataFrame) -> pd.DataFrame:
     return best_links_df
 
 
-def calculate_total_throughput_per_timestamp(best_links_df: pd.DataFrame) -> pd.DataFrame:
+def calculate_total_throughput_per_timestamp(
+    best_links_df: pd.DataFrame,
+    throughput_col: str = DEFAULT_THROUGHPUT_COL
+) -> pd.DataFrame:
     """
     各タイムスタンプでのV2I総スループットを計算
 
     Args:
         best_links_df: 各車両が選択した最強V2IリンクのDataFrame
+        throughput_col: スループット列名
 
     Returns:
         timestamp と total_v2i_throughput_mbps の2列を持つDataFrame
     """
-    result_df = best_links_df.groupby('timestamp')['theoretical_throughput_mbps'].sum().reset_index()
+    result_df = best_links_df.groupby('timestamp')[throughput_col].sum().reset_index()
     result_df.columns = ['timestamp', 'total_v2i_throughput_mbps']
 
     print(f"計算結果: {len(result_df)} タイムステップ")
@@ -96,13 +133,20 @@ def save_baseline_results(result_df: pd.DataFrame, output_path: Path) -> None:
     print(f"結果を保存しました: {output_path}")
 
 
-def simulate_distributed_control(input_csv: Path = None, output_csv: Path = None) -> pd.DataFrame:
+def simulate_distributed_control(
+    input_csv: Path = None,
+    output_csv: Path = None,
+    throughput_col: str = DEFAULT_THROUGHPUT_COL
+) -> pd.DataFrame:
     """
     分散型制御シミュレーションを実行
 
     Args:
         input_csv: 入力CSVファイルパス (theoretical_network_results.csv)
         output_csv: 出力CSVファイルパス (baseline_distributed_results.csv)
+        throughput_col: 最適化に使用するスループット列名
+            - 'theoretical_throughput_mbps': Shannon公式ベース（デフォルト）
+            - 'throughput_mbps_mcs': MCSベース
 
     Returns:
         結果DataFrame
@@ -110,19 +154,23 @@ def simulate_distributed_control(input_csv: Path = None, output_csv: Path = None
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if input_csv is None:
-        input_csv = script_dir / "output" / "throughput" / "theoretical_network_results.csv"
+        input_csv = script_dir / "output" / "data" / "throughput" / "theoretical_network_results.csv"
     if output_csv is None:
-        output_dir = script_dir / "output" / "baseline"
+        output_dir = script_dir / "output" / "data" / "optimization"
         output_dir.mkdir(parents=True, exist_ok=True)
         output_csv = output_dir / "baseline_distributed_results.csv"
 
     print("=" * 60)
     print("分散型制御シミュレータ")
     print("=" * 60)
+    print(f"  スループット列: {throughput_col}")
 
     # 1. データ読み込み
     print("\n[1] データ読み込み")
     df = load_network_results(input_csv)
+
+    # スループット列の検証
+    validate_throughput_column(df, throughput_col)
 
     # 2. V2Iリンクのみ抽出
     print("\n[2] V2Iリンク抽出")
@@ -130,11 +178,11 @@ def simulate_distributed_control(input_csv: Path = None, output_csv: Path = None
 
     # 3. 各車両が最強V2Iリンクを選択（分散型・局所最適）
     print("\n[3] 各車両が最強V2Iリンクを選択")
-    best_links_df = select_best_v2i_per_vehicle(v2i_df)
+    best_links_df = select_best_v2i_per_vehicle(v2i_df, throughput_col=throughput_col)
 
     # 4. タイムスタンプごとのV2I総スループット計算
     print("\n[4] V2I総スループット計算")
-    result_df = calculate_total_throughput_per_timestamp(best_links_df)
+    result_df = calculate_total_throughput_per_timestamp(best_links_df, throughput_col=throughput_col)
 
     # 5. 結果保存
     print("\n[5] 結果保存")

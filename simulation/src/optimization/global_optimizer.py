@@ -6,6 +6,7 @@
 集中制御型のリソース割り当てを計算する。
 """
 
+import sys
 import pandas as pd
 import pulp
 from pathlib import Path
@@ -13,14 +14,49 @@ from pathlib import Path
 # パラメータ設定
 MAX_BS_CONNECTIONS = 10  # 基地局が同時に処理できる最大ユーザー数
 
+# デフォルトのスループット列名
+DEFAULT_THROUGHPUT_COL = 'theoretical_throughput_mbps'
 
-def solve_global_optimization(input_csv: Path = None, output_csv: Path = None) -> pd.DataFrame:
+# 許可されるスループット列
+VALID_THROUGHPUT_COLS = ['theoretical_throughput_mbps', 'throughput_mbps_mcs']
+
+
+def validate_throughput_column(df: pd.DataFrame, throughput_col: str) -> None:
+    """
+    スループット列の存在を検証し、不足時は分かりやすいエラーを出す
+
+    Args:
+        df: DataFrame
+        throughput_col: スループット列名
+
+    Raises:
+        SystemExit: 列が存在しない場合
+    """
+    if throughput_col not in df.columns:
+        print(f"\n❌ エラー: 指定されたスループット列 '{throughput_col}' が見つかりません。")
+        print(f"\n利用可能な列:")
+        for col in df.columns:
+            print(f"  - {col}")
+        print(f"\n有効なスループット列: {VALID_THROUGHPUT_COLS}")
+        print(f"\nヒント: --rate-model both でスループット計算を再実行してください:")
+        print(f"  python scripts/run_throughput.py --rate-model both")
+        sys.exit(1)
+
+
+def solve_global_optimization(
+    input_csv: Path = None,
+    output_csv: Path = None,
+    throughput_col: str = DEFAULT_THROUGHPUT_COL
+) -> pd.DataFrame:
     """
     グローバル最適化を実行し、結果を保存する
 
     Args:
         input_csv: 入力CSVファイルパス (theoretical_network_results.csv)
         output_csv: 出力CSVファイルパス (global_optimization_results.csv)
+        throughput_col: 最適化に使用するスループット列名
+            - 'theoretical_throughput_mbps': Shannon公式ベース（デフォルト）
+            - 'throughput_mbps_mcs': MCSベース
 
     Returns:
         結果DataFrame
@@ -28,19 +64,24 @@ def solve_global_optimization(input_csv: Path = None, output_csv: Path = None) -
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if input_csv is None:
-        input_csv = script_dir / "output" / "throughput" / "theoretical_network_results.csv"
+        input_csv = script_dir / "output" / "data" / "throughput" / "theoretical_network_results.csv"
     if output_csv is None:
-        output_dir = script_dir / "output" / "baseline"
+        output_dir = script_dir / "output" / "data" / "optimization"
         output_dir.mkdir(parents=True, exist_ok=True)
         output_csv = output_dir / "global_optimization_results.csv"
 
     print("=" * 60)
     print("グローバル最適化ソルバー")
     print("=" * 60)
+    print(f"  スループット列: {throughput_col}")
 
     # データ読み込み
     print(f"\n[1] データ読み込み: {input_csv}")
     df = pd.read_csv(input_csv)
+
+    # スループット列の検証
+    validate_throughput_column(df, throughput_col)
+
     print(f"  - 総レコード数: {len(df)}")
     print(f"  - タイムスタンプ範囲: {df['timestamp'].min()} ~ {df['timestamp'].max()}")
     print(f"  - リンクタイプ: {df['link_type'].unique()}")
@@ -69,7 +110,7 @@ def solve_global_optimization(input_csv: Path = None, output_csv: Path = None) -
 
         # 目的関数: スループットの総和を最大化
         objective = pulp.lpSum([
-            row['theoretical_throughput_mbps'] * link_vars[idx]
+            row[throughput_col] * link_vars[idx]
             for idx, row in df_t.iterrows()
         ])
         problem += objective

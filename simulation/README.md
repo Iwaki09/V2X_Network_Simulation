@@ -139,6 +139,15 @@ python scripts/run_optimization.py --distributed
 # グローバル最適化のみ
 python scripts/run_optimization.py --global
 
+# 最適化でMCSベースのスループット列を使用
+python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+
+# Shannon vs MCS 分析・可視化
+python scripts/analyze_throughput_models.py
+
+# 分析結果の出力先を指定
+python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbps 10
+
 # 可視化（すべて）
 python scripts/run_visualization.py --all
 
@@ -406,6 +415,69 @@ Dominance (D) は最大パス電力が総受信電力に占める割合を示し
 | timestamp | float | タイムステップ [秒] |
 | optimized_total_throughput_mbps | float | 最適化スループット [Mbps] |
 
+### `summary_shannon_vs_mcs.csv`（分析出力）
+
+| 列名 | データ型 | 説明 |
+|------|----------|------|
+| condition | string | 条件名（All, LOS, NLOS, prop_mode=D/K 等） |
+| count | int | サンプル数 |
+| mean_shannon_mbps | float | Shannon平均スループット [Mbps] |
+| mean_mcs_mbps | float | MCS平均スループット [Mbps] |
+| median_shannon_mbps | float | Shannon中央値 [Mbps] |
+| median_mcs_mbps | float | MCS中央値 [Mbps] |
+| p05_shannon_mbps | float | Shannon 5%タイル [Mbps] |
+| p05_mcs_mbps | float | MCS 5%タイル [Mbps] |
+| outage_rate_shannon | float | Shannonアウテージ率 (< Rmin) |
+| outage_rate_mcs | float | MCSアウテージ率 (< Rmin) |
+| mcs_shannon_ratio | float | MCS/Shannon比 |
+
+---
+
+## 最適化オプション
+
+### `--throughput-col` オプション
+
+最適化で使用するスループット列を選択できます。Shannon公式ベースとMCSベースを公平に比較するための機能です。
+
+**有効な値:**
+- `theoretical_throughput_mbps`（デフォルト）: Shannon公式によるスループット
+- `throughput_mbps_mcs`: MCSベースのスループット
+
+**使用例:**
+```bash
+# Shannonベースで最適化（デフォルト）
+python scripts/run_optimization.py
+
+# MCSベースで最適化
+python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+```
+
+**注意:** 入力CSVに該当列が存在しない場合、分かりやすいエラーメッセージが表示されます。MCS列がない場合は `--rate-model both` でスループット計算を再実行してください。
+
+---
+
+## 分析・可視化
+
+### Shannon vs MCS 分析スクリプト
+
+`analyze_throughput_models.py` は Shannon と MCS のスループットモデルを比較分析します。
+
+**実行方法:**
+```bash
+# 基本実行
+python scripts/analyze_throughput_models.py
+
+# オプション指定
+python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbps 10
+```
+
+**出力ファイル:**
+- `summary_shannon_vs_mcs.csv`: 条件別の統計量
+- `fig1_cdf_shannon_vs_mcs.png`: Shannon vs MCS のCDF比較
+- `fig2_timeseries_throughput.png`: 時系列総スループット
+- `fig3_cdf_los_nlos.png`: LOS/NLOS別CDF
+- `fig4_cdf_prop_mode.png`: prop_mode (D/K) 別CDF
+
 ---
 
 ## 研究成果
@@ -477,7 +549,11 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
-- **2026-01-05**: MCS（離散レート）ベースのスループット推定を追加。`--rate-model`オプションでShannon/MCS/both切替が可能に。MCSテーブル（8段階）による現実的なレート選択をサポート。
+- **2026-01-05**:
+  - 最適化スクリプトに `--throughput-col` オプションを追加。Shannon/MCS列を選択して最適化可能に。
+  - Shannon vs MCS 分析スクリプト (`analyze_throughput_models.py`) を追加。CDF・時系列図・条件別統計を自動生成。
+  - 列不足時の分かりやすいエラーメッセージを追加。
+  - MCS（離散レート）ベースのスループット推定を追加。`--rate-model`オプションでShannon/MCS/both切替が可能に。MCSテーブル（8段階）による現実的なレート選択をサポート。
 - **2026-01-04**: Sionna RTマルチパス対応を追加。`--sionna-rt`オプションでマルチパス計算が可能に。Propagation-Mode Switch (D/K) 指標をlink_quality_results.csvに追加。
 - **2026-01-03**: モジュール構造をリファクタリング、READMEを更新
 - **2025-10-22**: 初版作成
