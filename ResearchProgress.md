@@ -129,3 +129,36 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - `paths.cir()`からCIRと遅延を抽出する処理に整理し、送受信機追加/削除を`try/finally`で保護。
 - `raytracing.py`で`scene.tx_array`/`scene.rx_array`を明示設定。
 - `PathSolver(num_samples=...)`が未対応の環境向けに`TypeError`フォールバックを追加。
+
+## 2026-01-05（追加）
+- **MCS（離散レート）ベースのスループット推定を実装**: Shannon理論容量に加え、現実的な離散MCSテーブルによるスループット計算を追加。
+- **新規ファイル追加**:
+  - `src/core/mcs_model.py`: MCSテーブル（8段階）とルックアップ関数を提供。SNR閾値ベースでMCSインデックスを選択し、対応するスペクトル効率からスループットを計算。
+- **throughput.pyの拡張**:
+  - `calculate_theoretical_throughput(df, rate_model)`: rate_model引数を追加（'shannon', 'mcs', 'both'）
+  - `process_link_quality_data(input_csv, output_csv, rate_model)`: rate_model引数を追加
+  - MCS計算時には統計情報（MCSインデックス分布、Shannon vs MCS比較）を表示
+- **run_throughput.pyの更新**:
+  - `--rate-model {shannon,mcs,both}`: レートモデル選択オプションを追加（デフォルト: shannon）
+  - `--input`, `--output`: 入出力パス指定オプションを追加
+- **MCSテーブル仕様（研究用簡略モデル）**:
+  | MCS Index | SNR閾値 [dB] | スペクトル効率 [bits/s/Hz] | 変調方式相当 |
+  |-----------|-------------|--------------------------|-------------|
+  | 0 | < -5 | 0.15 | QPSK 1/8 |
+  | 1 | -5 ~ 0 | 0.38 | QPSK 1/3 |
+  | 2 | 0 ~ 5 | 0.88 | QPSK 2/3 |
+  | 3 | 5 ~ 10 | 1.48 | 16QAM 1/2 |
+  | 4 | 10 ~ 15 | 2.40 | 16QAM 3/4 |
+  | 5 | 15 ~ 20 | 3.30 | 64QAM 2/3 |
+  | 6 | 20 ~ 25 | 4.40 | 64QAM 5/6 |
+  | 7 | >= 25 | 5.50 | 256QAM 3/4 |
+- **新しいCSV列（mcs/bothモード）**:
+  - `mcs_index`: 選択されたMCSインデックス (0-7)
+  - `spectral_efficiency_bpshz`: スペクトル効率 [bits/s/Hz]
+  - `throughput_mbps_mcs`: MCSベースのスループット [Mbps]
+- **動作確認結果**:
+  - MCSインデックス分布: MCS 1-7に分散（SNR範囲 -4.10～45.47 dB）
+  - Shannon平均: 383.71 Mbps → MCS平均: 219.01 Mbps（MCS/Shannon: 57.1%）
+  - 離散化による効率低下は理論通りの挙動
+- **後方互換性**: デフォルト（shannon）モードでは既存の`theoretical_throughput_mbps`列のみ出力。最適化・可視化パイプラインは正常動作を確認。
+- simulation/README.mdを更新: MCSモデルのAPIリファレンス、MCSテーブル仕様、出力フォーマットにMCS列を追記、更新履歴を追加。
