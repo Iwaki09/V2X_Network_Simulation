@@ -121,8 +121,14 @@ python scripts/run_raytracing.py --sionna-rt
 # Sionna RTのパラメータ指定
 python scripts/run_raytracing.py --sionna-rt --max-depth 5 --num-samples 2000000
 
-# スループット計算
+# スループット計算（デフォルト: Shannon公式）
 python scripts/run_throughput.py
+
+# スループット計算（MCSベース - 離散レートモデル）
+python scripts/run_throughput.py --rate-model mcs
+
+# スループット計算（Shannon + MCS比較モード）
+python scripts/run_throughput.py --rate-model both
 
 # 最適化（分散型 + グローバル）
 python scripts/run_optimization.py
@@ -217,15 +223,47 @@ simulator_rt = RayTracingSimulator(
 link_qualities = simulator.calculate_link_quality(timestamp=0.0, vehicle_positions=positions)
 ```
 
-#### `calculate_theoretical_throughput(df)`
+#### `calculate_theoretical_throughput(df, rate_model='shannon')`
 
 リンク品質DataFrameに理論的スループットを追加します。
 
 **引数:**
 - `df` (DataFrame): link_quality_results.csvから読み込んだDataFrame
+- `rate_model` (str): レートモデル ('shannon', 'mcs', 'both')
+  - `'shannon'`: シャノン公式のみ（デフォルト、後方互換）
+  - `'mcs'`: MCSベースのみ
+  - `'both'`: 両方の列を出力
 
 **戻り値:**
 - `DataFrame`: スループット列が追加されたDataFrame
+
+**使用例:**
+```python
+from src.core.throughput import calculate_theoretical_throughput
+df = calculate_theoretical_throughput(df, rate_model='both')
+```
+
+#### MCSモデル (`src.core.mcs_model`)
+
+SNRからMCS（Modulation and Coding Scheme）を選択し、離散的なスループットを計算する研究用簡略モデル。
+
+**MCSテーブル（8段階）:**
+
+| MCS Index | SNR範囲 [dB] | スペクトル効率 [bits/s/Hz] | 変調方式相当 |
+|-----------|-------------|--------------------------|-------------|
+| 0 | < -5 | 0.15 | QPSK 1/8 |
+| 1 | -5 ~ 0 | 0.38 | QPSK 1/3 |
+| 2 | 0 ~ 5 | 0.88 | QPSK 2/3 |
+| 3 | 5 ~ 10 | 1.48 | 16QAM 1/2 |
+| 4 | 10 ~ 15 | 2.40 | 16QAM 3/4 |
+| 5 | 15 ~ 20 | 3.30 | 64QAM 2/3 |
+| 6 | 20 ~ 25 | 4.40 | 64QAM 5/6 |
+| 7 | >= 25 | 5.50 | 256QAM 3/4 |
+
+**主要関数:**
+- `select_mcs(snr_db)`: SNRからMCSインデックスを選択
+- `get_spectral_efficiency(mcs_index)`: MCSに対応するスペクトル効率を取得
+- `calculate_mcs_throughput_mbps(bandwidth_hz, spectral_efficiency)`: スループットを計算
 
 ### 最適化モジュール (`src.optimization`)
 
@@ -338,13 +376,21 @@ Dominance (D) は最大パス電力が総受信電力に占める割合を示し
 
 上記に加え:
 
-| 列名 | データ型 | 説明 |
-|------|----------|------|
-| received_power_watts | float | 受信電力 [Watts] |
-| snr | float | SNR（線形値） |
-| snr_db | float | SNR [dB] |
-| theoretical_throughput_bps | float | スループット [bps] |
-| theoretical_throughput_mbps | float | スループット [Mbps] |
+| 列名 | データ型 | 説明 | レートモデル |
+|------|----------|------|-------------|
+| received_power_watts | float | 受信電力 [Watts] | 全モード |
+| snr | float | SNR（線形値） | 全モード |
+| snr_db | float | SNR [dB] | 全モード |
+| theoretical_throughput_bps | float | スループット（Shannon）[bps] | shannon/both |
+| theoretical_throughput_mbps | float | スループット（Shannon）[Mbps] | shannon/both |
+| mcs_index | int | MCSインデックス (0-7) | mcs/both |
+| spectral_efficiency_bpshz | float | スペクトル効率 [bits/s/Hz] | mcs/both |
+| throughput_mbps_mcs | float | スループット（MCS）[Mbps] | mcs/both |
+
+**レートモデルオプション:**
+- `--rate-model shannon`（デフォルト）: Shannon列のみ出力（後方互換）
+- `--rate-model mcs`: MCS列のみ出力
+- `--rate-model both`: 両方の列を出力し比較可能
 
 ### `baseline_distributed_results.csv`
 
@@ -431,6 +477,7 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
+- **2026-01-05**: MCS（離散レート）ベースのスループット推定を追加。`--rate-model`オプションでShannon/MCS/both切替が可能に。MCSテーブル（8段階）による現実的なレート選択をサポート。
 - **2026-01-04**: Sionna RTマルチパス対応を追加。`--sionna-rt`オプションでマルチパス計算が可能に。Propagation-Mode Switch (D/K) 指標をlink_quality_results.csvに追加。
 - **2026-01-03**: モジュール構造をリファクタリング、READMEを更新
 - **2025-10-22**: 初版作成
