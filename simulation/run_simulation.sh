@@ -32,19 +32,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # シナリオに応じたパス設定関数
 setup_paths() {
+    # すべてのシナリオで統一されたパス構造を使用
+    # output/scenarios/{scenario_name}/{fcd,raytracing,throughput,optimization,analysis,figures}
     if [ "$SCENARIO" = "default" ]; then
         SUMO_CONFIG_DIR="${SCRIPT_DIR}/sumo_config"
-        SUMO_CONFIG_FILE="${SUMO_CONFIG_DIR}/simulation.sumocfg"
-        OUTPUT_DIR="${SCRIPT_DIR}/output"
-        FCD_OUTPUT="${OUTPUT_DIR}/data/fcd/fcd_output.xml"
-        LINK_QUALITY_CSV="${OUTPUT_DIR}/data/raytracing/link_quality_results.csv"
     else
         SUMO_CONFIG_DIR="${SCRIPT_DIR}/sumo_config/${SCENARIO}"
-        SUMO_CONFIG_FILE="${SUMO_CONFIG_DIR}/simulation.sumocfg"
-        OUTPUT_DIR="${SCRIPT_DIR}/output/scenarios/${SCENARIO}"
-        FCD_OUTPUT="${OUTPUT_DIR}/fcd/fcd_output.xml"
-        LINK_QUALITY_CSV="${OUTPUT_DIR}/raytracing/link_quality_results.csv"
     fi
+    SUMO_CONFIG_FILE="${SUMO_CONFIG_DIR}/simulation.sumocfg"
+    OUTPUT_DIR="${SCRIPT_DIR}/output/scenarios/${SCENARIO}"
+    FCD_OUTPUT="${OUTPUT_DIR}/fcd/fcd_output.xml"
+    LINK_QUALITY_CSV="${OUTPUT_DIR}/raytracing/link_quality_results.csv"
 }
 
 # Python仮想環境
@@ -184,8 +182,7 @@ print_results() {
     echo "  - FCD output:          $FCD_OUTPUT"
     echo "  - Link quality CSV:    $LINK_QUALITY_CSV"
     echo "  - Throughput CSV:      ${OUTPUT_DIR}/throughput/theoretical_network_results.csv"
-    echo "  - Baseline CSV:        ${OUTPUT_DIR}/baseline/baseline_distributed_results.csv"
-    echo "  - Optimization CSV:    ${OUTPUT_DIR}/baseline/global_optimization_results.csv"
+    echo "  - Optimization CSV:    ${OUTPUT_DIR}/optimization/"
     echo ""
 
     if [ -f "$LINK_QUALITY_CSV" ]; then

@@ -70,18 +70,21 @@ simulation/
 │       ├── traffic.rou.xml           # 交差点交通流定義
 │       └── simulation.sumocfg        # 交差点シナリオSUMO設定
 ├── output/                           # 出力データ
-│   ├── data/                         # デフォルトシナリオ出力
-│   │   ├── fcd/                      # SUMO FCD出力
-│   │   ├── raytracing/               # レイトレーシング結果
-│   │   ├── throughput/               # スループット計算結果
-│   │   └── baseline/                 # ベースライン比較結果
-│   ├── scenarios/                    # シナリオ別出力
-│   │   └── corner_intersection/      # 交差点シナリオ出力
-│   │       ├── fcd/
-│   │       ├── raytracing/
-│   │       ├── throughput/
-│   │       └── baseline/
-│   └── visualizations/               # 可視化出力
+│   └── scenarios/                    # シナリオ別出力
+│       ├── default/                  # デフォルトシナリオ出力
+│       │   ├── fcd/                  # SUMO FCD出力
+│       │   ├── raytracing/           # レイトレーシング結果
+│       │   ├── throughput/           # スループット計算結果
+│       │   ├── optimization/         # 最適化結果
+│       │   ├── analysis/             # 分析結果
+│       │   └── figures/              # 可視化出力
+│       └── corner_intersection/      # 交差点シナリオ出力
+│           ├── fcd/
+│           ├── raytracing/
+│           ├── throughput/
+│           ├── optimization/
+│           ├── analysis/
+│           └── figures/
 ├── run_simulation.sh                 # 統合実行スクリプト
 ├── requirements.txt                  # Python依存パッケージ
 └── README.md                         # 本ドキュメント
@@ -677,6 +680,7 @@ python scripts/run_raytracing.py
   - シナリオ設定モジュール (`src/scenarios/`) を新規追加。建物・BS配置・座標変換をシナリオ別に管理。
   - 交差点シナリオ用FCD生成スクリプト (`scripts/generate_fcd_corner.py`) を追加。
   - 検証結果: NLOS率45.8%達成（目標5%以上）。
+  - **出力ディレクトリ構造を整理**: `output/scenarios/{scenario_name}/` に統一。既存データを `default/` に移動。
 - **2026-01-05**:
   - 最適化スクリプトに `--throughput-col` オプションを追加。Shannon/MCS列を選択して最適化可能に。
   - Shannon vs MCS 分析スクリプト (`analyze_throughput_models.py`) を追加。CDF・時系列図・条件別統計を自動生成。

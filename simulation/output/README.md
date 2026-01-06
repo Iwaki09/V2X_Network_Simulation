@@ -6,39 +6,71 @@
 
 ```
 output/
-├── data/              # データファイル
-│   ├── fcd/           # SUMO Floating Car Data (FCD)
-│   ├── raytracing/    # レイトレーシング結果（リンク品質）
-│   ├── throughput/    # スループット計算結果
-│   └── optimization/  # 最適化結果（分散・グローバル）
-├── figures/           # 可視化画像
-│   ├── analysis/      # 分析結果グラフ
-│   └── frames/        # アニメーションフレーム
+├── scenarios/                          # シナリオ別出力
+│   ├── default/                        # デフォルトシナリオ（直線道路）
+│   │   ├── fcd/                        # SUMO Floating Car Data
+│   │   ├── raytracing/                 # レイトレーシング結果
+│   │   ├── throughput/                 # スループット計算結果
+│   │   ├── optimization/               # 最適化結果
+│   │   ├── analysis/                   # 分析結果
+│   │   └── figures/                    # 可視化画像
+│   └── corner_intersection/            # 交差点シナリオ
+│       ├── fcd/
+│       ├── raytracing/
+│       ├── throughput/
+│       ├── optimization/
+│       ├── analysis/
+│       └── figures/
 └── README.md
 ```
 
+## シナリオ別出力
+
+### default（デフォルトシナリオ）
+直線道路（1km）上の車両移動シミュレーション
+
+### corner_intersection（交差点シナリオ）
+十字交差点（4棟の角ビル）でのLOS/NLOS切り替え多発シミュレーション
+
 ## ファイル説明
 
-### data/
+### fcd/
 | ファイル | 説明 |
 |---------|------|
-| `fcd/fcd_output.xml` | SUMOからの車両位置・速度データ |
-| `raytracing/link_quality_results.csv` | 各リンクのSNR、パスロス等 |
-| `throughput/theoretical_network_results.csv` | 理論スループット計算結果 |
-| `optimization/baseline_distributed_results.csv` | 分散最適化の結果 |
-| `optimization/global_optimization_results.csv` | グローバル最適化の結果 |
+| `fcd_output.xml` | SUMOからの車両位置・速度データ |
 
-### figures/analysis/
+### raytracing/
 | ファイル | 説明 |
 |---------|------|
-| `method_comparison.png` | 提案手法（グローバル最適化）vs ベースライン（分散）の直接比較 |
-| `theoretical_potential.png` | 理論最大値と分散手法の差（最適化ポテンシャル）を可視化 |
-| `throughput_summary.png` | V2I+V2V合計の理論スループット推移（平均線付き） |
+| `link_quality_results.csv` | 各リンクのSNR、パスロス、LOS/NLOS、prop_mode等 |
 
-### figures/frames/
+### throughput/
 | ファイル | 説明 |
 |---------|------|
-| `frame_XXXX.png` | アニメーション用連続フレーム（100枚） |
+| `theoretical_network_results.csv` | 理論スループット計算結果（Shannon/MCS） |
+
+### optimization/
+| ファイル | 説明 |
+|---------|------|
+| `baseline_distributed_results.csv` | 分散型制御の結果 |
+| `global_optimization_results.csv` | グローバル最適化の結果 |
+
+### analysis/
+| ファイル | 説明 |
+|---------|------|
+| `summary_shannon_vs_mcs.csv` | Shannon vs MCS 統計サマリー |
+| `fig1_cdf_shannon_vs_mcs.png` | CDF比較グラフ |
+| `fig2_timeseries_throughput.png` | 時系列スループットグラフ |
+| `fig3_cdf_los_nlos.png` | LOS/NLOS別CDFグラフ |
+| `fig4_cdf_prop_mode.png` | prop_mode別CDFグラフ |
+
+### figures/
+| ファイル | 説明 |
+|---------|------|
+| `analysis/method_comparison.png` | 提案手法 vs ベースライン比較 |
+| `analysis/theoretical_potential.png` | 理論最大値と分散手法の差 |
+| `analysis/throughput_summary.png` | V2I+V2V合計スループット推移 |
+| `frames/frame_XXXX.png` | アニメーション用連続フレーム |
 
 ---
-*Last updated: 2025-01-03*
+*Last updated: 2026-01-07*

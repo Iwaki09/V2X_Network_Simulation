@@ -20,7 +20,7 @@ class DefaultScenarioConfig:
 
     # ディレクトリ設定
     sumo_config_dir: str = "sumo_config"
-    output_base_dir: str = "output"
+    output_base_dir: str = "output/scenarios/default"
 
     # 座標オフセット（FCDからRTへの変換時に適用）
     # デフォルトシナリオではオフセットなし
@@ -57,19 +57,19 @@ class DefaultScenarioConfig:
     def fcd_output_path(self) -> Path:
         """FCD出力ファイルのパス"""
         base = Path(__file__).parent.parent.parent
-        return base / self.output_base_dir / "data" / "fcd" / "fcd_output.xml"
+        return base / self.output_base_dir / "fcd" / "fcd_output.xml"
 
     @property
     def raytracing_output_path(self) -> Path:
         """レイトレーシング結果出力パス"""
         base = Path(__file__).parent.parent.parent
-        return base / self.output_base_dir / "data" / "raytracing" / "link_quality_results.csv"
+        return base / self.output_base_dir / "raytracing" / "link_quality_results.csv"
 
     @property
     def throughput_output_path(self) -> Path:
         """スループット結果出力パス"""
         base = Path(__file__).parent.parent.parent
-        return base / self.output_base_dir / "data" / "throughput" / "theoretical_network_results.csv"
+        return base / self.output_base_dir / "throughput" / "theoretical_network_results.csv"
 
     def transform_coordinates(self, x: float, y: float) -> tuple:
         """FCD座標をRT座標に変換"""
