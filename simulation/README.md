@@ -23,6 +23,9 @@ source ../.venv/bin/activate
 
 # 全パイプライン実行（SUMO→RT→スループット→最適化）
 ./run_simulation.sh --all
+
+# 交差点シナリオで実行
+./run_simulation.sh --scenario corner_intersection --all
 ```
 
 ---
@@ -44,6 +47,10 @@ simulation/
 │   │   ├── __init__.py
 │   │   ├── distributed.py            # 分散型制御（ベースライン）
 │   │   └── global_optimizer.py       # ILPグローバル最適化
+│   ├── scenarios/                    # シナリオ設定モジュール
+│   │   ├── __init__.py
+│   │   ├── default.py                # デフォルトシナリオ（直線道路）
+│   │   └── corner_intersection.py    # 交差点シナリオ
 │   └── visualization/                # 可視化モジュール
 │       ├── __init__.py
 │       ├── link_visualizer.py        # V2Xリンク時系列可視化
@@ -52,16 +59,28 @@ simulation/
 │   ├── run_raytracing.py             # レイトレーシング実行
 │   ├── run_throughput.py             # スループット計算実行
 │   ├── run_optimization.py           # 最適化実行
-│   └── run_visualization.py          # 可視化実行
+│   ├── run_visualization.py          # 可視化実行
+│   └── generate_fcd_corner.py        # 交差点シナリオFCD生成
 ├── sumo_config/                      # SUMO設定ファイル
-│   ├── road.net.xml                  # 道路ネットワーク定義
-│   ├── traffic.rou.xml               # 交通流定義
-│   └── simulation.sumocfg            # SUMO設定
+│   ├── road.net.xml                  # デフォルト道路ネットワーク
+│   ├── traffic.rou.xml               # デフォルト交通流定義
+│   ├── simulation.sumocfg            # デフォルトSUMO設定
+│   └── corner_intersection/          # 交差点シナリオ設定
+│       ├── road.net.xml              # 十字交差点ネットワーク
+│       ├── traffic.rou.xml           # 交差点交通流定義
+│       └── simulation.sumocfg        # 交差点シナリオSUMO設定
 ├── output/                           # 出力データ
-│   ├── fcd/                          # SUMO FCD出力
-│   ├── raytracing/                   # レイトレーシング結果
-│   ├── throughput/                   # スループット計算結果
-│   ├── baseline/                     # ベースライン比較結果
+│   ├── data/                         # デフォルトシナリオ出力
+│   │   ├── fcd/                      # SUMO FCD出力
+│   │   ├── raytracing/               # レイトレーシング結果
+│   │   ├── throughput/               # スループット計算結果
+│   │   └── baseline/                 # ベースライン比較結果
+│   ├── scenarios/                    # シナリオ別出力
+│   │   └── corner_intersection/      # 交差点シナリオ出力
+│   │       ├── fcd/
+│   │       ├── raytracing/
+│   │       ├── throughput/
+│   │       └── baseline/
 │   └── visualizations/               # 可視化出力
 ├── run_simulation.sh                 # 統合実行スクリプト
 ├── requirements.txt                  # Python依存パッケージ
@@ -92,6 +111,75 @@ pip install -r requirements.txt
 
 ---
 
+## シナリオ
+
+本シミュレーションでは複数のシナリオをサポートしています。`--scenario` オプションでシナリオを選択できます。
+
+### default（デフォルトシナリオ）
+
+直線道路上の車両移動をシミュレートします。
+
+```
+道路: 1km直線道路（x: 0〜1000m）
+建物: 1棟（道路脇）
+基地局: 道路中央付近
+```
+
+**座標系:**
+- 道路: x軸に沿って0〜1000m
+- 建物: (500, 50, 0) 中心、20×20×100m
+- 基地局: (500, 150, 30)
+
+### corner_intersection（交差点シナリオ）
+
+十字交差点での車両移動をシミュレートします。LOS/NLOS切り替えが頻繁に発生し、prop_mode(K)やNLOSサンプルの収集に適しています。
+
+```
+道路: 十字交差点（各方向±200m）
+建物: 4棟の角ビル（NE, NW, SE, SW）
+基地局: 北東方向（道路から離れた位置）
+```
+
+**座標系（交差点中心が原点）:**
+- 道路: x軸（東西）-200〜+200m、y軸（南北）-200〜+200m
+- 建物:
+  - NE: (+40, +40) 中心、60×60×20m
+  - NW: (-40, +40) 中心、60×60×20m
+  - SE: (+40, -40) 中心、60×60×20m
+  - SW: (-40, -40) 中心、60×60×20m
+- 基地局: (+120, +120, 20)
+
+**車両ルート:**
+- 西→東（直進）
+- 南→北（直進）
+- 西→北（左折）
+- 南→東（左折）
+
+**特徴:**
+- 建物による遮蔽でNLOS率が高い（約45%）
+- 交差点通過時にLOS/NLOS切り替えが発生
+- 左折車両は複数建物の遮蔽を経験
+
+**レイアウト図:**
+```
+                  N (+y)
+                   |
+        NW Building| NE Building    * BS (+120,+120)
+           [-40,+40]  [+40,+40]
+                   |
+    ---------------+--------------- E (+x)
+                   |
+        SW Building| SE Building
+           [-40,-40]  [+40,-40]
+                   |
+                  S (-y)
+
+    建物サイズ: 60×60×20m（各角に配置）
+    道路幅: 7m（2車線）
+```
+
+---
+
 ## 使用方法
 
 ### シミュレーション実行
@@ -107,6 +195,9 @@ pip install -r requirements.txt
 
 # 全パイプライン実行
 ./run_simulation.sh --all
+
+# 交差点シナリオで全パイプライン実行
+./run_simulation.sh --scenario corner_intersection --all
 ```
 
 #### 個別スクリプト
@@ -141,6 +232,11 @@ python scripts/run_optimization.py --global
 
 # 最適化でMCSベースのスループット列を使用
 python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+
+# 交差点シナリオで実行
+python scripts/run_raytracing.py --scenario corner_intersection
+python scripts/run_throughput.py --scenario corner_intersection
+python scripts/run_optimization.py --scenario corner_intersection
 
 # Shannon vs MCS 分析・可視化
 python scripts/analyze_throughput_models.py
@@ -203,7 +299,8 @@ data = parse_fcd_xml("output/fcd/fcd_output.xml")
 
 **コンストラクタ引数:**
 - `base_station` (BaseStation): 基地局設定
-- `building` (Building): 建物設定
+- `building` (Building, optional): 建物設定（後方互換性のため維持）
+- `buildings` (List[Building], optional): 建物のリスト（複数建物対応）
 - `frequency_ghz` (float, optional): 周波数 [GHz]. デフォルト: 28.0
 - `v2v_tx_power_dbm` (float, optional): V2V送信電力 [dBm]. デフォルト: 23.0
 - `use_sionna_rt` (bool, optional): Sionna RTモードを有効化. デフォルト: False
@@ -218,14 +315,23 @@ data = parse_fcd_xml("output/fcd/fcd_output.xml")
 from src.core import RayTracingSimulator, BaseStation, Building
 
 bs = BaseStation(id="BS_1", position=[500.0, 150.0, 30.0], tx_power_dbm=30.0)
-bldg = Building(id="Building_1", center=[500.0, 50.0, 0.0], size=[20.0, 20.0, 100.0])
 
-# 簡易モデル（デフォルト）
+# 単一建物（後方互換）
+bldg = Building(id="Building_1", center=[500.0, 50.0, 0.0], size=[20.0, 20.0, 100.0])
 simulator = RayTracingSimulator(base_station=bs, building=bldg)
+
+# 複数建物（交差点シナリオなど）
+buildings = [
+    Building(id="Building_NE", center=[40.0, 40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_NW", center=[-40.0, 40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_SE", center=[40.0, -40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_SW", center=[-40.0, -40.0, 0.0], size=[60.0, 60.0, 20.0]),
+]
+simulator = RayTracingSimulator(base_station=bs, buildings=buildings)
 
 # Sionna RTモード（マルチパス対応）
 simulator_rt = RayTracingSimulator(
-    base_station=bs, building=bldg,
+    base_station=bs, buildings=buildings,
     use_sionna_rt=True, max_depth=5
 )
 
@@ -320,16 +426,31 @@ V2Xリンク可視化フレームを生成します。
 
 ## パラメータ一覧
 
-### 物理環境パラメータ
+### 物理環境パラメータ（デフォルトシナリオ）
 
 | パラメータ | 値 | 単位 | 説明 | 定義場所 |
 |-----------|-----|------|------|----------|
 | 道路長 | 1000 | m | 直線道路の全長 | sumo_config/road.net.xml |
 | 車線数 | 2 | - | 片側1車線×2 | sumo_config/road.net.xml |
 | 車線幅 | 3.5 | m | 各車線の幅 | sumo_config/road.net.xml |
-| BS位置 | (500, 150, 30) | m | 基地局の3D座標 | src/core/raytracing.py |
-| 建物位置 | (500, 50, 0) | m | 建物中心の3D座標 | src/core/raytracing.py |
-| 建物サイズ | (20, 20, 100) | m | 幅×奥行×高さ | src/core/raytracing.py |
+| BS位置 | (500, 150, 30) | m | 基地局の3D座標 | src/scenarios/default.py |
+| 建物位置 | (500, 50, 0) | m | 建物中心の3D座標 | src/scenarios/default.py |
+| 建物サイズ | (20, 20, 100) | m | 幅×奥行×高さ | src/scenarios/default.py |
+
+### 物理環境パラメータ（交差点シナリオ）
+
+| パラメータ | 値 | 単位 | 説明 | 定義場所 |
+|-----------|-----|------|------|----------|
+| 道路長 | 400 | m | 交差点各方向の全長（±200m） | sumo_config/corner_intersection/road.net.xml |
+| 車線数 | 2 | - | 各道路2車線 | sumo_config/corner_intersection/road.net.xml |
+| 車線幅 | 3.5 | m | 各車線の幅 | sumo_config/corner_intersection/road.net.xml |
+| BS位置 | (120, 120, 20) | m | 基地局の3D座標 | src/scenarios/corner_intersection.py |
+| 建物NE位置 | (40, 40, 0) | m | 北東建物中心 | src/scenarios/corner_intersection.py |
+| 建物NW位置 | (-40, 40, 0) | m | 北西建物中心 | src/scenarios/corner_intersection.py |
+| 建物SE位置 | (40, -40, 0) | m | 南東建物中心 | src/scenarios/corner_intersection.py |
+| 建物SW位置 | (-40, -40, 0) | m | 南西建物中心 | src/scenarios/corner_intersection.py |
+| 建物サイズ | (60, 60, 20) | m | 幅×奥行×高さ（全建物共通） | src/scenarios/corner_intersection.py |
+| 座標オフセット | (-200, -200) | m | SUMO座標→シナリオ座標変換 | src/scenarios/corner_intersection.py |
 
 ### 無線通信パラメータ
 
@@ -549,6 +670,13 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
+- **2026-01-07**:
+  - **交差点シナリオ（corner_intersection）を追加**。LOS/NLOS切り替えを頻繁に発生させ、prop_mode(K)やNLOSサンプル収集に最適化。
+  - `--scenario` オプションを全スクリプトに追加。`default` / `corner_intersection` を選択可能に。
+  - `RayTracingSimulator` が複数建物に対応（`buildings` パラメータ追加、後方互換性維持）。
+  - シナリオ設定モジュール (`src/scenarios/`) を新規追加。建物・BS配置・座標変換をシナリオ別に管理。
+  - 交差点シナリオ用FCD生成スクリプト (`scripts/generate_fcd_corner.py`) を追加。
+  - 検証結果: NLOS率45.8%達成（目標5%以上）。
 - **2026-01-05**:
   - 最適化スクリプトに `--throughput-col` オプションを追加。Shannon/MCS列を選択して最適化可能に。
   - Shannon vs MCS 分析スクリプト (`analyze_throughput_models.py`) を追加。CDF・時系列図・条件別統計を自動生成。

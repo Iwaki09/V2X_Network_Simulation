@@ -61,7 +61,8 @@ class RayTracingSimulator:
     def __init__(
         self,
         base_station: BaseStation,
-        building: Building,
+        building: Building = None,
+        buildings: List[Building] = None,
         frequency_ghz: float = 28.0,
         v2v_tx_power_dbm: float = 23.0,
         use_sionna_rt: bool = False,
@@ -71,7 +72,8 @@ class RayTracingSimulator:
         """
         Args:
             base_station: 基地局の設定
-            building: 建物の設定
+            building: 建物の設定（後方互換性のため維持、buildingsがある場合は無視）
+            buildings: 建物のリスト（複数建物対応）
             frequency_ghz: 周波数 [GHz]
             v2v_tx_power_dbm: V2V通信の送信電力 [dBm]
             use_sionna_rt: TrueならSionna RTでマルチパス計算、Falseなら簡易モデル
@@ -79,7 +81,18 @@ class RayTracingSimulator:
             num_samples: レイトレーシングのサンプル数
         """
         self.base_station = base_station
-        self.building = building
+
+        # 後方互換性: building引数またはbuildings引数をサポート
+        if buildings is not None:
+            self.buildings = buildings
+        elif building is not None:
+            self.buildings = [building]
+        else:
+            self.buildings = []
+
+        # 後方互換性のためにself.buildingも維持
+        self.building = self.buildings[0] if self.buildings else None
+
         self.frequency_ghz = frequency_ghz
         self.frequency_hz = frequency_ghz * 1e9
         self.v2v_tx_power_dbm = v2v_tx_power_dbm
@@ -119,7 +132,9 @@ class RayTracingSimulator:
         print(f"   - Base Station: {base_station.id} at {base_station.position}")
         print(f"   - V2I TX Power: {base_station.tx_power_dbm} dBm")
         print(f"   - V2V TX Power: {v2v_tx_power_dbm} dBm")
-        print(f"   - Building: {building.id} at {building.center}, size {building.size}")
+        print(f"   - Buildings: {len(self.buildings)} building(s)")
+        for bldg in self.buildings:
+            print(f"     - {bldg.id} at {bldg.center}, size {bldg.size}")
         if use_sionna_rt:
             print(f"   - Max reflection depth: {max_depth}")
             print(f"   - Ray samples: {num_samples}")
@@ -480,25 +495,27 @@ class RayTracingSimulator:
 
         return path_powers_watts, delay_spread_ns, is_los
 
-    def _check_building_occlusion(
+    def _check_single_building_occlusion(
         self,
         point1: List[float],
-        point2: List[float]
+        point2: List[float],
+        building: Building
     ) -> bool:
         """
-        2点間の直線が建物と交差するかをチェック（Liang-Barskyアルゴリズム）
+        2点間の直線が単一建物と交差するかをチェック（Liang-Barskyアルゴリズム）
 
         Args:
             point1: 始点 [x, y, z]
             point2: 終点 [x, y, z]
+            building: チェック対象の建物
 
         Returns:
             True: 遮蔽あり, False: 遮蔽なし
         """
         x1, y1 = point1[:2]
         x2, y2 = point2[:2]
-        cx, cy = self.building.center[:2]
-        w, d = self.building.size[:2]
+        cx, cy = building.center[:2]
+        w, d = building.size[:2]
 
         # 建物の境界
         left = cx - w / 2
@@ -540,6 +557,26 @@ class RayTracingSimulator:
 
         # 交差判定
         return t_min <= t_max and 0 <= t_min <= 1 and 0 <= t_max <= 1
+
+    def _check_building_occlusion(
+        self,
+        point1: List[float],
+        point2: List[float]
+    ) -> bool:
+        """
+        2点間の直線がいずれかの建物と交差するかをチェック（複数建物対応）
+
+        Args:
+            point1: 始点 [x, y, z]
+            point2: 終点 [x, y, z]
+
+        Returns:
+            True: 遮蔽あり, False: 遮蔽なし
+        """
+        for building in self.buildings:
+            if self._check_single_building_occlusion(point1, point2, building):
+                return True
+        return False
 
     def _calculate_single_link(
         self,
