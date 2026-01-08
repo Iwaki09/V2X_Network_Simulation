@@ -8,6 +8,10 @@
 #   ./run_simulation.sh --sumo  : SUMOシミュレーション実行後にRay Tracing実行
 #   ./run_simulation.sh --all   : 全パイプライン実行（SUMO→RT→スループット→最適化）
 #   ./run_simulation.sh --scenario corner_intersection --all : 交差点シナリオで実行
+#   ./run_simulation.sh --scenario corner_intersection --sionna-rt --all : GPU版Sionna RTで実行
+#
+# オプション:
+#   --sionna-rt          : GPU加速されたSionna RTマルチパス計算を使用（デフォルトは簡易モデル）
 #
 # シナリオ:
 #   default              : デフォルトシナリオ（直線道路、1km）
@@ -143,7 +147,13 @@ run_raytracing_simulation() {
     mkdir -p "$(dirname "$LINK_QUALITY_CSV")"
 
     # Ray Tracingシミュレーション実行（シナリオを渡す）
-    python "${SCRIPT_DIR}/scripts/run_raytracing.py" --scenario "$SCENARIO"
+    if [ "$USE_SIONNA_RT" = true ]; then
+        echo "Mode: Sionna RT (GPU-accelerated multi-path)"
+        python "${SCRIPT_DIR}/scripts/run_raytracing.py" --scenario "$SCENARIO" --sionna-rt
+    else
+        echo "Mode: Simple model (single-path)"
+        python "${SCRIPT_DIR}/scripts/run_raytracing.py" --scenario "$SCENARIO"
+    fi
 
     if [ ! -f "$LINK_QUALITY_CSV" ]; then
         print_error "Link quality CSV not generated: $LINK_QUALITY_CSV"
@@ -200,6 +210,7 @@ main() {
     # コマンドライン引数を解析
     RUN_SUMO=false
     RUN_ALL=false
+    USE_SIONNA_RT=false
 
     while [[ $# -gt 0 ]]; do
         case $1 in
@@ -209,6 +220,10 @@ main() {
                 ;;
             --all)
                 RUN_ALL=true
+                shift
+                ;;
+            --sionna-rt)
+                USE_SIONNA_RT=true
                 shift
                 ;;
             --scenario)
@@ -221,6 +236,7 @@ main() {
                 echo "Options:"
                 echo "  --sumo                Run SUMO simulation before Ray Tracing"
                 echo "  --all                 Run full pipeline (SUMO→RT→Throughput→Optimization)"
+                echo "  --sionna-rt           Use Sionna RT for multi-path ray tracing (GPU accelerated)"
                 echo "  --scenario NAME       Select scenario (default, corner_intersection)"
                 echo "  -h, --help            Show this help message"
                 echo ""
@@ -233,6 +249,7 @@ main() {
                 echo "  $0 --sumo                               # Run SUMO simulation then Ray Tracing"
                 echo "  $0 --all                                # Run full pipeline"
                 echo "  $0 --scenario corner_intersection --all # Run intersection scenario"
+                echo "  $0 --scenario corner_intersection --sionna-rt --all # Run with GPU-accelerated Sionna RT"
                 echo ""
                 echo "Individual scripts (in scripts/ directory):"
                 echo "  python scripts/run_raytracing.py      # Ray Tracing"
