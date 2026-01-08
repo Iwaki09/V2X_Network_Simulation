@@ -37,6 +37,19 @@ SCRIPT_DIR = Path(__file__).parent
 PROJECT_DIR = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
+from src.scenarios.default import DefaultScenarioConfig
+from src.scenarios.corner_intersection import CornerIntersectionConfig
+
+
+def get_scenario_config(scenario_name: str):
+    """シナリオ名に基づいて設定を取得"""
+    if scenario_name == "default":
+        return DefaultScenarioConfig()
+    elif scenario_name == "corner_intersection":
+        return CornerIntersectionConfig()
+    else:
+        raise ValueError(f"Unknown scenario: {scenario_name}")
+
 # 日本語フォント設定（なければ英語で表示）
 plt.rcParams['font.family'] = ['DejaVu Sans', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', 'sans-serif']
 plt.rcParams['axes.unicode_minus'] = False
@@ -281,13 +294,13 @@ def main():
         '--input',
         type=str,
         default=None,
-        help='入力CSVファイルパス (デフォルト: output/data/throughput/theoretical_network_results.csv)'
+        help='入力CSVファイルパス (デフォルト: シナリオ設定から取得)'
     )
     parser.add_argument(
         '--outdir',
         type=str,
         default=None,
-        help='出力ディレクトリ (デフォルト: output/analysis)'
+        help='出力ディレクトリ (デフォルト: シナリオ設定から取得)'
     )
     parser.add_argument(
         '--rmin-mbps',
@@ -295,11 +308,20 @@ def main():
         default=DEFAULT_RMIN_MBPS,
         help=f'アウテージ判定閾値 (Mbps). デフォルト: {DEFAULT_RMIN_MBPS}'
     )
+    parser.add_argument(
+        '--scenario',
+        type=str,
+        default='default',
+        help='シナリオ名 (default, corner_intersection). デフォルト: default'
+    )
     args = parser.parse_args()
 
-    # パス設定
-    input_csv = Path(args.input) if args.input else PROJECT_DIR / 'output' / 'data' / 'throughput' / 'theoretical_network_results.csv'
-    output_dir = Path(args.outdir) if args.outdir else PROJECT_DIR / 'output' / 'analysis'
+    # シナリオ設定を取得
+    scenario_config = get_scenario_config(args.scenario)
+
+    # パス設定（引数優先、なければシナリオ設定から取得）
+    input_csv = Path(args.input) if args.input else scenario_config.throughput_output_path
+    output_dir = Path(args.outdir) if args.outdir else scenario_config.analysis_output_dir
     output_dir.mkdir(parents=True, exist_ok=True)
 
     print("=" * 70)

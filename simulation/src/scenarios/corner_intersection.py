@@ -97,6 +97,24 @@ class CornerIntersectionConfig:
         base = Path(__file__).parent.parent.parent
         return base / self.output_base_dir / "throughput" / "theoretical_network_results.csv"
 
+    @property
+    def optimization_output_dir(self) -> Path:
+        """最適化結果出力ディレクトリ"""
+        base = Path(__file__).parent.parent.parent
+        return base / self.output_base_dir / "optimization"
+
+    @property
+    def analysis_output_dir(self) -> Path:
+        """分析結果出力ディレクトリ"""
+        base = Path(__file__).parent.parent.parent
+        return base / self.output_base_dir / "analysis"
+
+    @property
+    def figures_output_dir(self) -> Path:
+        """可視化出力ディレクトリ"""
+        base = Path(__file__).parent.parent.parent
+        return base / self.output_base_dir / "figures"
+
     def transform_coordinates(self, x: float, y: float) -> tuple:
         """FCD座標をRT座標に変換"""
         return (x + self.coord_offset_x, y + self.coord_offset_y)

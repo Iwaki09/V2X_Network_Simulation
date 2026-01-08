@@ -282,11 +282,11 @@ def run_visualization(fcd_file: str = None, csv_file: str = None, output_dir: st
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if fcd_file is None:
-        fcd_file = str(script_dir / 'output/data/fcd/fcd_output.xml')
+        fcd_file = str(script_dir / 'output/scenarios/default/fcd/fcd_output.xml')
     if csv_file is None:
-        csv_file = str(script_dir / 'output/data/raytracing/link_quality_results.csv')
+        csv_file = str(script_dir / 'output/scenarios/default/raytracing/link_quality_results.csv')
     if output_dir is None:
-        output_dir = str(script_dir / 'output/figures/frames')
+        output_dir = str(script_dir / 'output/scenarios/default/figures/frames')
 
     print("=" * 60)
     print("V2X Communication Visualization (V2I + V2V)")

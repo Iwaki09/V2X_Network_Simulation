@@ -136,6 +136,7 @@ def save_baseline_results(result_df: pd.DataFrame, output_path: Path) -> None:
 def simulate_distributed_control(
     input_csv: Path = None,
     output_csv: Path = None,
+    output_dir: Path = None,
     throughput_col: str = DEFAULT_THROUGHPUT_COL
 ) -> pd.DataFrame:
     """
@@ -144,6 +145,7 @@ def simulate_distributed_control(
     Args:
         input_csv: 入力CSVファイルパス (theoretical_network_results.csv)
         output_csv: 出力CSVファイルパス (baseline_distributed_results.csv)
+        output_dir: 出力ディレクトリ（output_csvより優先度低い）
         throughput_col: 最適化に使用するスループット列名
             - 'theoretical_throughput_mbps': Shannon公式ベース（デフォルト）
             - 'throughput_mbps_mcs': MCSベース
@@ -152,13 +154,17 @@ def simulate_distributed_control(
         結果DataFrame
     """
     # パス設定
-    script_dir = Path(__file__).parent.parent.parent
-    if input_csv is None:
-        input_csv = script_dir / "output" / "data" / "throughput" / "theoretical_network_results.csv"
     if output_csv is None:
-        output_dir = script_dir / "output" / "data" / "optimization"
-        output_dir.mkdir(parents=True, exist_ok=True)
-        output_csv = output_dir / "baseline_distributed_results.csv"
+        if output_dir is not None:
+            output_dir = Path(output_dir)
+            output_dir.mkdir(parents=True, exist_ok=True)
+            output_csv = output_dir / "baseline_distributed_results.csv"
+        else:
+            # デフォルト（後方互換性のため維持、ただし呼び出し元でoutput_dirを指定することを推奨）
+            script_dir = Path(__file__).parent.parent.parent
+            default_output_dir = script_dir / "output" / "scenarios" / "default" / "optimization"
+            default_output_dir.mkdir(parents=True, exist_ok=True)
+            output_csv = default_output_dir / "baseline_distributed_results.csv"
 
     print("=" * 60)
     print("分散型制御シミュレータ")

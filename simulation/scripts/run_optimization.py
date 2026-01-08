@@ -106,8 +106,12 @@ def main():
     # 入力ファイルパス（引数優先、なければシナリオ設定から取得）
     input_csv = Path(args.input) if args.input else scenario_config.throughput_output_path
 
+    # 出力ディレクトリ
+    output_dir = scenario_config.optimization_output_dir
+
     print(f"\nScenario: {scenario_config.name}")
     print(f"Input: {input_csv}")
+    print(f"Output dir: {output_dir}")
     print(f"使用するスループット列: {args.throughput_col}")
 
     if run_distributed:
@@ -116,6 +120,7 @@ def main():
         print("=" * 60)
         simulate_distributed_control(
             input_csv=input_csv,
+            output_dir=output_dir,
             throughput_col=args.throughput_col
         )
 
@@ -125,6 +130,7 @@ def main():
         print("=" * 60)
         solve_global_optimization(
             input_csv=input_csv,
+            output_dir=output_dir,
             throughput_col=args.throughput_col
         )
 

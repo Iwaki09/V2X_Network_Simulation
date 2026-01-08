@@ -247,6 +247,9 @@ python scripts/analyze_throughput_models.py
 # 分析結果の出力先を指定
 python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbps 10
 
+# 交差点シナリオで分析
+python scripts/analyze_throughput_models.py --scenario corner_intersection
+
 # 可視化（すべて）
 python scripts/run_visualization.py --all
 
@@ -257,6 +260,9 @@ python scripts/run_visualization.py --frames
 python scripts/run_visualization.py --network   # ネットワークサマリー
 python scripts/run_visualization.py --baseline  # ベースライン比較
 python scripts/run_visualization.py --final     # 最終比較
+
+# 交差点シナリオで可視化
+python scripts/run_visualization.py --scenario corner_intersection --all
 ```
 
 ---
@@ -681,6 +687,7 @@ python scripts/run_raytracing.py
   - 交差点シナリオ用FCD生成スクリプト (`scripts/generate_fcd_corner.py`) を追加。
   - 検証結果: NLOS率45.8%達成（目標5%以上）。
   - **出力ディレクトリ構造を整理**: `output/scenarios/{scenario_name}/` に統一。既存データを `default/` に移動。
+  - **全スクリプトの出力パスをシナリオ対応に統一**: `analyze_throughput_models.py`, `run_visualization.py` にも `--scenario` オプション追加。
 - **2026-01-05**:
   - 最適化スクリプトに `--throughput-col` オプションを追加。Shannon/MCS列を選択して最適化可能に。
   - Shannon vs MCS 分析スクリプト (`analyze_throughput_models.py`) を追加。CDF・時系列図・条件別統計を自動生成。

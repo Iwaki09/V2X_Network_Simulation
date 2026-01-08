@@ -162,3 +162,146 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
   - 離散化による効率低下は理論通りの挙動
 - **後方互換性**: デフォルト（shannon）モードでは既存の`theoretical_throughput_mbps`列のみ出力。最適化・可視化パイプラインは正常動作を確認。
 - simulation/README.mdを更新: MCSモデルのAPIリファレンス、MCSテーブル仕様、出力フォーマットにMCS列を追記、更新履歴を追加。
+
+## 2026-01-05（追加2）
+- **最適化スクリプトにスループット列選択オプションを追加**: Shannon vs MCS を公平に比較するため、最適化で使用するスループット列を選択可能に。
+- **変更ファイル**:
+  - `src/optimization/distributed.py`: `throughput_col`引数を追加。`select_best_v2i_per_vehicle()`と`calculate_total_throughput_per_timestamp()`で使用する列を動的に変更。
+  - `src/optimization/global_optimizer.py`: `throughput_col`引数を追加。ILPの目的関数で参照する列を動的に変更。
+  - `scripts/run_optimization.py`: `--throughput-col`オプションを追加（選択肢: `theoretical_throughput_mbps`, `throughput_mbps_mcs`、デフォルト: `theoretical_throughput_mbps`）。
+- **エラーハンドリング**: 指定された列が存在しない場合、分かりやすいエラーメッセージを表示し、`--rate-model both`での再実行を案内。
+- **新規ファイル追加**:
+  - `scripts/analyze_throughput_models.py`: Shannon vs MCS 分析・可視化スクリプト
+- **分析スクリプトの出力**:
+  - `summary_shannon_vs_mcs.csv`: 条件別（All, LOS, NLOS, prop_mode=D/K）の統計量（平均、中央値、5%タイル、アウテージ率など）
+  - `fig1_cdf_shannon_vs_mcs.png`: Shannon vs MCS のCDF比較
+  - `fig2_timeseries_throughput.png`: 時系列総スループット（timestampごとの全リンク合計）
+  - `fig3_cdf_los_nlos.png`: LOS/NLOS別CDF
+  - `fig4_cdf_prop_mode.png`: prop_mode (D/K) 別CDF
+- **動作確認結果**:
+  - 全体: Shannon平均 383.71 Mbps、MCS平均 219.01 Mbps（MCS/Shannon比 57.1%）
+  - NLOS: Shannon平均 178.54 Mbps、MCS平均 88.00 Mbps（MCS/Shannon比 49.3%）
+  - prop_mode=K: Shannon平均 235.84 Mbps、MCS平均 138.46 Mbps（MCS/Shannon比 58.7%）
+  - アウテージ率（<10 Mbps）: 全条件で0%
+- **CLI使用例**:
+  ```bash
+  # Shannonベースで最適化（デフォルト）
+  python scripts/run_optimization.py
+
+  # MCSベースで最適化
+  python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+
+  # Shannon vs MCS 分析
+  python scripts/analyze_throughput_models.py --rmin-mbps 10
+  ```
+- simulation/README.mdを更新: `--throughput-col`オプションの説明、分析スクリプトの使い方、出力ファイル一覧を追記。
+
+## 2026-01-07
+- **交差点シナリオ（corner_intersection）を新規追加**: LOS/NLOS切り替えを頻繁に発生させ、prop_mode(K)やNLOSサンプル収集に最適化したシナリオを実装。
+- **シナリオの特徴**:
+  - 十字交差点（各方向±200m）に4棟の角ビル（NE, NW, SE, SW）を配置
+  - 建物サイズ: 60×60×20m（各角に配置、中心座標±40m）
+  - 基地局: (+120, +120, 20)（交差点北東）
+  - 車両ルート: 西→東直進、南→北直進、西→北左折、南→東左折
+  - 20台の車両が交差点を通過
+- **検証結果**:
+  - NLOS率: 45.8%達成（目標5%以上を大幅クリア）
+  - V2Iリンク: 664、V2Vリンク: 4230
+  - LOS: 2654、NLOS: 2240
+  - prop_mode=D: 4894、prop_mode=K: 0（簡易モデルでは単一パスのため）
+- **実装内容**:
+  - **シナリオ設定モジュール (`src/scenarios/`)**: 建物・BS配置・座標変換をシナリオ別に管理
+    - `default.py`: デフォルト（直線道路）シナリオ
+    - `corner_intersection.py`: 交差点シナリオ
+  - **RayTracingSimulator複数建物対応**: `buildings`パラメータ追加（後方互換性維持）
+    - `_check_single_building_occlusion()`: 単一建物の遮蔽判定
+    - `_check_building_occlusion()`: 複数建物の遮蔽判定ラッパー
+  - **全スクリプトにシナリオ選択オプション追加**: `--scenario {default,corner_intersection}`
+    - `run_simulation.sh`
+    - `run_raytracing.py`
+    - `run_throughput.py`
+    - `run_optimization.py`
+  - **FCD生成スクリプト**: `scripts/generate_fcd_corner.py`（SUMO環境問題の回避用）
+- **ディレクトリ構造の拡張**:
+  ```
+  sumo_config/
+  ├── (default scenario files)
+  └── corner_intersection/
+      ├── road.net.xml          # 十字交差点ネットワーク
+      ├── traffic.rou.xml       # 交差点交通流定義
+      └── simulation.sumocfg    # SUMO設定
+  output/
+  ├── data/                     # デフォルトシナリオ出力
+  └── scenarios/
+      └── corner_intersection/  # 交差点シナリオ出力
+          ├── fcd/
+          ├── raytracing/
+          ├── throughput/
+          └── baseline/
+  ```
+- **CLI使用例**:
+  ```bash
+  # 交差点シナリオで全パイプライン実行
+  ./run_simulation.sh --scenario corner_intersection --all
+
+  # 個別スクリプトでシナリオ指定
+  python scripts/run_raytracing.py --scenario corner_intersection
+  python scripts/run_throughput.py --scenario corner_intersection
+  python scripts/run_optimization.py --scenario corner_intersection
+  ```
+- **今後の課題**:
+  - prop_mode=Kサンプル収集には`--sionna-rt`オプション（マルチパス計算）が必要
+  - デフォルトシナリオとの後方互換性テスト
+- simulation/README.mdを更新: シナリオセクション追加、ディレクトリ構造更新、パラメータ一覧に交差点シナリオを追加、更新履歴を追加。
+
+## 2026-01-07（追加）
+- **出力ディレクトリ構造を整理**: シナリオが増えていく前提で、すべてのシナリオで統一されたパス構造を採用。
+- **新ディレクトリ構造**:
+  ```
+  output/
+  └── scenarios/
+      ├── default/                  # デフォルトシナリオ（直線道路）
+      │   ├── fcd/
+      │   ├── raytracing/
+      │   ├── throughput/
+      │   ├── optimization/
+      │   ├── analysis/
+      │   └── figures/
+      └── corner_intersection/      # 交差点シナリオ
+          ├── fcd/
+          ├── raytracing/
+          ├── throughput/
+          ├── optimization/
+          ├── analysis/
+          └── figures/
+  ```
+- **変更内容**:
+  - 既存の散在していたデータ（`output/data/`, `output/baseline/`, `output/analysis/`, `output/figures/`）を `output/scenarios/default/` に移動
+  - `src/scenarios/default.py` のパスを `output/scenarios/default/` に更新
+  - `run_simulation.sh` のパス設定を統一（全シナリオで同じ構造）
+  - 不要な重複ディレクトリを削除
+- **メリット**:
+  - 新しいシナリオを追加する際、`output/scenarios/{new_scenario}/` を作成するだけで済む
+  - シナリオ間の比較が容易（同じ構造のため）
+  - プロジェクト全体の見通しが良くなる
+
+## 2026-01-07（追加2）
+- **全スクリプトの出力パスをシナリオ対応に統一**: 全スクリプトが `--scenario` オプションを受け付け、適切な出力ディレクトリに保存するようになった。
+- **修正したファイル**:
+  - `src/optimization/distributed.py`: `output_dir` 引数追加、デフォルトを `output/scenarios/default/optimization/` に変更
+  - `src/optimization/global_optimizer.py`: `output_dir` 引数追加、デフォルトを `output/scenarios/default/optimization/` に変更
+  - `src/scenarios/default.py`: `optimization_output_dir`, `analysis_output_dir`, `figures_output_dir` プロパティ追加
+  - `src/scenarios/corner_intersection.py`: 同上
+  - `scripts/run_optimization.py`: シナリオ設定から `output_dir` を取得して渡すように修正
+  - `scripts/analyze_throughput_models.py`: `--scenario` オプション追加
+  - `scripts/run_visualization.py`: `--scenario` オプション追加、全出力パスをシナリオ設定から取得
+  - `src/visualization/plots.py`: デフォルトパスを `output/scenarios/default/` に更新
+  - `src/visualization/link_visualizer.py`: デフォルトパスを `output/scenarios/default/` に更新
+- **CLI使用例**:
+  ```bash
+  # 交差点シナリオで分析を実行
+  python scripts/analyze_throughput_models.py --scenario corner_intersection
+
+  # 交差点シナリオで可視化を実行
+  python scripts/run_visualization.py --scenario corner_intersection
+  ```

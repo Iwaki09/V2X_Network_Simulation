@@ -13,20 +13,25 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 
 
-def plot_network_summary(input_csv: str = None, output_png: str = None):
+def plot_network_summary(input_csv: str = None, output_png: str = None, output_dir: str = None):
     """
     時系列での総スループットをプロット
 
     Args:
         input_csv: 入力CSVファイルパス (theoretical_network_results.csv)
         output_png: 出力PNGファイルパス (network_performance_summary.png)
+        output_dir: 出力ディレクトリ（output_pngより優先度低い）
     """
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if input_csv is None:
-        input_csv = str(script_dir / 'output/data/throughput/theoretical_network_results.csv')
+        input_csv = str(script_dir / 'output/scenarios/default/throughput/theoretical_network_results.csv')
     if output_png is None:
-        output_png = str(script_dir / 'output/figures/analysis/throughput_summary.png')
+        if output_dir is not None:
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            output_png = str(Path(output_dir) / 'throughput_summary.png')
+        else:
+            output_png = str(script_dir / 'output/scenarios/default/figures/throughput_summary.png')
 
     print("=" * 70)
     print("ネットワーク性能サマリー可視化")
@@ -91,7 +96,7 @@ def plot_network_summary(input_csv: str = None, output_png: str = None):
     plt.close(fig)
 
 
-def plot_baseline_comparison(theoretical_csv: str = None, baseline_csv: str = None, output_png: str = None):
+def plot_baseline_comparison(theoretical_csv: str = None, baseline_csv: str = None, output_png: str = None, output_dir: str = None):
     """
     理論的最大値とベースラインの比較グラフを作成
 
@@ -99,15 +104,20 @@ def plot_baseline_comparison(theoretical_csv: str = None, baseline_csv: str = No
         theoretical_csv: 理論的ネットワーク結果CSVファイルパス
         baseline_csv: ベースライン分散型結果CSVファイルパス
         output_png: 出力画像ファイルのパス
+        output_dir: 出力ディレクトリ（output_pngより優先度低い）
     """
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if theoretical_csv is None:
-        theoretical_csv = str(script_dir / "output" / "data" / "throughput" / "theoretical_network_results.csv")
+        theoretical_csv = str(script_dir / "output" / "scenarios" / "default" / "throughput" / "theoretical_network_results.csv")
     if baseline_csv is None:
-        baseline_csv = str(script_dir / "output" / "data" / "optimization" / "baseline_distributed_results.csv")
+        baseline_csv = str(script_dir / "output" / "scenarios" / "default" / "optimization" / "baseline_distributed_results.csv")
     if output_png is None:
-        output_png = str(script_dir / "output" / "figures" / "analysis" / "theoretical_potential.png")
+        if output_dir is not None:
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            output_png = str(Path(output_dir) / "theoretical_potential.png")
+        else:
+            output_png = str(script_dir / "output" / "scenarios" / "default" / "figures" / "theoretical_potential.png")
 
     print("=" * 60)
     print("ベースライン性能可視化")
@@ -190,7 +200,7 @@ def plot_baseline_comparison(theoretical_csv: str = None, baseline_csv: str = No
     plt.close()
 
 
-def plot_final_comparison(baseline_csv: str = None, optimization_csv: str = None, output_png: str = None):
+def plot_final_comparison(baseline_csv: str = None, optimization_csv: str = None, output_png: str = None, output_dir: str = None):
     """
     提案手法とベースラインの性能比較グラフを作成
 
@@ -198,15 +208,20 @@ def plot_final_comparison(baseline_csv: str = None, optimization_csv: str = None
         baseline_csv: ベースライン分散型結果CSVファイルパス
         optimization_csv: グローバル最適化結果CSVファイルパス
         output_png: 出力画像ファイルのパス
+        output_dir: 出力ディレクトリ（output_pngより優先度低い）
     """
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if baseline_csv is None:
-        baseline_csv = str(script_dir / "output" / "data" / "optimization" / "baseline_distributed_results.csv")
+        baseline_csv = str(script_dir / "output" / "scenarios" / "default" / "optimization" / "baseline_distributed_results.csv")
     if optimization_csv is None:
-        optimization_csv = str(script_dir / "output" / "data" / "optimization" / "global_optimization_results.csv")
+        optimization_csv = str(script_dir / "output" / "scenarios" / "default" / "optimization" / "global_optimization_results.csv")
     if output_png is None:
-        output_png = str(script_dir / "output" / "figures" / "analysis" / "method_comparison.png")
+        if output_dir is not None:
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            output_png = str(Path(output_dir) / "method_comparison.png")
+        else:
+            output_png = str(script_dir / "output" / "scenarios" / "default" / "figures" / "method_comparison.png")
 
     print("=" * 60)
     print("最終比較グラフの作成")
