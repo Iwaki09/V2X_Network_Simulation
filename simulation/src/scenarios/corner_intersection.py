@@ -73,6 +73,12 @@ class CornerIntersectionConfig:
     frequency_ghz: float = 28.0
     v2v_tx_power_dbm: float = 23.0
 
+    # 可視化パラメータ
+    viz_xlim: tuple = (-150, 150)  # X軸の描画範囲（交差点を中心に）
+    viz_ylim: tuple = (-150, 150)  # Y軸の描画範囲（交差点を中心に）
+    viz_road_x_range: tuple = (-150, 150)  # 道路のX範囲
+    viz_road_y_range: tuple = (-150, 150)  # 道路のY範囲（交差点全体）
+
     @property
     def sumo_config_path(self) -> Path:
         """SUMO設定ファイルのパス"""

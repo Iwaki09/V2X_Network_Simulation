@@ -80,7 +80,8 @@ def main():
         run_visualization(
             fcd_file=fcd_file,
             csv_file=csv_file,
-            output_dir=str(frames_dir)
+            output_dir=str(frames_dir),
+            scenario_config=scenario_config
         )
 
     if args.network or run_all:

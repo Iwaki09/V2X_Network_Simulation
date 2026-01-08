@@ -47,6 +47,12 @@ class DefaultScenarioConfig:
     frequency_ghz: float = 28.0
     v2v_tx_power_dbm: float = 23.0
 
+    # 可視化パラメータ
+    viz_xlim: tuple = (-50, 1050)  # X軸の描画範囲
+    viz_ylim: tuple = (-50, 200)   # Y軸の描画範囲
+    viz_road_x_range: tuple = (0, 1000)  # 道路のX範囲
+    viz_road_y_range: tuple = (-3.5, 3.5)  # 道路のY範囲
+
     @property
     def sumo_config_path(self) -> Path:
         """SUMO設定ファイルのパス"""

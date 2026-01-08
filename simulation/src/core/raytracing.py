@@ -180,33 +180,35 @@ class RayTracingSimulator:
         )
         self.scene.add(building_material)
 
-        # 建物をボックスとして追加
+        # 建物をボックスとして追加（複数建物対応）
         # Sionna RTではMitsuba形式のシーンファイルを使用するのが一般的だが、
         # ここではプログラマティックに定義
-        bldg = self.building
-        half_w = bldg.size[0] / 2
-        half_d = bldg.size[1] / 2
-        height = bldg.size[2]
-        cx, cy, cz = bldg.center
+        for bldg in self.buildings:
+            half_w = bldg.size[0] / 2
+            half_d = bldg.size[1] / 2
+            height = bldg.size[2]
+            cx, cy, cz = bldg.center
 
-        # 建物の頂点を定義（直方体）
-        # 注意: Sionna RTのScene APIに応じて調整が必要
-        # ここでは概念的な実装を示す
-        try:
-            # Sionna RTのプリミティブを使用してボックスを追加
-            # 実際のAPIに応じて調整
-            box = sn.rt.Box(
-                name=bldg.id,
-                center=[cx, cy, cz + height / 2],  # 中心を高さの半分に
-                size=[bldg.size[0], bldg.size[1], height],
-                material=building_material
-            )
-            self.scene.add(box)
-        except AttributeError:
-            # Sionna RTのバージョンによってはBoxが使えない場合がある
-            # その場合はXMLシーンファイルをロードする方式に切り替え
-            print("⚠️  Box primitive not available. Using scene file approach.")
-            self._create_scene_file()
+            # 建物の頂点を定義（直方体）
+            # 注意: Sionna RTのScene APIに応じて調整が必要
+            # ここでは概念的な実装を示す
+            try:
+                # Sionna RTのプリミティブを使用してボックスを追加
+                # 実際のAPIに応じて調整
+                box = sn.rt.Box(
+                    name=bldg.id,
+                    center=[cx, cy, cz + height / 2],  # 中心を高さの半分に
+                    size=[bldg.size[0], bldg.size[1], height],
+                    material=building_material
+                )
+                self.scene.add(box)
+                print(f"   - Added building: {bldg.id} at {bldg.center}")
+            except AttributeError:
+                # Sionna RTのバージョンによってはBoxが使えない場合がある
+                # その場合はXMLシーンファイルをロードする方式に切り替え
+                print("⚠️  Box primitive not available. Using scene file approach.")
+                self._create_scene_file()
+                break  # create_scene_fileで全建物を処理するため、ループを抜ける
 
         if self.scene is not None:
             try:
@@ -215,7 +217,6 @@ class RayTracingSimulator:
             except AttributeError:
                 pass
 
-        print(f"   - Added building: {bldg.id} at {bldg.center}")
         print("✅ Sionna RT scene setup complete")
 
     def _create_box_mesh_obj(self, filename: str, center: List[float], size: List[float]):
