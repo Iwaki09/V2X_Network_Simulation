@@ -308,14 +308,12 @@ class RayTracingSimulator:
 
     def _create_scene_file(self):
         """
-        Sionna RT用のシーンファイル（XML/Mitsuba形式）を動的に生成
+        Sionna RT用のシーンファイル（XML/Mitsuba形式）を動的に生成（複数建物対応）
 
         注意: これは代替手法。Sionna RTのバージョンによって必要な場合がある。
         """
         import tempfile
         import os
-
-        bldg = self.building
 
         # 一時ディレクトリを作成
         self.temp_dir = tempfile.mkdtemp()
@@ -324,16 +322,29 @@ class RayTracingSimulator:
         ground_obj_path = os.path.join(self.temp_dir, "ground.obj")
         self._create_ground_mesh_obj(ground_obj_path, size=1000.0)
 
-        # 建物メッシュを生成
-        building_obj_path = os.path.join(self.temp_dir, "building.obj")
-        self._create_box_mesh_obj(
-            building_obj_path,
-            center=bldg.center,
-            size=bldg.size
-        )
+        # 各建物のメッシュを生成
+        building_shapes_xml = []
+        for i, bldg in enumerate(self.buildings):
+            building_obj_path = os.path.join(self.temp_dir, f"building_{i}_{bldg.id}.obj")
+            self._create_box_mesh_obj(
+                building_obj_path,
+                center=bldg.center,
+                size=bldg.size
+            )
+
+            # XMLシェイプ定義を追加
+            shape_xml = f'''
+    <shape type="obj" id="{bldg.id}">
+        <string name="filename" value="{building_obj_path}"/>
+        <boolean name="face_normals" value="true"/>
+        <ref id="building-mat" name="bsdf"/>
+    </shape>'''
+            building_shapes_xml.append(shape_xml)
+            print(f"   - Created mesh for building: {bldg.id} at {bldg.center}")
 
         # Mitsubaシーン形式のXMLを生成
         # SIONNA RTのサンプルに基づいたフォーマット
+        buildings_xml_str = ''.join(building_shapes_xml)
         scene_xml = f'''<?xml version="1.0" encoding="utf-8"?>
 <scene version="2.1.0">
     <!-- Materials -->
@@ -351,12 +362,7 @@ class RayTracingSimulator:
         <boolean name="face_normals" value="true"/>
         <ref id="ground-mat" name="bsdf"/>
     </shape>
-
-    <shape type="obj" id="{bldg.id}">
-        <string name="filename" value="{building_obj_path}"/>
-        <boolean name="face_normals" value="true"/>
-        <ref id="building-mat" name="bsdf"/>
-    </shape>
+{buildings_xml_str}
 </scene>
 '''
         # 一時ファイルに保存
@@ -372,7 +378,7 @@ class RayTracingSimulator:
 
         print(f"   - Loaded scene from {self.scene_file.name}")
         print(f"   - Ground mesh: {ground_obj_path}")
-        print(f"   - Building mesh: {building_obj_path}")
+        print(f"   - Total buildings in scene: {len(self.buildings)}")
 
     def _compute_paths_sionna(
         self,
