@@ -305,3 +305,35 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
   # 交差点シナリオで可視化を実行
   python scripts/run_visualization.py --scenario corner_intersection
   ```
+
+## 2026-01-09
+- **corner_intersectionシナリオの重大なバグを修正**: 複数建物がSionna RTシーンに正しく登録されていなかった問題を解決し、NLOS率とprop_mode=Kサンプル数が大幅に改善。
+- **発見された問題**:
+  1. **可視化の描画領域不正**: デフォルトシナリオ用の固定座標範囲がハードコードされ、corner_intersection（-150～150）が正しく表示されなかった
+  2. **可視化での座標系不一致**: レイトレーシング計算時にFCD座標をRT座標に変換していたが、可視化時は未変換で使用し、車両と建物の位置がずれていた
+  3. **Sionna RTシーンへの建物登録バグ（最重要）**: `raytracing.py`の186行目で`bldg = self.building`として単一建物のみ取得。corner_intersectionの4棟（Building_NE, NW, SE, SW）のうち**1棟のみ**がシーンに追加され、残り3棟は電波が透過していた
+- **実施した修正**:
+  1. **シナリオ設定に可視化パラメータ追加**: `default.py`と`corner_intersection.py`に`viz_xlim`, `viz_ylim`, `viz_road_x_range`, `viz_road_y_range`を追加
+  2. **可視化での座標変換適用**: `link_visualizer.py`の`merge_data()`で`scenario_config.transform_coordinates()`を呼び出し、FCD座標をRT座標に変換
+  3. **複数建物のSionna RTシーン登録**: `raytracing.py`の`_setup_sionna_scene()`を`for bldg in self.buildings:`ループに変更し、全建物をシーンに追加。`_create_scene_file()`も複数建物対応に修正
+- **改善結果**（corner_intersection with --sionna-rt）:
+  - **NLOS率**: 24.4% → **44.8%** (+83.6%)
+  - **prop_mode=K**: 24個 → **166個** (+591%、約7倍）
+  - **LOS**: 922個（75.6%） → 674個（55.2%）
+  - **NLOS**: 298個（24.4%） → 546個（44.8%）
+  - ✅ 両方の検証基準を達成（NLOS率≥5%, prop_mode=K≥100）
+- **スループット性能分析**（Shannon vs MCS）:
+  - **全体**: Shannon平均349.1 Mbps、MCS平均204.4 Mbps（MCS/Shannon比58.5%）
+  - **LOS条件**: Shannon平均553.6 Mbps、MCS平均322.6 Mbps（58.3%）
+  - **NLOS条件**: Shannon平均96.7 Mbps、MCS平均58.4 Mbps（60.4%）。LOS比で**-82.5%低下**
+  - **prop_mode=K環境**: Shannon平均541.2 Mbps、MCS平均314.6 Mbps（58.1%）
+  - **アウテージ率**（<10 Mbps）: Shannon 0.16%、MCS 0.0%
+- **生成されたアウトプット**:
+  - 分析結果: `summary_shannon_vs_mcs.csv`, 4つのCDFグラフ（Shannon vs MCS、時系列、LOS/NLOS別、prop_mode別）
+  - 可視化結果: `throughput_summary.png`, `theoretical_potential.png`, `method_comparison.png`, 93フレームの時系列可視化（座標変換済み）
+- **主要な知見**:
+  1. 建物遮蔽効果が正常に機能し、NLOS環境ではスループットがLOS時の約17.5%に低下
+  2. 複数建物を正しくシーンに登録することで、マルチパス支配環境（prop_mode=K）のサンプル数が7倍に増加
+  3. MCSモデルはShannonの約58.5%の効率を実現し、離散MCS選択による現実的な性能損失を再現
+  4. 可視化での座標変換により、車両と建物の位置関係が正確に表示されるようになった
+- simulation/README.mdを更新: 複数建物のSionna RTシーン登録に関する注意事項、可視化パラメータの説明、corner_intersectionシナリオの検証結果を更新。

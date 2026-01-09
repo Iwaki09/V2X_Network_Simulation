@@ -679,6 +679,12 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
+- **2026-01-09**:
+  - **【重大バグ修正】Sionna RTシーンへの複数建物登録の不具合を修正**。`raytracing.py`で`self.building`（単一）を参照していたため、corner_intersectionの4建物のうち1棟しか登録されていなかった問題を解決。全建物を`self.buildings`（複数）からループで登録するように修正。
+  - **可視化の座標系不整合を修正**。レイトレーシングは変換済み座標を使用する一方、可視化は生のSUMO座標を使用していたため、車両と建物の位置がずれていた問題を解決。`link_visualizer.py`で`scenario_config.transform_coordinates()`を適用。
+  - **可視化の描画範囲をシナリオ対応に改善**。各シナリオ設定に`viz_xlim`, `viz_ylim`パラメータを追加し、シナリオごとに適切な描画範囲を自動設定。
+  - **corner_intersection結果が大幅に改善**: NLOS率 24.4% → 44.8% (+83.6%)、prop_mode=K 24 → 166サンプル (+591%)。建物遮蔽効果が正しく反映されるようになった。
+  - **スループット性能分析を実施**: Shannon vs MCS比較により、MCS/Shannon比率0.585を確認。NLOS時は0.604とMCSの保守性が顕著。
 - **2026-01-07**:
   - **交差点シナリオ（corner_intersection）を追加**。LOS/NLOS切り替えを頻繁に発生させ、prop_mode(K)やNLOSサンプル収集に最適化。
   - `--scenario` オプションを全スクリプトに追加。`default` / `corner_intersection` を選択可能に。
