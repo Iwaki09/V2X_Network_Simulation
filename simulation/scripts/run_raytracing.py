@@ -125,6 +125,12 @@ def parse_args():
         default="default",
         help="シナリオ名（default, corner_intersection）"
     )
+    parser.add_argument(
+        "--v2v-max-distance",
+        type=float,
+        default=100.0,
+        help="V2Vリンク生成の最大距離 [m]（デフォルト: 100）"
+    )
     return parser.parse_args()
 
 
@@ -175,7 +181,8 @@ def main():
         v2v_tx_power_dbm=scenario_config.v2v_tx_power_dbm,
         use_sionna_rt=args.sionna_rt,
         max_depth=args.max_depth,
-        num_samples=args.num_samples
+        num_samples=args.num_samples,
+        v2v_max_distance_m=args.v2v_max_distance
     )
 
     # Step 3: 各タイムステップでリンク品質を計算

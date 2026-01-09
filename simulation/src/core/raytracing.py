@@ -67,7 +67,8 @@ class RayTracingSimulator:
         v2v_tx_power_dbm: float = 23.0,
         use_sionna_rt: bool = False,
         max_depth: int = 3,
-        num_samples: int = 1000000
+        num_samples: int = 1000000,
+        v2v_max_distance_m: float = 100.0
     ):
         """
         Args:
@@ -79,6 +80,7 @@ class RayTracingSimulator:
             use_sionna_rt: TrueならSionna RTでマルチパス計算、Falseなら簡易モデル
             max_depth: レイトレーシングの最大反射回数
             num_samples: レイトレーシングのサンプル数
+            v2v_max_distance_m: V2Vリンク生成の最大距離 [m]（計算量削減用）
         """
         self.base_station = base_station
 
@@ -99,6 +101,7 @@ class RayTracingSimulator:
         self.use_sionna_rt = use_sionna_rt
         self.max_depth = max_depth
         self.num_samples = num_samples
+        self.v2v_max_distance_m = v2v_max_distance_m
 
         # GPU確認
         self._check_gpu()
@@ -132,6 +135,7 @@ class RayTracingSimulator:
         print(f"   - Base Station: {base_station.id} at {base_station.position}")
         print(f"   - V2I TX Power: {base_station.tx_power_dbm} dBm")
         print(f"   - V2V TX Power: {v2v_tx_power_dbm} dBm")
+        print(f"   - V2V Max Distance: {v2v_max_distance_m} m")
         print(f"   - Buildings: {len(self.buildings)} building(s)")
         for bldg in self.buildings:
             print(f"     - {bldg.id} at {bldg.center}, size {bldg.size}")
@@ -739,7 +743,7 @@ class RayTracingSimulator:
             )
             link_qualities.append(link_quality)
 
-        # V2Vリンクの計算（全車両間のペア）
+        # V2Vリンクの計算（距離閾値内のペアのみ）
         for i, tx_vehicle_id in enumerate(vehicle_ids):
             tx_vehicle_pos = vehicle_positions[tx_vehicle_id]
 
@@ -749,6 +753,17 @@ class RayTracingSimulator:
                     continue
 
                 rx_vehicle_pos = vehicle_positions[rx_vehicle_id]
+
+                # 距離チェック（計算量削減のため）
+                dx = tx_vehicle_pos[0] - rx_vehicle_pos[0]
+                dy = tx_vehicle_pos[1] - rx_vehicle_pos[1]
+                dz = tx_vehicle_pos[2] - rx_vehicle_pos[2]
+                distance = (dx**2 + dy**2 + dz**2) ** 0.5
+
+                # 距離閾値を超えている場合はスキップ
+                if distance > self.v2v_max_distance_m:
+                    continue
+
                 link_quality = self._calculate_single_link(
                     timestamp=timestamp,
                     link_type="V2V",

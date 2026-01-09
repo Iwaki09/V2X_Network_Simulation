@@ -250,6 +250,17 @@ python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbp
 # 交差点シナリオで分析
 python scripts/analyze_throughput_models.py --scenario corner_intersection
 
+# 最小追加分析（距離CDF、SNR CDF、MCS分布）
+python scripts/analyze_minimal_additional.py
+
+# 出力先とパラメータを指定
+python scripts/analyze_minimal_additional.py --outdir output/analysis --rmin-mbps 50
+
+# カスタム入力ファイル指定
+python scripts/analyze_minimal_additional.py \
+    --input-default output/scenarios/default/throughput/theoretical_network_results.csv \
+    --input-corner output/scenarios/corner_intersection/throughput/theoretical_network_results.csv
+
 # 可視化（すべて）
 python scripts/run_visualization.py --all
 
@@ -608,6 +619,55 @@ python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbp
 - `fig3_cdf_los_nlos.png`: LOS/NLOS別CDF
 - `fig4_cdf_prop_mode.png`: prop_mode (D/K) 別CDF
 
+### 最小追加分析スクリプト
+
+`analyze_minimal_additional.py` は Default と Corner の2つのシナリオを比較し、以下の3点を分析します：
+- A) 距離CDF（tx-rx距離の累積分布）
+- B) SNR CDF（snr_dbの累積分布）
+- C) MCS分布（特にNLOSでのmcs_index分布）
+
+**特徴:**
+- FCDファイルから車両位置を読み込み、V2I/V2V距離を自動計算
+- Default vs Corner シナリオを重ねてプロット
+- 条件別（LOS/NLOS、prop_mode=D/K）の統計量を集計CSV出力
+
+**実行方法:**
+```bash
+# 基本実行（デフォルトパスを使用）
+python scripts/analyze_minimal_additional.py
+
+# 出力先とパラメータを指定
+python scripts/analyze_minimal_additional.py --outdir output/analysis --rmin-mbps 50
+
+# カスタム入力ファイル指定
+python scripts/analyze_minimal_additional.py \
+    --input-default output/scenarios/default/throughput/theoretical_network_results.csv \
+    --input-corner output/scenarios/corner_intersection/throughput/theoretical_network_results.csv
+
+# リンクタイプフィルタ（V2Iのみ、V2Vのみ）
+python scripts/analyze_minimal_additional.py --link-type v2i
+```
+
+**出力ファイル:**
+- 図:
+  - `figA1_distance_cdf_all.png`: 距離CDF（All）
+  - `figA2_distance_cdf_los_nlos.png`: 距離CDF（LOS/NLOS別）
+  - `figB1_snr_cdf_all.png`: SNR CDF（All）
+  - `figB2_snr_cdf_los_nlos.png`: SNR CDF（LOS/NLOS別）
+  - `figC1_mcs_histogram_nlos.png`: MCS分布（NLOS）
+  - `figC2_mcs_histogram_prop_mode.png`: MCS分布（prop_mode別）
+- 集計CSV:
+  - `summary_minimal_additional_default.csv`: Default条件別統計
+  - `summary_minimal_additional_corner.csv`: Corner条件別統計
+  - `summary_minimal_additional_compare.csv`: Default vs Corner差分比較
+
+**集計CSV項目:**
+- 条件（All, LOS, NLOS, D, K, LOS&D, LOS&K, NLOS&D, NLOS&K）別に以下を出力:
+  - 距離統計: mean, p05, median, p95
+  - SNR統計: mean, p05, median, p95
+  - MCS統計: mode, p50, p95
+  - スループット: mean_shannon_mbps, mean_mcs_mbps, mcs_shannon_ratio
+
 ---
 
 ## 研究成果
@@ -679,6 +739,11 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
+- **2026-01-10**:
+  - **最小追加分析スクリプトを追加** (`analyze_minimal_additional.py`)。論文締めくくり用の3点分析（距離CDF、SNR CDF、MCS分布）をDefault vs Corner比較で自動生成。
+  - FCDファイルから車両位置を読み込み、V2I/V2V距離を自動計算する機能を実装。
+  - 条件別（All, LOS, NLOS, D, K, LOS&D, LOS&K, NLOS&D, NLOS&K）の統計量を集計CSV出力。
+  - 6種類の図（距離CDF×2、SNR CDF×2、MCS分布×2）と3種類の集計CSV（Default, Corner, Compare）を生成。
 - **2026-01-09**:
   - **【重大バグ修正】Sionna RTシーンへの複数建物登録の不具合を修正**。`raytracing.py`で`self.building`（単一）を参照していたため、corner_intersectionの4建物のうち1棟しか登録されていなかった問題を解決。全建物を`self.buildings`（複数）からループで登録するように修正。
   - **可視化の座標系不整合を修正**。レイトレーシングは変換済み座標を使用する一方、可視化は生のSUMO座標を使用していたため、車両と建物の位置がずれていた問題を解決。`link_visualizer.py`で`scenario_config.transform_coordinates()`を適用。

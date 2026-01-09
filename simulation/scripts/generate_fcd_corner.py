@@ -31,73 +31,77 @@ class Vehicle:
 
 
 def create_vehicles() -> List[Vehicle]:
-    """車両リストを作成"""
+    """
+    車両リストを作成
+
+    目標: 交差点中心(0,0)の周辺半径R=150m内で、時刻平均の同時車両数が平均10台以上
+    方針: プラトーン投入方式で短間隔（0.5〜1.5s）で車両を投入し、交差点周辺に車を"溜める"
+    """
     vehicles = []
 
     # ルート定義（SUMOネットワーク座標系: 交差点中心=200,200）
     # 道路幅を考慮してy座標を少しずらす
+    # 速度を遅くして交差点周辺に長く滞在させる（8〜11 m/s）
+
+    # プラトーン投入パラメータ
+    platoon_interval = 0.8  # プラトーン内車両間隔 [秒]
+    platoon_size = 20  # 各ルートのプラトーンサイズ（車両数）
+    speed_variation = 0.3  # 速度のバリエーション
 
     # Route A: West→East（直進）y=198.4（南側車線）
-    vehicles.append(Vehicle(
-        id="vehicle_0", route="west_east", speed=12.0, depart_time=0.0,
-        start_pos=(7.2, 198.4), end_pos=(392.8, 198.4)
-    ))
-    vehicles.append(Vehicle(
-        id="vehicle_1", route="west_east", speed=11.0, depart_time=5.0,
-        start_pos=(7.2, 198.4), end_pos=(392.8, 198.4)
-    ))
-
-    # Route B: South→North（直進）x=201.6（東側車線）
-    vehicles.append(Vehicle(
-        id="vehicle_2", route="south_north", speed=13.0, depart_time=2.0,
-        start_pos=(201.6, 7.2), end_pos=(201.6, 392.8)
-    ))
-    vehicles.append(Vehicle(
-        id="vehicle_3", route="south_north", speed=12.0, depart_time=8.0,
-        start_pos=(201.6, 7.2), end_pos=(201.6, 392.8)
-    ))
-
-    # Route C: West→North（左折）
-    vehicles.append(Vehicle(
-        id="vehicle_4", route="west_north", speed=10.0, depart_time=10.0,
-        start_pos=(7.2, 198.4), end_pos=(201.6, 392.8),
-        waypoints=[(200.0, 200.0)]  # 交差点中心で曲がる
-    ))
-
-    # Route D: South→East（左折）
-    vehicles.append(Vehicle(
-        id="vehicle_5", route="south_east", speed=11.0, depart_time=15.0,
-        start_pos=(201.6, 7.2), end_pos=(392.8, 198.4),
-        waypoints=[(200.0, 200.0)]
-    ))
-
-    # Route E: East→West（直進）y=201.6（北側車線）
-    vehicles.append(Vehicle(
-        id="vehicle_6", route="east_west", speed=12.0, depart_time=3.0,
-        start_pos=(392.8, 201.6), end_pos=(7.2, 201.6)
-    ))
-
-    # Route F: North→South（直進）x=198.4（西側車線）
-    vehicles.append(Vehicle(
-        id="vehicle_7", route="north_south", speed=11.0, depart_time=6.0,
-        start_pos=(198.4, 392.8), end_pos=(198.4, 7.2)
-    ))
-
-    # 追加フロー車両（交差点付近で多くのイベントを発生させる）
-    # West→East 追加
-    for i, t in enumerate([20, 30, 40, 50, 60, 70]):
+    for i in range(platoon_size):
         vehicles.append(Vehicle(
-            id=f"flow_we_{i}", route="west_east", speed=11.0 + (i % 3) * 0.5,
-            depart_time=float(t),
+            id=f"we_{i}", route="west_east",
+            speed=9.0 + (i % 4) * speed_variation,
+            depart_time=i * platoon_interval,
             start_pos=(7.2, 198.4), end_pos=(392.8, 198.4)
         ))
 
-    # South→North 追加
-    for i, t in enumerate([25, 35, 45, 55, 65, 75]):
+    # Route B: South→North（直進）x=201.6（東側車線）
+    for i in range(platoon_size):
         vehicles.append(Vehicle(
-            id=f"flow_sn_{i}", route="south_north", speed=12.0 + (i % 3) * 0.5,
-            depart_time=float(t),
+            id=f"sn_{i}", route="south_north",
+            speed=9.5 + (i % 4) * speed_variation,
+            depart_time=0.3 + i * platoon_interval,
             start_pos=(201.6, 7.2), end_pos=(201.6, 392.8)
+        ))
+
+    # Route C: East→West（直進）y=201.6（北側車線）
+    for i in range(platoon_size):
+        vehicles.append(Vehicle(
+            id=f"ew_{i}", route="east_west",
+            speed=9.0 + (i % 4) * speed_variation,
+            depart_time=0.6 + i * platoon_interval,
+            start_pos=(392.8, 201.6), end_pos=(7.2, 201.6)
+        ))
+
+    # Route D: North→South（直進）x=198.4（西側車線）
+    for i in range(platoon_size):
+        vehicles.append(Vehicle(
+            id=f"ns_{i}", route="north_south",
+            speed=9.5 + (i % 4) * speed_variation,
+            depart_time=0.9 + i * platoon_interval,
+            start_pos=(198.4, 392.8), end_pos=(198.4, 7.2)
+        ))
+
+    # Route E: West→North（左折）- 交差点内で滞留
+    for i in range(platoon_size // 2):  # 左折は少なめ
+        vehicles.append(Vehicle(
+            id=f"wn_{i}", route="west_north",
+            speed=8.0 + (i % 3) * speed_variation,
+            depart_time=1.2 + i * platoon_interval * 1.5,
+            start_pos=(7.2, 198.4), end_pos=(201.6, 392.8),
+            waypoints=[(200.0, 200.0)]  # 交差点中心で曲がる
+        ))
+
+    # Route F: South→East（左折）- 交差点内で滞留
+    for i in range(platoon_size // 2):  # 左折は少なめ
+        vehicles.append(Vehicle(
+            id=f"se_{i}", route="south_east",
+            speed=8.0 + (i % 3) * speed_variation,
+            depart_time=1.5 + i * platoon_interval * 1.5,
+            start_pos=(201.6, 7.2), end_pos=(392.8, 198.4),
+            waypoints=[(200.0, 200.0)]
         ))
 
     return vehicles
