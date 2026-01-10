@@ -80,7 +80,25 @@ def main():
         type=str,
         choices=VALID_THROUGHPUT_COLS,
         default=DEFAULT_THROUGHPUT_COL,
-        help=f'最適化に使用するスループット列 (デフォルト: {DEFAULT_THROUGHPUT_COL})'
+        help=f'最適化に使用するスループット列（後方互換、--opt-throughput-colと同じ） (デフォルト: {DEFAULT_THROUGHPUT_COL})'
+    )
+    parser.add_argument(
+        '--opt-throughput-col',
+        type=str,
+        default=None,
+        help='最適化の目的関数/制約に使うスループット列（estimate）. 指定しない場合は --throughput-col を使用'
+    )
+    parser.add_argument(
+        '--eval-throughput-col',
+        type=str,
+        default=None,
+        help='最適化結果を評価するときに使う"真値"スループット列（truth）. 指定しない場合は --opt-throughput-col と同じ'
+    )
+    parser.add_argument(
+        '--outage-threshold-mbps',
+        type=float,
+        default=50.0,
+        help='アウトエージ判定しきい値 [Mbps] (評価列に対して適用). デフォルト: 50.0'
     )
     parser.add_argument(
         '--input',
@@ -109,10 +127,16 @@ def main():
     # 出力ディレクトリ
     output_dir = scenario_config.optimization_output_dir
 
+    # スループット列の決定（後方互換性を保つ）
+    opt_throughput_col = args.opt_throughput_col if args.opt_throughput_col else args.throughput_col
+    eval_throughput_col = args.eval_throughput_col if args.eval_throughput_col else opt_throughput_col
+
     print(f"\nScenario: {scenario_config.name}")
     print(f"Input: {input_csv}")
     print(f"Output dir: {output_dir}")
-    print(f"使用するスループット列: {args.throughput_col}")
+    print(f"最適化入力列 (opt):  {opt_throughput_col}")
+    print(f"評価列 (eval):       {eval_throughput_col}")
+    print(f"アウトエージしきい値: {args.outage_threshold_mbps} Mbps")
 
     if run_distributed:
         print("\n" + "=" * 60)
@@ -121,7 +145,9 @@ def main():
         simulate_distributed_control(
             input_csv=input_csv,
             output_dir=output_dir,
-            throughput_col=args.throughput_col
+            throughput_col=opt_throughput_col,
+            eval_throughput_col=eval_throughput_col,
+            outage_threshold_mbps=args.outage_threshold_mbps
         )
 
     if run_global:
@@ -131,7 +157,9 @@ def main():
         solve_global_optimization(
             input_csv=input_csv,
             output_dir=output_dir,
-            throughput_col=args.throughput_col
+            throughput_col=opt_throughput_col,
+            eval_throughput_col=eval_throughput_col,
+            outage_threshold_mbps=args.outage_threshold_mbps
         )
 
     print("\n  最適化処理完了")

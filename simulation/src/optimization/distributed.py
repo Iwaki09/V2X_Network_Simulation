@@ -14,7 +14,11 @@ from pathlib import Path
 DEFAULT_THROUGHPUT_COL = 'theoretical_throughput_mbps'
 
 # 許可されるスループット列
-VALID_THROUGHPUT_COLS = ['theoretical_throughput_mbps', 'throughput_mbps_mcs']
+VALID_THROUGHPUT_COLS = [
+    'theoretical_throughput_mbps',
+    'throughput_mbps_mcs',
+    'throughput_mbps_mcs_est'  # 推定列（Mode-aware Margin適用後）
+]
 
 
 def validate_throughput_column(df: pd.DataFrame, throughput_col: str) -> None:
@@ -137,7 +141,9 @@ def simulate_distributed_control(
     input_csv: Path = None,
     output_csv: Path = None,
     output_dir: Path = None,
-    throughput_col: str = DEFAULT_THROUGHPUT_COL
+    throughput_col: str = DEFAULT_THROUGHPUT_COL,
+    eval_throughput_col: str = None,
+    outage_threshold_mbps: float = 50.0
 ) -> pd.DataFrame:
     """
     分散型制御シミュレーションを実行
@@ -146,9 +152,12 @@ def simulate_distributed_control(
         input_csv: 入力CSVファイルパス (theoretical_network_results.csv)
         output_csv: 出力CSVファイルパス (baseline_distributed_results.csv)
         output_dir: 出力ディレクトリ（output_csvより優先度低い）
-        throughput_col: 最適化に使用するスループット列名
+        throughput_col: 最適化（選択）に使用するスループット列名
             - 'theoretical_throughput_mbps': Shannon公式ベース（デフォルト）
             - 'throughput_mbps_mcs': MCSベース
+            - 'throughput_mbps_mcs_est': 推定列（Mode-aware Margin適用後）
+        eval_throughput_col: 評価に使用するスループット列名（Noneの場合はthroughput_colと同じ）
+        outage_threshold_mbps: アウトエージ判定しきい値 [Mbps]（評価列に対して適用）
 
     Returns:
         結果DataFrame
@@ -166,10 +175,16 @@ def simulate_distributed_control(
             default_output_dir.mkdir(parents=True, exist_ok=True)
             output_csv = default_output_dir / "baseline_distributed_results.csv"
 
+    # 評価列の決定
+    if eval_throughput_col is None:
+        eval_throughput_col = throughput_col
+
     print("=" * 60)
     print("分散型制御シミュレータ")
     print("=" * 60)
-    print(f"  スループット列: {throughput_col}")
+    print(f"  最適化入力列 (opt):  {throughput_col}")
+    print(f"  評価列 (eval):       {eval_throughput_col}")
+    print(f"  アウトエージしきい値: {outage_threshold_mbps} Mbps")
 
     # 1. データ読み込み
     print("\n[1] データ読み込み")
@@ -177,6 +192,8 @@ def simulate_distributed_control(
 
     # スループット列の検証
     validate_throughput_column(df, throughput_col)
+    if eval_throughput_col != throughput_col:
+        validate_throughput_column(df, eval_throughput_col)
 
     # 2. V2Iリンクのみ抽出
     print("\n[2] V2Iリンク抽出")
@@ -186,12 +203,53 @@ def simulate_distributed_control(
     print("\n[3] 各車両が最強V2Iリンクを選択")
     best_links_df = select_best_v2i_per_vehicle(v2i_df, throughput_col=throughput_col)
 
-    # 4. タイムスタンプごとのV2I総スループット計算
-    print("\n[4] V2I総スループット計算")
+    # 4. タイムスタンプごとのV2I総スループット計算（opt列）
+    print("\n[4] V2I総スループット計算（opt列）")
     result_df = calculate_total_throughput_per_timestamp(best_links_df, throughput_col=throughput_col)
 
-    # 5. 結果保存
-    print("\n[5] 結果保存")
+    # 5. 評価指標の計算（eval列）
+    print("\n[5] 評価指標の計算（eval列）")
+    if eval_throughput_col != throughput_col:
+        print(f"  評価列 '{eval_throughput_col}' を使用して評価指標を計算")
+
+    # 選択されたリンクのeval列スループット
+    eval_throughputs = best_links_df[eval_throughput_col].values
+
+    # アウトエージ率（eval列で判定）
+    outage_count = (eval_throughputs < outage_threshold_mbps).sum()
+    outage_rate = outage_count / len(eval_throughputs) if len(eval_throughputs) > 0 else 0.0
+
+    # P05（下位5%）
+    p05_eval = float(pd.Series(eval_throughputs).quantile(0.05))
+
+    # 平均
+    mean_eval = float(pd.Series(eval_throughputs).mean())
+
+    print(f"  評価結果:")
+    print(f"    - アウトエージ率 (< {outage_threshold_mbps} Mbps): {outage_rate*100:.2f}% ({outage_count}/{len(eval_throughputs)})")
+    print(f"    - P05 (下位5%):       {p05_eval:.2f} Mbps")
+    print(f"    - 平均スループット:    {mean_eval:.2f} Mbps")
+
+    # 結果に評価指標を追加
+    summary_stats = {
+        'outage_threshold_mbps': outage_threshold_mbps,
+        'outage_rate_eval': outage_rate,
+        'outage_count_eval': outage_count,
+        'total_links_eval': len(eval_throughputs),
+        'p05_eval_mbps': p05_eval,
+        'mean_eval_mbps': mean_eval,
+        'opt_col': throughput_col,
+        'eval_col': eval_throughput_col
+    }
+
+    # サマリーをCSVファイルに保存（別ファイル）
+    summary_output_csv = output_csv.parent / output_csv.name.replace('.csv', '_summary.csv')
+    summary_df = pd.DataFrame([summary_stats])
+    summary_df.to_csv(summary_output_csv, index=False)
+    print(f"  評価サマリー保存: {summary_output_csv}")
+
+    # 6. 結果保存
+    print("\n[6] 結果保存")
     save_baseline_results(result_df, output_csv)
 
     print("\n" + "=" * 60)

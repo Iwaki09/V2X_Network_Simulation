@@ -65,6 +65,32 @@ def parse_args():
         default='default',
         help='シナリオ名 (default, corner_intersection). デフォルト: default'
     )
+
+    # Mode-aware Fading Margin オプション
+    parser.add_argument(
+        '--enable-margin-estimate',
+        action='store_true',
+        help='推定列生成を有効化（Mode-aware Fading Margin適用）'
+    )
+    parser.add_argument(
+        '--margin-p',
+        type=float,
+        default=0.10,
+        help='Dモード用の目標信頼性（下位p分位）. デフォルト: 0.10'
+    )
+    parser.add_argument(
+        '--margin-k-db',
+        type=float,
+        default=3.0,
+        help='Kモード用の固定マージン [dB]. デフォルト: 3.0'
+    )
+    parser.add_argument(
+        '--margin-d-db',
+        type=float,
+        default=None,
+        help='Dモード用マージンを手動指定 [dB] (指定しない場合はmargin-pから計算)'
+    )
+
     return parser.parse_args()
 
 
@@ -86,7 +112,15 @@ def main():
     # 出力ディレクトリを作成
     output_csv.parent.mkdir(parents=True, exist_ok=True)
 
-    process_link_quality_data(str(input_csv), str(output_csv), rate_model=args.rate_model)
+    process_link_quality_data(
+        str(input_csv),
+        str(output_csv),
+        rate_model=args.rate_model,
+        enable_margin_estimate=args.enable_margin_estimate,
+        margin_p=args.margin_p,
+        margin_k_db=args.margin_k_db,
+        margin_d_db_override=args.margin_d_db
+    )
 
 
 if __name__ == "__main__":
