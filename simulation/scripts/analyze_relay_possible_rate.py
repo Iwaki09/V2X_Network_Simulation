@@ -18,6 +18,11 @@ import sys
 from pathlib import Path
 import pandas as pd
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib
+
+# 日本語フォント設定
+matplotlib.rcParams['font.family'] = 'DejaVu Sans'
 
 # プロジェクトルートをパスに追加
 SCRIPT_DIR = Path(__file__).parent

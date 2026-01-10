@@ -1,0 +1,2 @@
+total_samples,num_outage_candidates,num_outage_and_relay_possible,outage_candidate_rate,relay_possible_rate_vehicle,conditional_relay_possible_rate,avg_neighbors_within_R,rate_vehicles_with_neighbors,avg_vehicles_per_timestamp
+4123,1235,97,0.2995391705069124,0.02352655833131215,0.07854251012145749,42.87266553480475,0.9966044142614601,67.59016393442623

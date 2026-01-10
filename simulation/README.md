@@ -261,6 +261,16 @@ python scripts/analyze_minimal_additional.py \
     --input-default output/scenarios/default/throughput/theoretical_network_results.csv \
     --input-corner output/scenarios/corner_intersection/throughput/theoretical_network_results.csv
 
+# リレー可能率分析（V2Vリレーの可能性を評価）
+python scripts/analyze_relay_possible_rate.py
+
+# パラメータを指定してリレー可能率分析
+python scripts/analyze_relay_possible_rate.py \
+    --input output/scenarios/corner_intersection/throughput/theoretical_network_results.csv \
+    --outdir output/scenarios/corner_intersection/analysis \
+    --throughput-col throughput_mbps_mcs \
+    --t-out 50 --t-v2v-min 50 --t-v2i-good 100
+
 # 可視化（すべて）
 python scripts/run_visualization.py --all
 
@@ -480,6 +490,7 @@ V2Xリンク可視化フレームを生成します。
 | 帯域幅 | 100 | MHz | チャネル帯域幅 | src/core/throughput.py |
 | V2I送信電力 | 30 | dBm | 基地局送信電力 | src/core/raytracing.py |
 | V2V送信電力 | 23 | dBm | 車両送信電力 | src/core/raytracing.py |
+| V2V最大距離 | 100 | m | V2Vリンク生成の最大距離（計算量削減用） | src/core/raytracing.py |
 | 遮蔽損失 | 15 | dB | NLOS時の追加損失 | src/core/raytracing.py |
 | 雑音温度 | 290 | K | 受信機雑音温度 | src/core/throughput.py |
 
@@ -668,6 +679,54 @@ python scripts/analyze_minimal_additional.py --link-type v2i
   - MCS統計: mode, p50, p95
   - スループット: mean_shannon_mbps, mean_mcs_mbps, mcs_shannon_ratio
 
+### リレー可能率分析スクリプト
+
+`analyze_relay_possible_rate.py` は V2Vリレーの可能性を評価する参考指標を算出します。実際のリレー送信は実装せず、「リレー可能性」のみを集計します。
+
+**目的:**
+- 交差点シナリオで「V2Vが成立する環境」を確保し、V2Vリレーの可能性を示す
+- アウトエージ（低レート状態）車両が、近傍のV2Vリンクを介してリレー可能かを評価
+
+**定義:**
+時刻tで車両vが「リレー可能」と判定される条件：
+1. vの直V2Iが"アウトエージ候補"である：`throughput_v2i(v,t) < T_out`
+2. vの近傍に車両uが存在し、次を全て満たす：
+   - `throughput_v2v(v→u,t) >= T_v2v_min`
+   - `throughput_v2i(u,t) >= T_v2i_good`
+
+**実行方法:**
+```bash
+# 基本実行（デフォルトパラメータ）
+python scripts/analyze_relay_possible_rate.py
+
+# パラメータ指定
+python scripts/analyze_relay_possible_rate.py \
+    --input output/scenarios/corner_intersection/throughput/theoretical_network_results.csv \
+    --outdir output/scenarios/corner_intersection/analysis \
+    --throughput-col throughput_mbps_mcs \
+    --t-out 50 --t-v2v-min 50 --t-v2i-good 100 \
+    --v2v-radius-m 100
+```
+
+**パラメータ:**
+- `--throughput-col`: 使用するスループット列（デフォルト: `throughput_mbps_mcs`）
+- `--t-out`: アウトエージ候補閾値 [Mbps]（デフォルト: 50）
+- `--t-v2v-min`: V2Vリンク成立閾値 [Mbps]（デフォルト: 50）
+- `--t-v2i-good`: 中継車のV2Iが十分な閾値 [Mbps]（デフォルト: 100）
+- `--v2v-radius-m`: V2V近傍距離閾値 [m]（デフォルト: 100、既にRTで絞り込み済み）
+
+**出力ファイル:**
+- `relay_possible_rate_summary.csv`: サマリー統計（1行）
+- `relay_possible_rate_by_time.csv`: 時刻別の詳細統計
+
+**出力指標:**
+- `outage_candidate_rate`: 全車両のうちアウトエージ候補の割合
+- `relay_possible_rate_vehicle`: 全車両のうちリレー可能な割合
+- `conditional_relay_possible_rate`: アウトエージ候補のうちリレー可能な割合
+- `avg_neighbors_within_R`: 近傍車両数の平均
+- `rate_vehicles_with_neighbors`: 近傍車両が1台以上いる車両の割合
+- `avg_vehicles_per_timestamp`: タイムステップあたりの平均車両数
+
 ---
 
 ## 研究成果
@@ -739,7 +798,19 @@ python scripts/run_raytracing.py
 
 ## 更新履歴
 
-- **2026-01-10**:
+- **2026-01-10** (2回目):
+  - **V2Vリレー可能率分析機能を追加** - 研究の主軸である「アウトエージ回避」に向けたV2Vリレーの可能性を評価する機能を実装。
+  - **V2V距離閾値フィルタを追加** (`RayTracingSimulator`に`v2v_max_distance_m`パラメータ追加、デフォルト100m)。車両数増加時の計算量爆発を防止。
+  - **交差点シナリオの交通密度を大幅に増加** - プラトーン投入方式により100台の車両を短間隔（0.8秒間隔）で投入。V2Vリンクが成立する環境を実現。
+  - **リレー可能率分析スクリプトを追加** (`analyze_relay_possible_rate.py`)。アウトエージ候補車両がV2Vリンク経由でリレー可能かを評価。
+  - **検証結果（交差点シナリオ）**:
+    - 平均同時車両数: 67.59台（目標10台以上を達成）
+    - 近傍車両数の平均: 42.87台（目標1台以上を大幅達成）
+    - 近傍車両がいる車両の割合: 99.66%（目標50%以上を大幅達成）
+    - アウトエージ候補率: 29.95%（約30%の車両が救う対象）
+    - 条件付きリレー可能率: 7.85%（アウトエージ候補の約8%がリレー可能）
+  - **後方互換性を完全維持** - 既存パイプライン（SUMO→RT→CSV→throughput→analysis）に影響なし。
+- **2026-01-10** (1回目):
   - **最小追加分析スクリプトを追加** (`analyze_minimal_additional.py`)。論文締めくくり用の3点分析（距離CDF、SNR CDF、MCS分布）をDefault vs Corner比較で自動生成。
   - FCDファイルから車両位置を読み込み、V2I/V2V距離を自動計算する機能を実装。
   - 条件別（All, LOS, NLOS, D, K, LOS&D, LOS&K, NLOS&D, NLOS&K）の統計量を集計CSV出力。
