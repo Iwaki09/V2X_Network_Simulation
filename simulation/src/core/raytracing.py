@@ -9,13 +9,21 @@ SIONNA RTレイトレーシングシミュレーション
 - use_sionna_rt=True: Sionna RTによる本格的なレイトレーシング（マルチパス対応）
 """
 
-import sionna as sn
-import tensorflow as tf
 import numpy as np
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 
 from .propagation_mode import compute_dk, dbm_to_watts, watts_to_dbm
+
+# Sionna RTは使用時にのみインポート（オプショナル依存）
+try:
+    import sionna as sn
+    import tensorflow as tf
+    SIONNA_AVAILABLE = True
+except ImportError:
+    SIONNA_AVAILABLE = False
+    sn = None
+    tf = None
 
 
 @dataclass
@@ -103,25 +111,33 @@ class RayTracingSimulator:
         self.num_samples = num_samples
         self.v2v_max_distance_m = v2v_max_distance_m
 
-        # GPU確認
-        self._check_gpu()
-
-        # SIONNA RTアンテナアレイの設定（等方性）
-        self.tx_array = sn.rt.PlanarArray(
-            num_rows=1, num_cols=1,
-            vertical_spacing=0.5, horizontal_spacing=0.5,
-            pattern="iso", polarization="V"
-        )
-        self.rx_array = sn.rt.PlanarArray(
-            num_rows=1, num_cols=1,
-            vertical_spacing=0.5, horizontal_spacing=0.5,
-            pattern="iso", polarization="V"
-        )
-
         # Sionna RTシーンの初期化（use_sionna_rt=Trueの場合）
         self.scene = None
         self._path_solver = None
+        self.tx_array = None
+        self.rx_array = None
+
         if self.use_sionna_rt:
+            if not SIONNA_AVAILABLE:
+                raise ImportError(
+                    "Sionna RT mode requires 'sionna' and 'tensorflow' packages. "
+                    "Please install them or use simple model mode (use_sionna_rt=False)."
+                )
+
+            # GPU確認
+            self._check_gpu()
+
+            # SIONNA RTアンテナアレイの設定（等方性）
+            self.tx_array = sn.rt.PlanarArray(
+                num_rows=1, num_cols=1,
+                vertical_spacing=0.5, horizontal_spacing=0.5,
+                pattern="iso", polarization="V"
+            )
+            self.rx_array = sn.rt.PlanarArray(
+                num_rows=1, num_cols=1,
+                vertical_spacing=0.5, horizontal_spacing=0.5,
+                pattern="iso", polarization="V"
+            )
             self._setup_sionna_scene()
             if hasattr(sn.rt, "PathSolver"):
                 try:
