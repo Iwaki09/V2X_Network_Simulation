@@ -796,8 +796,93 @@ python scripts/run_raytracing.py
 
 ---
 
+## Mode-aware Fading Margin（フェージング・マージン）
+
+**実装日**: 2026-01-11
+
+フェージング理論に基づく保守的スループット推定により、最適化の入力（estimate）と評価（truth）を分離し、アウトエージ回避を目指す機能です。
+
+### 概要
+
+**理論**: Rayleighフェージング環境では、瞬間SNRは平均SNRに対して指数分布に従い、下位p分位を保証するSNRマージンは以下の式で与えられます：
+
+```
+M_Rayleigh(p) = 10 log₁₀( 1 / (-ln(1-p)) ) [dB]
+```
+
+**実装**:
+- **Dモード**（支配的成分なし、Rayleigh寄り）: 計算されたRayleighマージン（例：p=0.20で約6.51 dB）
+- **Kモード**（支配的成分あり、Ricean寄り）: 固定の小マージン（デフォルト：1.5 dB）
+
+### 使用方法
+
+#### 1. スループット計算（推定列生成）
+
+```bash
+# Mode-aware Margin適用（推奨設定）
+python scripts/run_throughput.py \
+  --scenario corner_intersection \
+  --rate-model both \
+  --enable-margin-estimate \
+  --margin-p 0.20 \
+  --margin-k-db 1.5
+```
+
+**新規追加列**:
+- `margin_db_used`: 適用したマージン値 [dB]
+- `snr_db_eff_margin`: マージン適用後の有効SNR [dB]
+- `mcs_index_est`: 推定（保守的）MCS index
+- `throughput_mbps_mcs_est`: 推定（保守的）MCSスループット [Mbps]
+
+#### 2. 最適化実行（opt列とeval列の分離）
+
+```bash
+# Baseline（truth列のみ）
+python scripts/run_optimization.py \
+  --scenario corner_intersection \
+  --global \
+  --opt-throughput-col throughput_mbps_mcs \
+  --eval-throughput-col throughput_mbps_mcs \
+  --outage-threshold-mbps 50
+
+# Proposed（estimate→truth評価）
+python scripts/run_optimization.py \
+  --scenario corner_intersection \
+  --global \
+  --opt-throughput-col throughput_mbps_mcs_est \
+  --eval-throughput-col throughput_mbps_mcs \
+  --outage-threshold-mbps 50
+```
+
+### 実験結果（10タイムステップ、p=0.20, K=1.5dB）
+
+| 指標 | Baseline | Proposed | 変化 |
+|------|----------|----------|------|
+| アウトエージ率 (< 50 Mbps) | 2.23% | 4.38% | +2.15%pt ❌ |
+| P05 [Mbps] | 440.00 | 330.00 | -110.00 ❌ |
+| 平均 [Mbps] | 493.70 | ~509 | +~15 ✅ **+3.0%** |
+
+**結論**:
+- ✅ 平均スループットが **3.0%改善**
+- ❌ P05が25%悪化、アウトエージ率が悪化
+- 🤔 トレードオフ: 平均改善 vs 下位悪化
+
+### 詳細ドキュメント
+
+実装の詳細、理論背景、実験結果の詳細、今後の研究方向については、`MODE_AWARE_MARGIN.md` を参照してください。
+
+---
+
 ## 更新履歴
 
+- **2026-01-11**:
+  - **Mode-aware Fading Margin実装を追加**。フェージング理論に基づく保守的スループット推定により、最適化の入力（estimate）と評価（truth）を分離。
+  - `throughput.py` に Rayleigh/Ricean フェージング・マージン計算を実装。Dモード（Rayleigh寄り）とKモード（Ricean寄り）で異なるマージンを適用。
+  - `run_throughput.py` に `--enable-margin-estimate`, `--margin-p`, `--margin-k-db` オプションを追加。
+  - `run_optimization.py` に `--opt-throughput-col`, `--eval-throughput-col`, `--outage-threshold-mbps` オプションを追加し、opt列とeval列の分離処理を実現。
+  - `distributed.py`, `global_optimizer.py` に評価指標計算（アウトエージ率、P05、平均）を追加。
+  - 実験結果: 平均スループット3.0%改善、ただしP05が25%悪化（トレードオフ）。
+  - 詳細ドキュメント `MODE_AWARE_MARGIN.md` を作成。
 - **2026-01-10** (2回目):
   - **V2Vリレー可能率分析機能を追加** - 研究の主軸である「アウトエージ回避」に向けたV2Vリレーの可能性を評価する機能を実装。
   - **V2V距離閾値フィルタを追加** (`RayTracingSimulator`に`v2v_max_distance_m`パラメータ追加、デフォルト100m)。車両数増加時の計算量爆発を防止。
