@@ -101,6 +101,12 @@ def main():
         help='アウトエージ判定しきい値 [Mbps] (評価列に対して適用). デフォルト: 50.0'
     )
     parser.add_argument(
+        '--time-limit-sec',
+        type=float,
+        default=None,
+        help='グローバル最適化のタイムリミット [秒/タイムスタンプ] (指定時のみ有効)'
+    )
+    parser.add_argument(
         '--input',
         type=str,
         default=None,
@@ -159,7 +165,8 @@ def main():
             output_dir=output_dir,
             throughput_col=opt_throughput_col,
             eval_throughput_col=eval_throughput_col,
-            outage_threshold_mbps=args.outage_threshold_mbps
+            outage_threshold_mbps=args.outage_threshold_mbps,
+            time_limit_sec=args.time_limit_sec
         )
 
     print("\n  最適化処理完了")

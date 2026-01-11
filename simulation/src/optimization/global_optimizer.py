@@ -7,6 +7,7 @@
 """
 
 import sys
+import time
 import pandas as pd
 import pulp
 from pathlib import Path
@@ -23,6 +24,19 @@ VALID_THROUGHPUT_COLS = [
     'throughput_mbps_mcs',
     'throughput_mbps_mcs_est'  # 推定列（Mode-aware Margin適用後）
 ]
+
+def get_rss_mb():
+    """現在のプロセス最大RSSをMB単位で返す（取得不可ならNone）"""
+    try:
+        import resource
+    except ImportError:
+        return None
+
+    rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
+    # macOSはbytes、LinuxはKB
+    if sys.platform == "darwin":
+        return rss / (1024 * 1024)
+    return rss / 1024
 
 
 def validate_throughput_column(df: pd.DataFrame, throughput_col: str) -> None:
@@ -53,7 +67,10 @@ def solve_global_optimization(
     output_dir: Path = None,
     throughput_col: str = DEFAULT_THROUGHPUT_COL,
     eval_throughput_col: str = None,
-    outage_threshold_mbps: float = 50.0
+    outage_threshold_mbps: float = 50.0,
+    memory_log_interval: int = 10,
+    log_per_timestamp: bool = True,
+    time_limit_sec: float = None
 ) -> pd.DataFrame:
     """
     グローバル最適化を実行し、結果を保存する
@@ -95,15 +112,31 @@ def solve_global_optimization(
     print(f"  最適化入力列 (opt):  {throughput_col}")
     print(f"  評価列 (eval):       {eval_throughput_col}")
     print(f"  アウトエージしきい値: {outage_threshold_mbps} Mbps")
+    if memory_log_interval:
+        print(f"  メモリログ: {memory_log_interval} タイムスタンプ毎 (RSS max)")
+    if log_per_timestamp:
+        print("  タイムスタンプ毎ログ: 有効")
+    if time_limit_sec:
+        print(f"  タイムリミット: {time_limit_sec} 秒/タイムスタンプ")
 
     # データ読み込み
     print(f"\n[1] データ読み込み: {input_csv}")
-    df = pd.read_csv(input_csv)
+    df_head = pd.read_csv(input_csv, nrows=0)
 
-    # スループット列の検証
-    validate_throughput_column(df, throughput_col)
+    # スループット列の検証（usecolsの事前確認）
+    validate_throughput_column(df_head, throughput_col)
     if eval_throughput_col != throughput_col:
-        validate_throughput_column(df, eval_throughput_col)
+        validate_throughput_column(df_head, eval_throughput_col)
+
+    required_cols = {
+        'timestamp',
+        'link_type',
+        'tx_id',
+        'rx_id',
+        throughput_col,
+        eval_throughput_col
+    }
+    df = pd.read_csv(input_csv, usecols=sorted(required_cols))
 
     print(f"  - 総レコード数: {len(df)}")
     print(f"  - タイムスタンプ範囲: {df['timestamp'].min()} ~ {df['timestamp'].max()}")
@@ -111,7 +144,7 @@ def solve_global_optimization(
 
     # タイムスタンプごとに最適化を実行
     results = []
-    selected_links_all = []  # 選択されたリンクを全タイムスタンプで保存
+    selected_eval_throughputs = []  # 選択リンクのeval列のみ保持
     timestamps = sorted(df['timestamp'].unique())
 
     print(f"\n[2] 最適化実行（{len(timestamps)} タイムスタンプ）")
@@ -120,8 +153,11 @@ def solve_global_optimization(
     print(f"    * 基地局BS_1: 最大{MAX_BS_CONNECTIONS}リンク（送信のみ）")
 
     for i, timestamp in enumerate(timestamps):
+        start_time = time.perf_counter()
+        if log_per_timestamp:
+            print(f"  [t={timestamp}] 開始 ({i+1}/{len(timestamps)})")
         # 当該タイムスタンプのデータを抽出
-        df_t = df[df['timestamp'] == timestamp].copy()
+        df_t = df[df['timestamp'] == timestamp]
 
         # 最適化問題の定義
         problem = pulp.LpProblem(f"GlobalOpt_t{timestamp}", pulp.LpMaximize)
@@ -174,29 +210,41 @@ def solve_global_optimization(
             )
 
         # 問題を解く
-        problem.solve(pulp.PULP_CBC_CMD(msg=0))  # msg=0でログ非表示
+        solver = pulp.PULP_CBC_CMD(msg=0, timeLimit=time_limit_sec) if time_limit_sec else pulp.PULP_CBC_CMD(msg=0)
+        problem.solve(solver)
 
         # 結果を取得
         status = pulp.LpStatus[problem.status]
-        if status == 'Optimal':
+        if status in {'Optimal', 'Not Solved'}:
             optimized_throughput = pulp.value(problem.objective)
+            if optimized_throughput is None:
+                optimized_throughput = 0.0
 
             # 選択されたリンクを保存（eval列での評価用）
             for idx, row in df_t.iterrows():
                 if link_vars[idx].varValue == 1:
-                    selected_links_all.append(row)
+                    selected_eval_throughputs.append(row[eval_throughput_col])
         else:
             optimized_throughput = 0.0
-            print(f"  [警告] t={timestamp}: 最適解が見つかりませんでした (status={status})")
+            print(f"  [警告] t={timestamp}: 解が取得できませんでした (status={status})")
 
         results.append({
             'timestamp': timestamp,
-            'optimized_total_throughput_mbps': optimized_throughput
+            'optimized_total_throughput_mbps': optimized_throughput,
+            'solve_status': status
         })
+
+        elapsed = time.perf_counter() - start_time
+        if log_per_timestamp:
+            print(f"  [t={timestamp}] 完了 status={status} time={elapsed:.2f}s")
 
         # 進捗表示
         if (i + 1) % 10 == 0 or (i + 1) == len(timestamps):
             print(f"  - 進捗: {i+1}/{len(timestamps)} ({100*(i+1)/len(timestamps):.1f}%)")
+        if memory_log_interval and ((i + 1) % memory_log_interval == 0 or (i + 1) == len(timestamps)):
+            rss_mb = get_rss_mb()
+            if rss_mb is not None:
+                print(f"    RSS(max): {rss_mb:.1f} MB")
 
     # 結果をDataFrameに変換
     results_df = pd.DataFrame(results)
@@ -212,15 +260,12 @@ def solve_global_optimization(
     if eval_throughput_col != throughput_col:
         print(f"  評価列 '{eval_throughput_col}' を使用して評価指標を計算")
 
-    # 選択されたリンクのDataFrame作成
-    selected_links_df = pd.DataFrame(selected_links_all)
-
-    if len(selected_links_df) > 0:
+    if len(selected_eval_throughputs) > 0:
         # 選択されたリンクのeval列スループット
-        eval_throughputs = selected_links_df[eval_throughput_col].values
+        eval_throughputs = pd.Series(selected_eval_throughputs)
 
         # アウトエージ率（eval列で判定）
-        outage_count = (eval_throughputs < outage_threshold_mbps).sum()
+        outage_count = int((eval_throughputs < outage_threshold_mbps).sum())
         outage_rate = outage_count / len(eval_throughputs) if len(eval_throughputs) > 0 else 0.0
 
         # P05（下位5%）
