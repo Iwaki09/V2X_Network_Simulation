@@ -190,6 +190,82 @@ python scripts/run_optimization.py \
 
 ほとんどのリンクがDモード（拡散環境）であり、マージンの効果が大きい。
 
+### 4.5 可視化結果（corner_intersection）
+
+以下の図は `output/scenarios/corner_intersection/` 配下の結果から抜粋。Mode-aware Fading Marginの評価で用いた**同一シナリオの出力**をそのまま掲載し、数値結果と対応づけて読めるようにした。
+
+**図4-1: 提案手法 vs ベースライン（全体比較）**
+![提案手法とベースラインの比較](output/scenarios/corner_intersection/figures/method_comparison.png)
+解釈: 平均スループットは **Baseline 6,127.64 Mbps → Proposed 18,689.59 Mbps（3.05x）**。差が大きい区間ほどグローバル最適化の効果が大きく、差が小さい区間はリンク候補の制約が強い状態を示唆する。
+
+**図4-2: 理論最大値と分散手法のギャップ**
+![理論最大値と分散手法の差分](output/scenarios/corner_intersection/figures/theoretical_potential.png)
+解釈: **理論最大（全リンク合計, Shannon）平均 2,176,794.44 Mbps** に対し、**分散型平均 6,127.64 Mbps**。ギャップは **99.7%** で、V2V活用や集中最適化の余地が非常に大きいことを示す。
+
+**図4-3: V2I+V2Vの総スループット推移**
+![V2I+V2V総スループット推移](output/scenarios/corner_intersection/figures/throughput_summary.png)
+解釈: **全リンク合計（Shannon）の平均 2,176,794.44 Mbps、最小 59.36 Mbps、最大 6,563,153.30 Mbps**。時系列の谷は遮蔽やリンク候補不足の影響を、ピークは高品質リンクが同時に確保できたタイミングを示す。
+
+**図4-4: Shannon vs MCS のCDF比較**
+![ShannonとMCSのCDF](output/scenarios/corner_intersection/analysis/fig1_cdf_shannon_vs_mcs.png)
+解釈: **平均 349.11 Mbps → 204.35 Mbps（MCS/Shannon=0.585）**。P05も **38.75 → 15.0 Mbps** と低下し、離散MCSにより分布全体が左シフトする。
+
+**図4-5: 時系列スループット（全リンク合計）**
+![時系列スループット](output/scenarios/corner_intersection/analysis/fig2_timeseries_throughput.png)
+解釈: **全リンク合計（平均）Shannon 2,176,794.44 Mbps、MCS 1,173,198.74 Mbps（比 0.54）**。両系列の差が離散化損失の大きさを示し、変動が大きい区間ほど保守的推定の必要性が高い。
+
+**図4-6: LOS/NLOS別CDF**
+![LOS/NLOS別CDF](output/scenarios/corner_intersection/analysis/fig3_cdf_los_nlos.png)
+解釈: NLOS比率は **44.8%（546/1220）**。平均は **LOS 553.60 Mbps / NLOS 96.67 Mbps**（MCSでも **322.61 / 58.37 Mbps**）で、遮蔽による急落が明確。ギャップが大きいほどモード判定とマージン設計の重要性が高い。
+
+**図4-7: prop_mode（D/K）別CDF**
+![prop_mode別CDF](output/scenarios/corner_intersection/analysis/fig4_cdf_prop_mode.png)
+解釈: **Dモード平均 318.86 Mbps、Kモード平均 541.15 Mbps**（MCS: **186.99 / 314.60 Mbps**）。Kモードは支配的成分があるため高スループット側に寄る。サンプル数は **D=1054, K=166**。
+
+### 4.6 可視化結果（default）
+
+以下は `output/scenarios/default/` の結果。corner_intersectionと同様の指標を、直線道路シナリオで確認する。
+
+**図4-8: 提案手法 vs ベースライン（全体比較, default）**
+![提案手法とベースラインの比較（default）](output/scenarios/default/figures/method_comparison.png)
+解釈: 平均スループットは **Baseline 3,124.58 Mbps → Proposed 3,362.44 Mbps（1.08x, +7.6%）**。corner_intersectionほどの大差は出ないが、集中最適化の効果が安定して確認できる。
+
+**図4-9: 理論最大値と分散手法のギャップ（default）**
+![理論最大値と分散手法の差分（default）](output/scenarios/default/figures/theoretical_potential.png)
+解釈: **理論最大（全リンク合計, Shannon）平均 20,950.42 Mbps** に対し、**分散型平均 3,124.58 Mbps**。ギャップは **85.1%** で、V2V活用の余地が残る。
+
+**図4-10: V2I+V2Vの総スループット推移（default）**
+![V2I+V2V総スループット推移（default）](output/scenarios/default/figures/throughput_summary.png)
+解釈: **全リンク合計（Shannon）の平均 20,950.42 Mbps、最小 326.67 Mbps、最大 44,607.67 Mbps**。corner_intersectionより変動幅が小さく、LOS主体の安定した環境を示す。
+
+**図4-11: Shannon vs MCS のCDF比較（default）**
+![ShannonとMCSのCDF（default）](output/scenarios/default/analysis/fig1_cdf_shannon_vs_mcs.png)
+解釈: **平均 383.71 Mbps → 219.01 Mbps（MCS/Shannon=0.571）**。P05は **96.83 → 38.0 Mbps** で、離散MCSによる左シフトが確認できる。
+
+**図4-12: 時系列スループット（全リンク合計, default）**
+![時系列スループット（default）](output/scenarios/default/analysis/fig2_timeseries_throughput.png)
+解釈: **全リンク合計（平均）Shannon 20,950.42 Mbps、MCS 11,957.90 Mbps（比 0.571）**。MCS曲線はShannonを追従しつつ、定常的に低い水準に位置する。
+
+**図4-13: LOS/NLOS別CDF（default）**
+![LOS/NLOS別CDF（default）](output/scenarios/default/analysis/fig3_cdf_los_nlos.png)
+解釈: NLOSは **0.44%（24/5460）** と少数。平均は **LOS 384.61 Mbps / NLOS 178.54 Mbps**（MCS: **219.59 / 88.0 Mbps**）で差はあるが、NLOSのサンプル数が少ないため統計的な解釈は慎重に行う。
+
+**図4-14: prop_mode（D/K）別CDF（default）**
+![prop_mode別CDF（default）](output/scenarios/default/analysis/fig4_cdf_prop_mode.png)
+解釈: **Dモード平均 384.06 Mbps、Kモード平均 235.82 Mbps**（MCS: **219.20 / 138.46 Mbps**）。Kモードは **13件** と少数で、分布の解釈は限定的。
+
+### 4.7 シナリオ比較（corner_intersection vs default）
+
+| 指標 | corner_intersection | default | 備考 |
+|------|---------------------|---------|------|
+| NLOS割合 | 44.8% (546/1220) | 0.44% (24/5460) | cornerは遮蔽が多い |
+| 平均スループット（Shannon/MCS, All） | 349.11 / 204.35 Mbps | 383.71 / 219.01 Mbps | defaultが高め |
+| P05（Shannon/MCS, All） | 38.75 / 15.0 Mbps | 96.83 / 38.0 Mbps | cornerは裾が重い |
+| 最適化効果（平均） | 18,689.59 / 6,127.64 Mbps（3.05x） | 3,362.44 / 3,124.58 Mbps（1.08x） | 提案手法の効きが強い |
+| 理論最大 vs 分散型平均 | 2,176,794.44 / 6,127.64 Mbps | 20,950.42 / 3,124.58 Mbps | 全リンク合計の差 |
+
+**まとめ**: corner_intersectionは遮蔽が多く、NLOS比率の高さが分布の裾の重さや最適化効果の大きさに直結する。一方、defaultはLOS主体で安定し、MCS離散化の影響は見えるが全体の変動は小さい。総量（全リンク合計）はリンク数に強く依存するため、**シナリオ比較では平均・P05・比率の指標を重視**する。
+
 ---
 
 ## 5. 考察と今後の課題
