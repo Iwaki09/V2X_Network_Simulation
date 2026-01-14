@@ -31,7 +31,7 @@ class BaseStation:
     """基地局の定義"""
     id: str
     position: List[float]  # [x, y, z] in meters
-    tx_power_dbm: float = 30.0  # 送信電力 [dBm]
+    tx_power_dbm: float = 40.0  # 送信電力 [dBm]
 
 
 @dataclass
@@ -53,6 +53,11 @@ class LinkQuality:
     delay_spread_ns: float
     path_loss_db: float
     is_line_of_sight: bool
+    # 最大パスのAoD/AoA（deg）。Sionna角度が取得できない場合は幾何から推定
+    aod_theta_deg: Optional[float] = None
+    aod_phi_deg: Optional[float] = None
+    aoa_theta_deg: Optional[float] = None
+    aoa_phi_deg: Optional[float] = None
     # Propagation-Mode Switch (D/K) 関連フィールド
     num_paths: int = 1
     p_tot_watts: float = 0.0
@@ -400,12 +405,37 @@ class RayTracingSimulator:
         print(f"   - Ground mesh: {ground_obj_path}")
         print(f"   - Total buildings in scene: {len(self.buildings)}")
 
+    @staticmethod
+    def _wrap_phi_deg(phi_deg: float) -> float:
+        """方位角を[-180, 180]に正規化"""
+        return (phi_deg + 180.0) % 360.0 - 180.0
+
+    @staticmethod
+    def _maybe_to_deg(angle_values: np.ndarray) -> np.ndarray:
+        """Sionna角度がdeg/rad混在の可能性に備えたdeg変換"""
+        if angle_values is None or angle_values.size == 0:
+            return angle_values
+        max_abs = float(np.max(np.abs(angle_values)))
+        if max_abs > (2 * np.pi + 1e-6):
+            return angle_values.astype(float)
+        return np.degrees(angle_values)
+
+    def _vector_to_angles_deg(self, vector: np.ndarray) -> Tuple[Optional[float], Optional[float]]:
+        """3次元ベクトルを(zenith, azimuth)角[deg]に変換"""
+        norm = np.linalg.norm(vector)
+        if norm == 0:
+            return None, None
+        x, y, z = vector / norm
+        theta_deg = float(np.degrees(np.arccos(np.clip(z, -1.0, 1.0))))
+        phi_deg = float(np.degrees(np.arctan2(y, x)))
+        return theta_deg, self._wrap_phi_deg(phi_deg)
+
     def _compute_paths_sionna(
         self,
         tx_position: List[float],
         rx_position: List[float],
         tx_power_dbm: float
-    ) -> Tuple[List[float], float, bool]:
+    ) -> Tuple[List[float], float, bool, Optional[Dict[str, float]]]:
         """
         Sionna RTでレイトレーシングを実行し、マルチパス情報を取得
 
@@ -415,10 +445,11 @@ class RayTracingSimulator:
             tx_power_dbm: 送信電力 [dBm]
 
         Returns:
-            Tuple[List[float], float, bool]:
+            Tuple[List[float], float, bool, Optional[Dict[str, float]]]:
                 - path_powers_watts: 各パスの受信電力リスト [Watts]
                 - delay_spread_ns: RMS遅延スプレッド [ns]
                 - is_los: LOS判定
+                - max_path_angles: 最大パスのAoD/AoA (deg)  {"aod_theta_deg":..}
         """
         # 送信機・受信機を設定
         tx = sn.rt.Transmitter(
@@ -441,8 +472,10 @@ class RayTracingSimulator:
 
         # パス情報を抽出
         path_powers_watts = []
+        path_indices = []
         delays_ns = []
         is_los = False
+        max_path_angles = None
 
         try:
             # レイトレーシングを実行
@@ -488,6 +521,7 @@ class RayTracingSimulator:
                     if path_gain > 0:
                         path_power_watts = path_gain * tx_power_watts
                         path_powers_watts.append(float(path_power_watts))
+                        path_indices.append(path_idx)
                         if len(tau_paths) > path_idx:
                             delays_ns.append(float(tau_paths[path_idx] * 1e9))
 
@@ -502,6 +536,38 @@ class RayTracingSimulator:
             elif len(path_powers_watts) > 0:
                 # パスタイプがない場合は、最初のパスが最強ならLOSと仮定
                 is_los = (path_powers_watts[0] == max(path_powers_watts))
+
+            def _extract_angle_array(attr_name: str) -> Optional[np.ndarray]:
+                value = getattr(paths, attr_name, None)
+                value_tf = _as_tensor(value)
+                if value_tf is None:
+                    return None
+                value_np = np.squeeze(value_tf.numpy())
+                if value_np.ndim > 1:
+                    value_np = value_np[..., 0]
+                return np.ravel(value_np)
+
+            if len(path_powers_watts) > 0:
+                theta_t = _extract_angle_array("theta_t")
+                phi_t = _extract_angle_array("phi_t")
+                theta_r = _extract_angle_array("theta_r")
+                phi_r = _extract_angle_array("phi_r")
+
+                if all(angle is not None for angle in (theta_t, phi_t, theta_r, phi_r)) and path_indices:
+                    theta_t = self._maybe_to_deg(theta_t)
+                    phi_t = self._maybe_to_deg(phi_t)
+                    theta_r = self._maybe_to_deg(theta_r)
+                    phi_r = self._maybe_to_deg(phi_r)
+                    max_local_idx = int(np.argmax(path_powers_watts))
+                    angle_idx = path_indices[max_local_idx]
+                    min_len = min(len(theta_t), len(phi_t), len(theta_r), len(phi_r))
+                    if angle_idx < min_len:
+                        max_path_angles = {
+                            "aod_theta_deg": float(theta_t[angle_idx]),
+                            "aod_phi_deg": self._wrap_phi_deg(float(phi_t[angle_idx])),
+                            "aoa_theta_deg": float(theta_r[angle_idx]),
+                            "aoa_phi_deg": self._wrap_phi_deg(float(phi_r[angle_idx]))
+                        }
         finally:
             # シーンから送受信機を削除（次の計算のため）
             self.scene.remove("tx")
@@ -520,7 +586,7 @@ class RayTracingSimulator:
         elif len(delays_ns) == 1:
             delay_spread_ns = delays_ns[0]
 
-        return path_powers_watts, delay_spread_ns, is_los
+        return path_powers_watts, delay_spread_ns, is_los, max_path_angles
 
     def _check_single_building_occlusion(
         self,
@@ -642,7 +708,7 @@ class RayTracingSimulator:
 
         if self.use_sionna_rt:
             # ===== Sionna RTモード（マルチパス対応） =====
-            path_powers_watts, delay_spread_ns, is_los = self._compute_paths_sionna(
+            path_powers_watts, delay_spread_ns, is_los, max_path_angles = self._compute_paths_sionna(
                 tx_position=tx_position,
                 rx_position=rx_position,
                 tx_power_dbm=tx_power_dbm
@@ -665,6 +731,7 @@ class RayTracingSimulator:
                 received_power_dbm = tx_power_dbm - path_loss_db
                 path_powers_watts = [dbm_to_watts(received_power_dbm)]
                 delay_spread_ns = distance / 3e8 * 1e9
+                max_path_angles = None
 
             # D/K計算（マルチパス電力リストを渡す）
             dk_result = compute_dk(path_powers_watts)
@@ -704,6 +771,18 @@ class RayTracingSimulator:
             # D/K計算（単一パス）
             received_power_watts = dbm_to_watts(received_power_dbm)
             dk_result = compute_dk([received_power_watts])
+            max_path_angles = None
+
+        if max_path_angles is None:
+            tx_vec = np.array(rx_position) - np.array(tx_position)
+            rx_vec = -tx_vec
+            aod_theta_deg, aod_phi_deg = self._vector_to_angles_deg(tx_vec)
+            aoa_theta_deg, aoa_phi_deg = self._vector_to_angles_deg(rx_vec)
+        else:
+            aod_theta_deg = max_path_angles.get("aod_theta_deg")
+            aod_phi_deg = max_path_angles.get("aod_phi_deg")
+            aoa_theta_deg = max_path_angles.get("aoa_theta_deg")
+            aoa_phi_deg = max_path_angles.get("aoa_phi_deg")
 
         return LinkQuality(
             timestamp=timestamp,
@@ -714,6 +793,10 @@ class RayTracingSimulator:
             delay_spread_ns=delay_spread_ns,
             path_loss_db=path_loss_db,
             is_line_of_sight=is_los,
+            aod_theta_deg=aod_theta_deg,
+            aod_phi_deg=aod_phi_deg,
+            aoa_theta_deg=aoa_theta_deg,
+            aoa_phi_deg=aoa_phi_deg,
             # D/K関連フィールド
             num_paths=dk_result["num_paths"],
             p_tot_watts=dk_result["p_tot_watts"],
@@ -804,7 +887,7 @@ if __name__ == "__main__":
     base_station = BaseStation(
         id="BS_1",
         position=[500.0, 150.0, 30.0],
-        tx_power_dbm=30.0
+        tx_power_dbm=40.0
     )
 
     # 建物設定

@@ -36,7 +36,7 @@ class CornerIntersectionConfig:
     base_station: BaseStation = field(default_factory=lambda: BaseStation(
         id="BS_1",
         position=[120.0, 120.0, 20.0],
-        tx_power_dbm=30.0
+        tx_power_dbm=40.0
     ))
 
     # 建物設定（4棟の角ビル）

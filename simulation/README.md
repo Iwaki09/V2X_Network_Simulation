@@ -228,6 +228,15 @@ python scripts/run_throughput.py --rate-model mcs
 # スループット計算（Shannon + MCS比較モード）
 python scripts/run_throughput.py --rate-model both
 
+# スループット計算（BFはデフォルトで有効）
+python scripts/run_throughput.py --rate-model both
+
+# UE配列を2x5 UPAに変更してBF計算
+python scripts/run_throughput.py --rate-model both --ue-array upa
+
+# 従来モデルに戻す（BF無効）
+python scripts/run_throughput.py --rate-model both --disable-beamforming
+
 # 最適化（分散型 + グローバル）
 python scripts/run_optimization.py
 
@@ -577,11 +586,32 @@ V2Xリンク可視化フレームを生成します。
 |-----------|-----|------|------|----------|
 | 周波数 | 28 | GHz | キャリア周波数 | src/core/raytracing.py |
 | 帯域幅 | 100 | MHz | チャネル帯域幅 | src/core/throughput.py |
-| V2I送信電力 | 30 | dBm | 基地局送信電力 | src/core/raytracing.py |
+| V2I送信電力 | 40 | dBm | 基地局送信電力 | src/core/raytracing.py |
 | V2V送信電力 | 23 | dBm | 車両送信電力 | src/core/raytracing.py |
 | V2V最大距離 | 100 | m | V2Vリンク生成の最大距離（計算量削減用） | src/core/raytracing.py |
 | 遮蔽損失 | 15 | dB | NLOS時の追加損失 | src/core/raytracing.py |
 | 雑音温度 | 290 | K | 受信機雑音温度 | src/core/throughput.py |
+
+### ビームフォーミング（BF）とアンテナ設定
+
+- **BS配列**: 16×16 UPA（素子間隔 0.5λ）
+- **UE配列**: デフォルト 1×10 ULA（0.5λ）。`--ue-array upa` で 2×5 UPA を選択可能
+- **素子利得**: BSは G_max=8 dBi、UEは 0 dBi（オムニ想定）
+- **フィーダ損失**: 3 dB
+- **ビーム指向**: RTの最強パス（最大受信電力）の AoD/AoA 方向へ理想指向
+- **角度定義**: θ=zenith角、φ=azimuth角（[-180, 180]）。配列面は y-z 平面、boresight は +x 方向
+
+#### 3GPP TR 38.901 素子パターン（Table 7.3-1）
+
+```text
+A_V(θ) = min( 12 * ((θ - 90)/θ_3dB)^2 , SLA_V )
+A_H(φ) = min( 12 * (φ/φ_3dB)^2 , A_m )
+A(θ,φ) = min( A_V(θ) + A_H(φ), A_m )
+G_element(θ,φ) = G_max - A(θ,φ)
+
+デフォルト:
+  θ_3dB=65 deg, φ_3dB=65 deg, SLA_V=30 dB, A_m=30 dB, G_max=8 dBi
+```
 
 ### 最適化パラメータ
 
@@ -605,13 +635,17 @@ V2Xリンク可視化フレームを生成します。
 | path_loss | float | パスロス [dB] |
 | delay_spread | float | 遅延スプレッド [ns] |
 | is_line_of_sight | boolean | LOS判定 |
-| num_paths | int | パス数（現状は常に1） |
+| num_paths | int | パス数（Sionna RTでは複数パス） |
 | p_tot_watts | float | 総受信電力 [Watts] |
 | p_max_watts | float | 最大パス電力 [Watts] |
 | dominance | float | Dominance指標 D = P_max / P_tot (0-1) |
 | k_factor | float | K-factor（線形値）。K = P_max / (P_tot - P_max) |
 | k_factor_db | float | K-factor [dB] |
 | prop_mode | string | 伝搬モード ("D" or "K")。D >= 0.5 なら "D" |
+| aod_theta_deg | float | 最大パスのAoD（zenith角）[deg] |
+| aod_phi_deg | float | 最大パスのAoD（azimuth角）[deg] |
+| aoa_theta_deg | float | 最大パスのAoA（zenith角）[deg] |
+| aoa_phi_deg | float | 最大パスのAoA（azimuth角）[deg] |
 
 **Propagation-Mode Switch (D/K) について:**
 
@@ -621,6 +655,10 @@ Dominance (D) は最大パス電力が総受信電力に占める割合を示し
 - D <= 0.5: 散乱的なマルチパス環境（"K" モード）
 
 現状の簡易パスロスモデルでは単一パスとして計算されるため、すべてのリンクで D = 1.0、prop_mode = "D" となります。将来的にSionna RTのCIR（Channel Impulse Response）から複数パス情報を取得する拡張に備えた設計です。
+
+**AoD/AoAについて:**
+- Sionna RTの最大パス角（AoD/AoA）を保存します。
+- RTが使えない場合は送受信機の幾何ベクトルから推定します（単一パス近似）。
 
 ### `theoretical_network_results.csv`
 
@@ -636,6 +674,24 @@ Dominance (D) は最大パス電力が総受信電力に占める割合を示し
 | mcs_index | int | MCSインデックス (0-7) | mcs/both |
 | spectral_efficiency_bpshz | float | スペクトル効率 [bits/s/Hz] | mcs/both |
 | throughput_mbps_mcs | float | スループット（MCS）[Mbps] | mcs/both |
+
+**Beamforming有効時の追加列（デフォルト有効）:**
+
+| 列名 | データ型 | 説明 | 備考 |
+|------|----------|------|------|
+| bf_tx_gain_db | float | 送信BF利得 [dB] | V2Iのみ有効 |
+| bf_rx_gain_db | float | 受信BF利得 [dB] | V2Iのみ有効 |
+| tx_element_gain_db | float | BS素子パターン利得 [dBi] | V2Iのみ有効 |
+| received_power_dbm_bf | float | BF反映後の受信電力 [dBm] | V2Iのみ有効 |
+| snr_db_bf | float | BF反映後のSNR [dB] | V2Iのみ有効 |
+| theoretical_throughput_mbps_bf | float | Shannonスループット(BF) [Mbps] | shannon/both |
+| mcs_index_bf | int | MCSインデックス(BF) | mcs/both |
+| throughput_mbps_mcs_bf | float | MCSスループット(BF) [Mbps] | mcs/both |
+
+**BF実行の補足:**
+- AoD/AoA列は `run_raytracing.py` 実行時に出力されます（Sionna RT推奨）。
+- `run_throughput.py` はBFがデフォルトで有効です（`--disable-beamforming` で無効化）。
+- BF有効時は `received_power` / `snr_db` / `throughput_mbps_mcs` などの主要列をBF反映値で上書き保存します。
 
 **レートモデルオプション:**
 - `--rate-model shannon`（デフォルト）: Shannon列のみ出力（後方互換）
@@ -683,6 +739,10 @@ Dominance (D) は最大パス電力が総受信電力に占める割合を示し
 **有効な値:**
 - `theoretical_throughput_mbps`（デフォルト）: Shannon公式によるスループット
 - `throughput_mbps_mcs`: MCSベースのスループット
+- `theoretical_throughput_mbps_bf`: Shannonスループット（BF有効時）
+- `throughput_mbps_mcs_bf`: MCSスループット（BF有効時）
+
+**補足:** BFデフォルト有効時は `theoretical_throughput_mbps` / `throughput_mbps_mcs` もBF反映値で上書き保存されます。
 
 **使用例:**
 ```bash
@@ -964,6 +1024,12 @@ python scripts/run_optimization.py \
 
 ## 更新履歴
 
+- **2026-01-15**:
+  - **ビームフォーミング(BF)対応を追加**。Sionna RTのAoD/AoA（最大パス）に基づきBS/UEの理想ビーム利得を反映。
+  - **3GPP TR 38.901素子パターンを実装**（θ/φカット、A_V/A_H/A、G_element）。
+  - `link_quality_results.csv` に AoD/AoA 列を追加し、`theoretical_network_results.csv` にBF関連列を追加。
+  - `run_throughput.py` でBFをデフォルト有効化し、`--disable-beamforming` とアンテナ配列/素子パラメータのオプションを追加。
+  - 最適化の `--throughput-col` でBF列（Shannon/MCS）を選択可能に更新。
 - **2026-01-11**:
   - **Mode-aware Fading Margin実装を追加**。フェージング理論に基づく保守的スループット推定により、最適化の入力（estimate）と評価（truth）を分離。
   - `throughput.py` に Rayleigh/Ricean フェージング・マージン計算を実装。Dモード（Rayleigh寄り）とKモード（Ricean寄り）で異なるマージンを適用。

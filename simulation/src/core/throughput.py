@@ -24,7 +24,7 @@
 import pandas as pd
 import numpy as np
 from pathlib import Path
-from typing import Literal
+from typing import Literal, Optional
 
 from .mcs_model import (
     select_mcs,
@@ -34,6 +34,7 @@ from .mcs_model import (
     MCS_SNR_THRESHOLDS_DB,
     MCS_SPECTRAL_EFFICIENCY,
 )
+from .beamforming import BeamformingConfig, compute_link_gains
 
 
 # ============================================================
@@ -194,7 +195,9 @@ def calculate_theoretical_throughput(
     enable_margin_estimate: bool = False,
     margin_p: float = DEFAULT_MARGIN_P,
     margin_k_db: float = DEFAULT_MARGIN_K_DB,
-    margin_d_db_override: float = None
+    margin_d_db_override: float = None,
+    enable_beamforming: bool = True,
+    beamforming_config: Optional[BeamformingConfig] = None
 ) -> pd.DataFrame:
     """
     リンク品質DataFrameに理論的スループットを追加
@@ -211,6 +214,8 @@ def calculate_theoretical_throughput(
         margin_p: Dモード用の目標信頼性（下位p分位）（デフォルト: 0.10）
         margin_k_db: Kモード用の固定マージン [dB]（デフォルト: 3.0）
         margin_d_db_override: Dモード用マージンを手動指定する場合（デフォルト: None）
+        enable_beamforming: BF有効化（デフォルト: True）
+        beamforming_config: BFパラメータ（Noneならデフォルト）
 
     Returns:
         以下の列が追加されたDataFrame:
@@ -228,6 +233,16 @@ def calculate_theoretical_throughput(
         - snr_db_eff_margin: マージン適用後の有効SNR [dB]
         - mcs_index_est: 推定（保守的）MCS index
         - throughput_mbps_mcs_est: 推定（保守的）MCSスループット [Mbps]
+
+        BFが有効な場合、さらに以下が追加:
+        - bf_tx_gain_db
+        - bf_rx_gain_db
+        - tx_element_gain_db
+        - received_power_dbm_bf
+        - snr_db_bf
+        - theoretical_throughput_mbps_bf (shannon/both)
+        - mcs_index_bf (mcs/both)
+        - throughput_mbps_mcs_bf (mcs/both)
     """
     result_df = df.copy()
 
@@ -241,6 +256,73 @@ def calculate_theoretical_throughput(
 
     # SNR (dB) の計算（可視化用）
     result_df['snr_db'] = 10 * np.log10(result_df['snr'])
+
+    if enable_beamforming:
+        if beamforming_config is None:
+            beamforming_config = BeamformingConfig()
+
+        result_df['bf_tx_gain_db'] = 0.0
+        result_df['bf_rx_gain_db'] = 0.0
+        result_df['tx_element_gain_db'] = 0.0
+        result_df['received_power_dbm_bf'] = result_df['received_power'].astype(float)
+
+        required_angle_cols = ['aod_theta_deg', 'aod_phi_deg', 'aoa_theta_deg', 'aoa_phi_deg']
+        missing_cols = [col for col in required_angle_cols if col not in result_df.columns]
+        if missing_cols:
+            print(f"⚠️  Beamforming: 角度列が不足しています: {missing_cols}")
+            print("    AoD/AoAがないため、BF/素子利得は0dBとして計算します。")
+        angles_available = not missing_cols
+
+        link_type_col = result_df['link_type'] if 'link_type' in result_df.columns else None
+        if link_type_col is not None:
+            target_mask = link_type_col == 'V2I'
+        else:
+            target_mask = pd.Series([True] * len(result_df), index=result_df.index)
+
+        if len(result_df[target_mask]) > 0 and angles_available:
+            gains = result_df.loc[target_mask].apply(
+                lambda row: compute_link_gains(
+                    row['aod_theta_deg'],
+                    row['aod_phi_deg'],
+                    row['aoa_theta_deg'],
+                    row['aoa_phi_deg'],
+                    beamforming_config
+                ),
+                axis=1,
+                result_type='expand'
+            )
+            gains.columns = ['bf_tx_gain_db', 'bf_rx_gain_db', 'tx_element_gain_db']
+            result_df.loc[target_mask, gains.columns] = gains.values
+
+        if angles_available:
+            tx_power_adjust_db = 0.0
+            if beamforming_config.rt_tx_power_dbm is not None:
+                tx_power_adjust_db = beamforming_config.tx_power_dbm - beamforming_config.rt_tx_power_dbm
+
+            result_df.loc[target_mask, 'received_power_dbm_bf'] = (
+                result_df.loc[target_mask, 'received_power'].astype(float)
+                + tx_power_adjust_db
+                - beamforming_config.feeder_loss_db
+                + result_df.loc[target_mask, 'tx_element_gain_db']
+                + result_df.loc[target_mask, 'bf_tx_gain_db']
+                + result_df.loc[target_mask, 'bf_rx_gain_db']
+                + beamforming_config.ue_element_gain_db
+            )
+
+        received_power_watts_bf = (10 ** (result_df['received_power_dbm_bf'] / 10)) / 1000
+        snr_bf = received_power_watts_bf / NOISE_POWER_WATTS
+        result_df['snr_db_bf'] = 10 * np.log10(snr_bf)
+
+        if rate_model in ('shannon', 'both'):
+            theoretical_bps_bf = calculate_shannon_capacity(BANDWIDTH_HZ, snr_bf)
+            result_df['theoretical_throughput_mbps_bf'] = theoretical_bps_bf / 1_000_000
+
+        if rate_model in ('mcs', 'both'):
+            result_df['mcs_index_bf'] = result_df['snr_db_bf'].apply(select_mcs)
+            spectral_efficiency_bf = result_df['mcs_index_bf'].apply(get_spectral_efficiency)
+            result_df['throughput_mbps_mcs_bf'] = spectral_efficiency_bf.apply(
+                lambda se: calculate_mcs_throughput_mbps(BANDWIDTH_HZ, se)
+            )
 
     # Shannon計算（shannon または both モード）
     if rate_model in ('shannon', 'both'):
@@ -302,7 +384,9 @@ def process_link_quality_data(
     enable_margin_estimate: bool = False,
     margin_p: float = DEFAULT_MARGIN_P,
     margin_k_db: float = DEFAULT_MARGIN_K_DB,
-    margin_d_db_override: float = None
+    margin_d_db_override: float = None,
+    enable_beamforming: bool = True,
+    beamforming_config: Optional[BeamformingConfig] = None
 ):
     """
     リンク品質データから理論的スループットを計算
@@ -315,6 +399,8 @@ def process_link_quality_data(
         margin_p: Dモード用の目標信頼性（下位p分位）（デフォルト: 0.10）
         margin_k_db: Kモード用の固定マージン [dB]（デフォルト: 3.0）
         margin_d_db_override: Dモード用マージンを手動指定する場合（デフォルト: None）
+        enable_beamforming: BF有効化（デフォルト: True）
+        beamforming_config: BFパラメータ（Noneならデフォルト）
     """
     rate_model_names = {
         'shannon': 'シャノン公式ベース',
@@ -342,6 +428,20 @@ def process_link_quality_data(
             d_margin = calculate_rayleigh_fading_margin_db(margin_p)
             print(f"  Dモード用マージン:        {d_margin:.2f} dB (Rayleigh計算値)")
         print(f"  Kモード用マージン:        {margin_k_db:.2f} dB (固定値)")
+
+    if enable_beamforming:
+        if beamforming_config is None:
+            beamforming_config = BeamformingConfig()
+        print("\n【Beamforming 設定】")
+        print(f"  BS配列:                  {beamforming_config.bs_num_rows}x{beamforming_config.bs_num_cols}")
+        print(f"  UE配列:                  {beamforming_config.ue_num_rows}x{beamforming_config.ue_num_cols}")
+        print(f"  素子間隔:                {beamforming_config.element_spacing_lambda:.2f} λ")
+        print(f"  Tx電力 (PA):             {beamforming_config.tx_power_dbm:.2f} dBm")
+        if beamforming_config.rt_tx_power_dbm is not None:
+            print(f"  RT Tx電力:               {beamforming_config.rt_tx_power_dbm:.2f} dBm")
+        print(f"  フィーダ損失:            {beamforming_config.feeder_loss_db:.2f} dB")
+        print(f"  BS素子最大利得:          {beamforming_config.bs_element_gain_db:.2f} dBi")
+        print(f"  UE素子利得:              {beamforming_config.ue_element_gain_db:.2f} dBi")
 
     # MCSテーブルを表示（mcsまたはbothモード）
     if rate_model in ('mcs', 'both'):
@@ -377,7 +477,9 @@ def process_link_quality_data(
         enable_margin_estimate=enable_margin_estimate,
         margin_p=margin_p,
         margin_k_db=margin_k_db,
-        margin_d_db_override=margin_d_db_override
+        margin_d_db_override=margin_d_db_override,
+        enable_beamforming=enable_beamforming,
+        beamforming_config=beamforming_config
     )
 
     print("✅ 計算完了")
@@ -396,6 +498,42 @@ def process_link_quality_data(
     print(f"    - 最大: {df['snr_db'].max():.2f} dB")
     print()
 
+    if enable_beamforming:
+        v2i_mask = df['link_type'] == 'V2I' if 'link_type' in df.columns else pd.Series([True] * len(df))
+        snr_delta = df.loc[v2i_mask, 'snr_db_bf'] - df.loc[v2i_mask, 'snr_db']
+        print(f"  SNR (dB) [Beamforming ON]:")
+        print(f"    - 平均: {df['snr_db_bf'].mean():.2f} dB")
+        print(f"    - 最小: {df['snr_db_bf'].min():.2f} dB")
+        print(f"    - 最大: {df['snr_db_bf'].max():.2f} dB")
+        print(f"    - Δ平均 (BF-Base, V2I): {snr_delta.mean():.2f} dB")
+        print()
+
+        if snr_delta.median() > 50.0 or df['snr_db_bf'].max() > 80.0:
+            print("⚠️  BF適用後のSNRが非常に高い可能性があります。")
+            print("    RT出力にアンテナ利得が含まれている場合は二重計上の可能性を確認してください。")
+            print()
+
+        def _print_quantile_stats(title: str, series: pd.Series) -> None:
+            print(f"  {title}:")
+            print(f"    - 平均:   {series.mean():.2f}")
+            print(f"    - 中央値: {series.median():.2f}")
+            print(f"    - P05:    {series.quantile(0.05):.2f}")
+            print(f"    - P95:    {series.quantile(0.95):.2f}")
+            print()
+
+        print("  【BF OFF vs ON 統計比較】")
+        _print_quantile_stats("SNR (OFF) [dB]", df['snr_db'])
+        _print_quantile_stats("SNR (ON)  [dB]", df['snr_db_bf'])
+        if 'throughput_mbps_mcs' in df.columns and 'throughput_mbps_mcs_bf' in df.columns:
+            print("  Throughput (MCS) [Mbps]:")
+            print(f"    - OFF 平均:   {df['throughput_mbps_mcs'].mean():.2f}")
+            print(f"    - OFF 中央値: {df['throughput_mbps_mcs'].median():.2f}")
+            print(f"    - OFF P05:    {df['throughput_mbps_mcs'].quantile(0.05):.2f}")
+            print(f"    - ON 平均:    {df['throughput_mbps_mcs_bf'].mean():.2f}")
+            print(f"    - ON 中央値:  {df['throughput_mbps_mcs_bf'].median():.2f}")
+            print(f"    - ON P05:     {df['throughput_mbps_mcs_bf'].quantile(0.05):.2f}")
+            print()
+
     # Shannon統計（shannon/bothモード）
     if rate_model in ('shannon', 'both'):
         print(f"  理論的スループット - Shannon (Mbps):")
@@ -403,6 +541,12 @@ def process_link_quality_data(
         print(f"    - 最小: {df['theoretical_throughput_mbps'].min():.2f} Mbps")
         print(f"    - 最大: {df['theoretical_throughput_mbps'].max():.2f} Mbps")
         print()
+        if enable_beamforming and 'theoretical_throughput_mbps_bf' in df.columns:
+            print(f"  理論的スループット - Shannon (BF) (Mbps):")
+            print(f"    - 平均: {df['theoretical_throughput_mbps_bf'].mean():.2f} Mbps")
+            print(f"    - 最小: {df['theoretical_throughput_mbps_bf'].min():.2f} Mbps")
+            print(f"    - 最大: {df['theoretical_throughput_mbps_bf'].max():.2f} Mbps")
+            print()
 
     # MCS統計（mcs/bothモード）
     if rate_model in ('mcs', 'both'):
@@ -417,6 +561,12 @@ def process_link_quality_data(
         print(f"    - 最小: {df['throughput_mbps_mcs'].min():.2f} Mbps")
         print(f"    - 最大: {df['throughput_mbps_mcs'].max():.2f} Mbps")
         print()
+        if enable_beamforming and 'throughput_mbps_mcs_bf' in df.columns:
+            print(f"  理論的スループット - MCS (BF) (Mbps):")
+            print(f"    - 平均: {df['throughput_mbps_mcs_bf'].mean():.2f} Mbps")
+            print(f"    - 最小: {df['throughput_mbps_mcs_bf'].min():.2f} Mbps")
+            print(f"    - 最大: {df['throughput_mbps_mcs_bf'].max():.2f} Mbps")
+            print()
 
     # bothモードの場合、比較を表示
     if rate_model == 'both':
@@ -428,6 +578,15 @@ def process_link_quality_data(
         print(f"    - MCS平均:     {mcs_avg:.2f} Mbps")
         print(f"    - MCS/Shannon: {ratio:.1f}%")
         print()
+        if enable_beamforming and 'throughput_mbps_mcs_bf' in df.columns:
+            shannon_bf_avg = df['theoretical_throughput_mbps_bf'].mean()
+            mcs_bf_avg = df['throughput_mbps_mcs_bf'].mean()
+            ratio_bf = mcs_bf_avg / shannon_bf_avg * 100 if shannon_bf_avg > 0 else 0
+            print("  【Shannon vs MCS 比較 (BF)】")
+            print(f"    - Shannon平均: {shannon_bf_avg:.2f} Mbps")
+            print(f"    - MCS平均:     {mcs_bf_avg:.2f} Mbps")
+            print(f"    - MCS/Shannon: {ratio_bf:.1f}%")
+            print()
 
     # 推定列の統計情報を表示
     if enable_margin_estimate and rate_model in ('mcs', 'both'):
@@ -464,6 +623,22 @@ def process_link_quality_data(
         print(f"    - Estimate平均: {est_avg:.2f} Mbps")
         print(f"    - Est/Truth:    {ratio_est:.1f}% (保守化率: {100-ratio_est:.1f}%)")
         print()
+
+    if enable_beamforming:
+        print("【保存前処理】BF結果で主要列を上書きして保存します。")
+        df['received_power'] = df['received_power_dbm_bf']
+        df['received_power_watts'] = df['received_power_dbm_bf'].apply(dbm_to_watts)
+        df['snr'] = df['received_power_watts'].apply(
+            lambda p: calculate_snr(p, NOISE_POWER_WATTS)
+        )
+        df['snr_db'] = 10 * np.log10(df['snr'])
+        if rate_model in ('shannon', 'both'):
+            df['theoretical_throughput_bps'] = df['theoretical_throughput_mbps_bf'] * 1_000_000
+            df['theoretical_throughput_mbps'] = df['theoretical_throughput_mbps_bf']
+        if rate_model in ('mcs', 'both'):
+            df['mcs_index'] = df['mcs_index_bf']
+            df['spectral_efficiency_bpshz'] = df['mcs_index'].apply(get_spectral_efficiency)
+            df['throughput_mbps_mcs'] = df['throughput_mbps_mcs_bf']
 
     # CSVファイルに保存
     df.to_csv(output_csv, index=False)

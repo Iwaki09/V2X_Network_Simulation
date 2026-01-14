@@ -21,6 +21,7 @@ PROJECT_DIR = SCRIPT_DIR.parent
 sys.path.insert(0, str(PROJECT_DIR))
 
 from src.core.throughput import process_link_quality_data
+from src.core.beamforming import BeamformingConfig
 from src.scenarios.default import DefaultScenarioConfig
 from src.scenarios.corner_intersection import CornerIntersectionConfig
 
@@ -91,6 +92,99 @@ def parse_args():
         help='Dモード用マージンを手動指定 [dB] (指定しない場合はmargin-pから計算)'
     )
 
+    # Beamforming オプション
+    parser.add_argument(
+        '--disable-beamforming',
+        action='store_false',
+        dest='enable_beamforming',
+        help='ビームフォーミング計算を無効化（デフォルト: 有効）'
+    )
+    parser.add_argument(
+        '--bf-tx-power-db',
+        type=float,
+        default=40.0,
+        help='BF用Tx電力 (PA出力) [dBm]. デフォルト: 40'
+    )
+    parser.add_argument(
+        '--bf-feeder-loss-db',
+        type=float,
+        default=3.0,
+        help='フィーダ損失 [dB]. デフォルト: 3'
+    )
+    parser.add_argument(
+        '--bs-array-rows',
+        type=int,
+        default=16,
+        help='BSアンテナ配列 行数 (デフォルト: 16)'
+    )
+    parser.add_argument(
+        '--bs-array-cols',
+        type=int,
+        default=16,
+        help='BSアンテナ配列 列数 (デフォルト: 16)'
+    )
+    parser.add_argument(
+        '--ue-array',
+        type=str,
+        choices=['ula', 'upa'],
+        default='ula',
+        help='UE配列形状 (ula=1x10, upa=2x5). デフォルト: ula'
+    )
+    parser.add_argument(
+        '--ue-array-rows',
+        type=int,
+        default=None,
+        help='UE配列 行数 (未指定なら --ue-array に従う)'
+    )
+    parser.add_argument(
+        '--ue-array-cols',
+        type=int,
+        default=None,
+        help='UE配列 列数 (未指定なら --ue-array に従う)'
+    )
+    parser.add_argument(
+        '--element-spacing-lambda',
+        type=float,
+        default=0.5,
+        help='素子間隔 [lambda]. デフォルト: 0.5'
+    )
+    parser.add_argument(
+        '--bs-element-gain-db',
+        type=float,
+        default=8.0,
+        help='BS素子最大利得 [dBi]. デフォルト: 8'
+    )
+    parser.add_argument(
+        '--ue-element-gain-db',
+        type=float,
+        default=0.0,
+        help='UE素子利得 [dBi]. デフォルト: 0'
+    )
+    parser.add_argument(
+        '--theta-3db',
+        type=float,
+        default=65.0,
+        help='3GPP素子パターン θ_3dB [deg]. デフォルト: 65'
+    )
+    parser.add_argument(
+        '--phi-3db',
+        type=float,
+        default=65.0,
+        help='3GPP素子パターン φ_3dB [deg]. デフォルト: 65'
+    )
+    parser.add_argument(
+        '--sla-v',
+        type=float,
+        default=30.0,
+        help='3GPP素子パターン SLA_V [dB]. デフォルト: 30'
+    )
+    parser.add_argument(
+        '--a-m',
+        type=float,
+        default=30.0,
+        help='3GPP素子パターン A_m [dB]. デフォルト: 30'
+    )
+
     return parser.parse_args()
 
 
@@ -112,6 +206,33 @@ def main():
     # 出力ディレクトリを作成
     output_csv.parent.mkdir(parents=True, exist_ok=True)
 
+    beamforming_config = None
+    if args.enable_beamforming:
+        if args.ue_array_rows is None or args.ue_array_cols is None:
+            if args.ue_array == 'ula':
+                ue_rows, ue_cols = 1, 10
+            else:
+                ue_rows, ue_cols = 2, 5
+        else:
+            ue_rows, ue_cols = args.ue_array_rows, args.ue_array_cols
+
+        beamforming_config = BeamformingConfig(
+            bs_num_rows=args.bs_array_rows,
+            bs_num_cols=args.bs_array_cols,
+            ue_num_rows=ue_rows,
+            ue_num_cols=ue_cols,
+            element_spacing_lambda=args.element_spacing_lambda,
+            bs_element_gain_db=args.bs_element_gain_db,
+            ue_element_gain_db=args.ue_element_gain_db,
+            tx_power_dbm=args.bf_tx_power_db,
+            feeder_loss_db=args.bf_feeder_loss_db,
+            theta_3db=args.theta_3db,
+            phi_3db=args.phi_3db,
+            sla_v=args.sla_v,
+            a_m=args.a_m,
+            rt_tx_power_dbm=scenario_config.base_station.tx_power_dbm
+        )
+
     process_link_quality_data(
         str(input_csv),
         str(output_csv),
@@ -119,7 +240,9 @@ def main():
         enable_margin_estimate=args.enable_margin_estimate,
         margin_p=args.margin_p,
         margin_k_db=args.margin_k_db,
-        margin_d_db_override=args.margin_d_db
+        margin_d_db_override=args.margin_d_db,
+        enable_beamforming=args.enable_beamforming,
+        beamforming_config=beamforming_config
     )
 
 

@@ -31,7 +31,7 @@ class DefaultScenarioConfig:
     base_station: BaseStation = field(default_factory=lambda: BaseStation(
         id="BS_1",
         position=[500.0, 150.0, 30.0],
-        tx_power_dbm=30.0
+        tx_power_dbm=40.0
     ))
 
     # 建物設定（単一の建物）

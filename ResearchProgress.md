@@ -422,3 +422,19 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 
 ## 2026-01-11（追記3）
 - `simulation/MODE_AWARE_MARGIN.md`に図ごとの数値解釈を追加し、defaultシナリオの図・数値・シナリオ比較表を追記。
+
+## 2026-01-15
+- **ビームフォーミング（BF）対応を追加**:
+  - `simulation/src/core/beamforming.py` を新規追加し、3GPP TR 38.901素子パターン（A_V/A_H/A）と理想ビーム利得を実装
+  - `simulation/src/core/raytracing.py` で最大パスの AoD/AoA を出力（Sionna RT角度＋幾何推定のフォールバック）
+  - `simulation/src/core/throughput.py` でBF利得・素子利得を反映した受信電力/SNR/スループット列を追加
+- **CLI拡張**:
+  - `simulation/scripts/run_throughput.py` でBFをデフォルト有効化し、`--disable-beamforming` と配列/素子パラメータ指定オプションを追加
+- **後方互換の維持**:
+  - 既存列は保持しつつ、BF列を追加（最適化スクリプトのスループット列候補も拡張）
+- **挙動変更**:
+  - BFをデフォルト有効化し、保存時に主要列をBF反映値で上書きするように変更
+- **パラメータ更新**:
+  - V2I送信電力を 40 dBm に更新（シナリオ設定/BSデフォルト）
+- **ドキュメント更新**:
+  - `simulation/README.md` にBF方式、TR 38.901式、追加CSV列、実行例、更新履歴を追記

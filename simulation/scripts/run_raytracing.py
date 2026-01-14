@@ -67,7 +67,12 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
             'dominance',
             'k_factor',
             'k_factor_db',
-            'prop_mode'
+            'prop_mode',
+            # 最大パスのAoD/AoA（deg）
+            'aod_theta_deg',
+            'aod_phi_deg',
+            'aoa_theta_deg',
+            'aoa_phi_deg'
         ]
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
 
@@ -76,6 +81,9 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
             # k_factor と k_factor_db は inf の可能性があるため文字列変換
             k_factor_str = "inf" if lq.k_factor == float("inf") else f"{lq.k_factor:.6f}"
             k_factor_db_str = "inf" if lq.k_factor_db == float("inf") else f"{lq.k_factor_db:.2f}"
+
+            def _format_angle(angle_value):
+                return "" if angle_value is None else f"{angle_value:.2f}"
 
             writer.writerow({
                 'timestamp': lq.timestamp,
@@ -93,7 +101,11 @@ def save_link_quality_csv(link_qualities: list, output_path: str):
                 'dominance': f"{lq.dominance:.6f}",
                 'k_factor': k_factor_str,
                 'k_factor_db': k_factor_db_str,
-                'prop_mode': lq.prop_mode
+                'prop_mode': lq.prop_mode,
+                'aod_theta_deg': _format_angle(lq.aod_theta_deg),
+                'aod_phi_deg': _format_angle(lq.aod_phi_deg),
+                'aoa_theta_deg': _format_angle(lq.aoa_theta_deg),
+                'aoa_phi_deg': _format_angle(lq.aoa_phi_deg)
             })
 
 

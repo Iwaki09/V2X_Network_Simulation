@@ -17,7 +17,9 @@ DEFAULT_THROUGHPUT_COL = 'theoretical_throughput_mbps'
 VALID_THROUGHPUT_COLS = [
     'theoretical_throughput_mbps',
     'throughput_mbps_mcs',
-    'throughput_mbps_mcs_est'  # 推定列（Mode-aware Margin適用後）
+    'throughput_mbps_mcs_est',  # 推定列（Mode-aware Margin適用後）
+    'theoretical_throughput_mbps_bf',
+    'throughput_mbps_mcs_bf'
 ]
 
 
