@@ -9,13 +9,13 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.patches as patches
-from typing import Dict, List, Tuple
+from typing import Dict, List, Tuple, Optional, Any
 from pathlib import Path
 
 from ..parsers.fcd_parser import parse_fcd_xml, TimestepData
 
 
-# シミュレーション環境のパラメータ
+# デフォルトシミュレーション環境のパラメータ（後方互換性のため）
 BASE_STATION = (500, 150)  # 基地局の座標 (X, Y)
 BUILDING_CENTER = (500, 50)  # 建物の中心座標 (X, Y)
 BUILDING_SIZE = (20, 20)  # 建物のサイズ (width, height)
@@ -41,28 +41,36 @@ def load_link_quality_data(csv_path: str) -> pd.DataFrame:
 
 
 def merge_data(timestep_data_list: List[TimestepData],
-               link_quality_df: pd.DataFrame) -> Tuple[pd.DataFrame, pd.DataFrame]:
+               link_quality_df: pd.DataFrame,
+               scenario_config: Optional[Any] = None) -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     FCDデータとリンク品質データをマージする
 
     Args:
         timestep_data_list: FCDパース結果のリスト
         link_quality_df: リンク品質DataFrame
+        scenario_config: シナリオ設定オブジェクト（座標変換に使用）
 
     Returns:
         Tuple[v2i_merged_df, v2v_links_df]
         - v2i_merged_df: V2Iリンク用マージデータ (timestamp, vehicle_id, x, y, is_line_of_sight)
         - v2v_links_df: V2Vリンク用データ (timestamp, tx_id, rx_id, is_line_of_sight)
     """
-    # FCDデータをDataFrameに変換
+    # FCDデータをDataFrameに変換（座標変換を適用）
     fcd_records = []
     for timestep_data in timestep_data_list:
         for vehicle in timestep_data.vehicles:
+            # シナリオ設定がある場合は座標変換を適用
+            if scenario_config:
+                x, y = scenario_config.transform_coordinates(vehicle.x, vehicle.y)
+            else:
+                x, y = vehicle.x, vehicle.y
+
             fcd_records.append({
                 'timestamp': timestep_data.timestamp,
                 'vehicle_id': vehicle.vehicle_id,
-                'x': vehicle.x,
-                'y': vehicle.y
+                'x': x,
+                'y': y
             })
     fcd_df = pd.DataFrame(fcd_records)
 
@@ -86,38 +94,66 @@ def merge_data(timestep_data_list: List[TimestepData],
     return v2i_merged_df, v2v_links_df
 
 
-def draw_static_objects(ax: plt.Axes):
+def draw_static_objects(ax: plt.Axes, scenario_config: Optional[Any] = None):
     """
     静的オブジェクト（道路、基地局、建物）を描画
 
     Args:
         ax: matplotlibのAxesオブジェクト
+        scenario_config: シナリオ設定オブジェクト（Noneの場合はデフォルト値を使用）
     """
+    # シナリオ設定から値を取得（Noneの場合はデフォルト値）
+    if scenario_config:
+        base_station = scenario_config.base_station.position
+        buildings = scenario_config.buildings
+        road_x_range = scenario_config.viz_road_x_range
+        road_y_range = scenario_config.viz_road_y_range
+    else:
+        base_station = [BASE_STATION[0], BASE_STATION[1]]
+        buildings = None
+        road_x_range = ROAD_X_RANGE
+        road_y_range = ROAD_Y_RANGE
+
     # 道路の範囲を薄いグレーで塗りつぶし
-    ax.axhspan(ROAD_Y_RANGE[0], ROAD_Y_RANGE[1],
+    ax.axhspan(road_y_range[0], road_y_range[1],
                color='lightgray', alpha=0.3, zorder=0)
 
     # 基地局（青色の三角マーカー）
-    ax.plot(BASE_STATION[0], BASE_STATION[1],
+    ax.plot(base_station[0], base_station[1],
             marker='^', color='blue', markersize=12,
             label='Base Station', zorder=10)
 
     # 建物（灰色の四角形）
-    building_x = BUILDING_CENTER[0] - BUILDING_SIZE[0] / 2
-    building_y = BUILDING_CENTER[1] - BUILDING_SIZE[1] / 2
-    building_rect = patches.Rectangle(
-        (building_x, building_y),
-        BUILDING_SIZE[0], BUILDING_SIZE[1],
-        linewidth=1, edgecolor='black', facecolor='gray',
-        alpha=0.7, label='Building', zorder=5
-    )
-    ax.add_patch(building_rect)
+    if buildings:
+        # 複数建物に対応
+        for i, building in enumerate(buildings):
+            building_x = building.center[0] - building.size[0] / 2
+            building_y = building.center[1] - building.size[1] / 2
+            building_rect = patches.Rectangle(
+                (building_x, building_y),
+                building.size[0], building.size[1],
+                linewidth=1, edgecolor='black', facecolor='gray',
+                alpha=0.7, label='Building' if i == 0 else '', zorder=5
+            )
+            ax.add_patch(building_rect)
+    else:
+        # 後方互換性: デフォルト単一建物
+        building_x = BUILDING_CENTER[0] - BUILDING_SIZE[0] / 2
+        building_y = BUILDING_CENTER[1] - BUILDING_SIZE[1] / 2
+        building_rect = patches.Rectangle(
+            (building_x, building_y),
+            BUILDING_SIZE[0], BUILDING_SIZE[1],
+            linewidth=1, edgecolor='black', facecolor='gray',
+            alpha=0.7, label='Building', zorder=5
+        )
+        ax.add_patch(building_rect)
 
 
 def draw_dynamic_objects(ax: plt.Axes,
                          timestamp_data: pd.DataFrame,
                          v2v_links: pd.DataFrame,
-                         vehicle_positions: Dict[str, Tuple[float, float]]):
+                         vehicle_positions: Dict[str, Tuple[float, float]],
+                         scenario_config: Optional[Any] = None):
     """
     動的オブジェクト（車両、通信リンク）を描画
 
@@ -126,7 +162,14 @@ def draw_dynamic_objects(ax: plt.Axes,
         timestamp_data: 特定のタイムステップのV2Iデータ
         v2v_links: 特定のタイムステップのV2Vリンクデータ
         vehicle_positions: 車両ID -> (x, y) の辞書
+        scenario_config: シナリオ設定オブジェクト（Noneの場合はデフォルト値を使用）
     """
+    # シナリオ設定から基地局位置を取得
+    if scenario_config:
+        base_station = scenario_config.base_station.position
+    else:
+        base_station = [BASE_STATION[0], BASE_STATION[1]]
+
     # 車両マーカー（黒色の丸）
     vehicle_x = timestamp_data['x'].values
     vehicle_y = timestamp_data['y'].values
@@ -145,8 +188,8 @@ def draw_dynamic_objects(ax: plt.Axes,
         link_alpha = 0.6 if is_los else 0.4
 
         # 基地局から車両への直線
-        ax.plot([BASE_STATION[0], veh_x],
-                [BASE_STATION[1], veh_y],
+        ax.plot([base_station[0], veh_x],
+                [base_station[1], veh_y],
                 color=link_color, alpha=link_alpha,
                 linewidth=1.5, zorder=3, label='V2I LoS' if is_los else 'V2I NLoS')
 
@@ -176,7 +219,8 @@ def create_frame(timestamp: float,
                  timestamp_data: pd.DataFrame,
                  v2v_links: pd.DataFrame,
                  vehicle_positions: Dict[str, Tuple[float, float]],
-                 output_path: str):
+                 output_path: str,
+                 scenario_config: Optional[Any] = None):
     """
     1フレームの画像を生成
 
@@ -186,15 +230,24 @@ def create_frame(timestamp: float,
         v2v_links: そのタイムステップのV2Vリンクデータ
         vehicle_positions: 車両ID -> (x, y) の辞書
         output_path: 出力ファイルパス
+        scenario_config: シナリオ設定オブジェクト（Noneの場合はデフォルト値を使用）
     """
+    # シナリオ設定から描画範囲を取得
+    if scenario_config:
+        xlim = scenario_config.viz_xlim
+        ylim = scenario_config.viz_ylim
+    else:
+        xlim = (-50, ROAD_X_RANGE[1] + 50)
+        ylim = (-50, 200)
+
     # figsizeを調整して、最終的な画像サイズが2で割り切れるようにする
     fig, ax = plt.subplots(figsize=(14, 6))
 
     # 静的オブジェクトを描画
-    draw_static_objects(ax)
+    draw_static_objects(ax, scenario_config)
 
     # 動的オブジェクトを描画
-    draw_dynamic_objects(ax, timestamp_data, v2v_links, vehicle_positions)
+    draw_dynamic_objects(ax, timestamp_data, v2v_links, vehicle_positions, scenario_config)
 
     # タイムスタンプをテキスト表示
     ax.text(0.02, 0.98, f'Time: {timestamp:.1f}s',
@@ -203,8 +256,8 @@ def create_frame(timestamp: float,
             bbox=dict(boxstyle='round', facecolor='white', alpha=0.8))
 
     # 軸とグリッド設定
-    ax.set_xlim(-50, ROAD_X_RANGE[1] + 50)
-    ax.set_ylim(-50, 200)
+    ax.set_xlim(xlim[0], xlim[1])
+    ax.set_ylim(ylim[0], ylim[1])
     ax.set_xlabel('X [m]', fontsize=12)
     ax.set_ylabel('Y [m]', fontsize=12)
     ax.set_aspect('equal')
@@ -225,7 +278,8 @@ def create_frame(timestamp: float,
 
 def generate_frames(v2i_merged_df: pd.DataFrame,
                     v2v_links_df: pd.DataFrame,
-                    output_dir: str = 'frames'):
+                    output_dir: str = 'frames',
+                    scenario_config: Optional[Any] = None):
     """
     全タイムステップのフレーム画像を生成
 
@@ -233,6 +287,7 @@ def generate_frames(v2i_merged_df: pd.DataFrame,
         v2i_merged_df: V2Iリンク用マージデータ
         v2v_links_df: V2Vリンク用データ
         output_dir: 出力ディレクトリ
+        scenario_config: シナリオ設定オブジェクト（Noneの場合はデフォルト値を使用）
     """
     # 出力ディレクトリを作成
     os.makedirs(output_dir, exist_ok=True)
@@ -261,7 +316,7 @@ def generate_frames(v2i_merged_df: pd.DataFrame,
         output_path = os.path.join(output_dir, f'frame_{frame_number}.png')
 
         # フレームを生成
-        create_frame(timestamp, timestamp_data, v2v_links, vehicle_positions, output_path)
+        create_frame(timestamp, timestamp_data, v2v_links, vehicle_positions, output_path, scenario_config)
 
         # 進捗表示
         if (i + 1) % 10 == 0 or i == total_frames - 1:
@@ -270,7 +325,7 @@ def generate_frames(v2i_merged_df: pd.DataFrame,
     print(f"✅ All frames saved to '{output_dir}/' directory")
 
 
-def run_visualization(fcd_file: str = None, csv_file: str = None, output_dir: str = None):
+def run_visualization(fcd_file: str = None, csv_file: str = None, output_dir: str = None, scenario_config: Optional[Any] = None):
     """
     可視化を実行
 
@@ -278,19 +333,22 @@ def run_visualization(fcd_file: str = None, csv_file: str = None, output_dir: st
         fcd_file: FCD XMLファイルのパス
         csv_file: リンク品質CSVファイルのパス
         output_dir: 出力ディレクトリ
+        scenario_config: シナリオ設定オブジェクト（Noneの場合はデフォルトシナリオを使用）
     """
     # パス設定
     script_dir = Path(__file__).parent.parent.parent
     if fcd_file is None:
-        fcd_file = str(script_dir / 'output/data/fcd/fcd_output.xml')
+        fcd_file = str(script_dir / 'output/scenarios/default/fcd/fcd_output.xml')
     if csv_file is None:
-        csv_file = str(script_dir / 'output/data/raytracing/link_quality_results.csv')
+        csv_file = str(script_dir / 'output/scenarios/default/raytracing/link_quality_results.csv')
     if output_dir is None:
-        output_dir = str(script_dir / 'output/figures/frames')
+        output_dir = str(script_dir / 'output/scenarios/default/figures/frames')
 
     print("=" * 60)
     print("V2X Communication Visualization (V2I + V2V)")
     print("=" * 60)
+    if scenario_config:
+        print(f"Scenario: {scenario_config.name}")
 
     # データ読み込み
     print("\n1. Loading FCD data...")
@@ -307,13 +365,15 @@ def run_visualization(fcd_file: str = None, csv_file: str = None, output_dir: st
 
     # データマージ
     print("\n3. Merging data...")
-    v2i_merged_df, v2v_links_df = merge_data(timestep_data_list, link_quality_df)
+    v2i_merged_df, v2v_links_df = merge_data(timestep_data_list, link_quality_df, scenario_config)
     print(f"   - V2I merged records: {len(v2i_merged_df)}")
     print(f"   - V2V link records: {len(v2v_links_df)}")
+    if scenario_config:
+        print(f"   - Coordinate transformation applied: offset=({scenario_config.coord_offset_x}, {scenario_config.coord_offset_y})")
 
     # フレーム生成
     print("\n4. Generating frames...")
-    generate_frames(v2i_merged_df, v2v_links_df, output_dir)
+    generate_frames(v2i_merged_df, v2v_links_df, output_dir, scenario_config)
 
     print("\n" + "=" * 60)
     print("Visualization completed!")

@@ -7,6 +7,15 @@
 #   ./run_simulation.sh         : Ray Tracingのみ実行（既存のFCD使用）
 #   ./run_simulation.sh --sumo  : SUMOシミュレーション実行後にRay Tracing実行
 #   ./run_simulation.sh --all   : 全パイプライン実行（SUMO→RT→スループット→最適化）
+#   ./run_simulation.sh --scenario corner_intersection --all : 交差点シナリオで実行
+#   ./run_simulation.sh --scenario corner_intersection --sionna-rt --all : GPU版Sionna RTで実行
+#
+# オプション:
+#   --sionna-rt          : GPU加速されたSionna RTマルチパス計算を使用（デフォルトは簡易モデル）
+#
+# シナリオ:
+#   default              : デフォルトシナリオ（直線道路、1km）
+#   corner_intersection  : 交差点シナリオ（十字交差点、4棟の角ビル）
 #
 ##############################################################################
 
@@ -19,13 +28,26 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 
+# デフォルトシナリオ
+SCENARIO="default"
+
 # ディレクトリ設定
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-SUMO_CONFIG_DIR="${SCRIPT_DIR}/sumo_config"
-SUMO_CONFIG_FILE="${SUMO_CONFIG_DIR}/simulation.sumocfg"
-OUTPUT_DIR="${SCRIPT_DIR}/output"
-FCD_OUTPUT="${OUTPUT_DIR}/fcd/fcd_output.xml"
-LINK_QUALITY_CSV="${OUTPUT_DIR}/raytracing/link_quality_results.csv"
+
+# シナリオに応じたパス設定関数
+setup_paths() {
+    # すべてのシナリオで統一されたパス構造を使用
+    # output/scenarios/{scenario_name}/{fcd,raytracing,throughput,optimization,analysis,figures}
+    if [ "$SCENARIO" = "default" ]; then
+        SUMO_CONFIG_DIR="${SCRIPT_DIR}/sumo_config"
+    else
+        SUMO_CONFIG_DIR="${SCRIPT_DIR}/sumo_config/${SCENARIO}"
+    fi
+    SUMO_CONFIG_FILE="${SUMO_CONFIG_DIR}/simulation.sumocfg"
+    OUTPUT_DIR="${SCRIPT_DIR}/output/scenarios/${SCENARIO}"
+    FCD_OUTPUT="${OUTPUT_DIR}/fcd/fcd_output.xml"
+    LINK_QUALITY_CSV="${OUTPUT_DIR}/raytracing/link_quality_results.csv"
+}
 
 # Python仮想環境
 VENV_PATH="${SCRIPT_DIR}/../.venv"
@@ -124,8 +146,14 @@ run_raytracing_simulation() {
     # 出力ディレクトリを作成
     mkdir -p "$(dirname "$LINK_QUALITY_CSV")"
 
-    # Ray Tracingシミュレーション実行
-    python "${SCRIPT_DIR}/scripts/run_raytracing.py"
+    # Ray Tracingシミュレーション実行（シナリオを渡す）
+    if [ "$USE_SIONNA_RT" = true ]; then
+        echo "Mode: Sionna RT (GPU-accelerated multi-path)"
+        python "${SCRIPT_DIR}/scripts/run_raytracing.py" --scenario "$SCENARIO" --sionna-rt
+    else
+        echo "Mode: Simple model (single-path)"
+        python "${SCRIPT_DIR}/scripts/run_raytracing.py" --scenario "$SCENARIO"
+    fi
 
     if [ ! -f "$LINK_QUALITY_CSV" ]; then
         print_error "Link quality CSV not generated: $LINK_QUALITY_CSV"
@@ -140,8 +168,8 @@ run_throughput_calculation() {
 
     activate_venv
 
-    # スループット計算実行
-    python "${SCRIPT_DIR}/scripts/run_throughput.py"
+    # スループット計算実行（シナリオを渡す）
+    python "${SCRIPT_DIR}/scripts/run_throughput.py" --scenario "$SCENARIO"
 
     print_success "Throughput calculation completed!"
 }
@@ -151,8 +179,8 @@ run_optimization() {
 
     activate_venv
 
-    # 最適化実行
-    python "${SCRIPT_DIR}/scripts/run_optimization.py"
+    # 最適化実行（シナリオを渡す）
+    python "${SCRIPT_DIR}/scripts/run_optimization.py" --scenario "$SCENARIO"
 
     print_success "Optimization completed!"
 }
@@ -164,8 +192,7 @@ print_results() {
     echo "  - FCD output:          $FCD_OUTPUT"
     echo "  - Link quality CSV:    $LINK_QUALITY_CSV"
     echo "  - Throughput CSV:      ${OUTPUT_DIR}/throughput/theoretical_network_results.csv"
-    echo "  - Baseline CSV:        ${OUTPUT_DIR}/baseline/baseline_distributed_results.csv"
-    echo "  - Optimization CSV:    ${OUTPUT_DIR}/baseline/global_optimization_results.csv"
+    echo "  - Optimization CSV:    ${OUTPUT_DIR}/optimization/"
     echo ""
 
     if [ -f "$LINK_QUALITY_CSV" ]; then
@@ -180,14 +207,13 @@ print_results() {
 ##############################################################################
 
 main() {
-    print_header
-
     # コマンドライン引数を解析
     RUN_SUMO=false
     RUN_ALL=false
+    USE_SIONNA_RT=false
 
-    for arg in "$@"; do
-        case $arg in
+    while [[ $# -gt 0 ]]; do
+        case $1 in
             --sumo)
                 RUN_SUMO=true
                 shift
@@ -196,18 +222,34 @@ main() {
                 RUN_ALL=true
                 shift
                 ;;
+            --sionna-rt)
+                USE_SIONNA_RT=true
+                shift
+                ;;
+            --scenario)
+                SCENARIO="$2"
+                shift 2
+                ;;
             -h|--help)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
                 echo "Options:"
-                echo "  --sumo      Run SUMO simulation before Ray Tracing"
-                echo "  --all       Run full pipeline (SUMO→RT→Throughput→Optimization)"
-                echo "  -h, --help  Show this help message"
+                echo "  --sumo                Run SUMO simulation before Ray Tracing"
+                echo "  --all                 Run full pipeline (SUMO→RT→Throughput→Optimization)"
+                echo "  --sionna-rt           Use Sionna RT for multi-path ray tracing (GPU accelerated)"
+                echo "  --scenario NAME       Select scenario (default, corner_intersection)"
+                echo "  -h, --help            Show this help message"
+                echo ""
+                echo "Scenarios:"
+                echo "  default               Default straight road scenario (1km road)"
+                echo "  corner_intersection   Intersection scenario (cross intersection, 4 corner buildings)"
                 echo ""
                 echo "Examples:"
-                echo "  $0              # Run Ray Tracing only (use existing FCD)"
-                echo "  $0 --sumo       # Run SUMO simulation then Ray Tracing"
-                echo "  $0 --all        # Run full pipeline"
+                echo "  $0                                      # Run Ray Tracing only (use existing FCD)"
+                echo "  $0 --sumo                               # Run SUMO simulation then Ray Tracing"
+                echo "  $0 --all                                # Run full pipeline"
+                echo "  $0 --scenario corner_intersection --all # Run intersection scenario"
+                echo "  $0 --scenario corner_intersection --sionna-rt --all # Run with GPU-accelerated Sionna RT"
                 echo ""
                 echo "Individual scripts (in scripts/ directory):"
                 echo "  python scripts/run_raytracing.py      # Ray Tracing"
@@ -217,15 +259,24 @@ main() {
                 exit 0
                 ;;
             *)
-                print_error "Unknown option: $arg"
+                print_error "Unknown option: $1"
                 echo "Use -h or --help for usage information."
                 exit 1
                 ;;
         esac
     done
 
+    # シナリオに応じてパスを設定
+    setup_paths
+
+    print_header
+    echo -e "${GREEN}Scenario: ${SCENARIO}${NC}"
+    echo ""
+
     # 出力ディレクトリを作成
     mkdir -p "$OUTPUT_DIR"
+    mkdir -p "$(dirname "$FCD_OUTPUT")"
+    mkdir -p "$(dirname "$LINK_QUALITY_CSV")"
 
     # SUMOシミュレーション実行（--sumoまたは--allオプション時）
     if [ "$RUN_SUMO" = true ] || [ "$RUN_ALL" = true ]; then

@@ -1,0 +1,2 @@
+outage_threshold_mbps,outage_rate_eval,outage_count_eval,total_links_eval,p05_eval_mbps,mean_eval_mbps,opt_col,eval_col
+50.0,0.0034467901766479965,8,2321,440.00000000000006,522.4429125376993,throughput_mbps_mcs,throughput_mbps_mcs

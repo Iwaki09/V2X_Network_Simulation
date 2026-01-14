@@ -23,6 +23,9 @@ source ../.venv/bin/activate
 
 # 全パイプライン実行（SUMO→RT→スループット→最適化）
 ./run_simulation.sh --all
+
+# 交差点シナリオで実行
+./run_simulation.sh --scenario corner_intersection --all
 ```
 
 ---
@@ -44,6 +47,10 @@ simulation/
 │   │   ├── __init__.py
 │   │   ├── distributed.py            # 分散型制御（ベースライン）
 │   │   └── global_optimizer.py       # ILPグローバル最適化
+│   ├── scenarios/                    # シナリオ設定モジュール
+│   │   ├── __init__.py
+│   │   ├── default.py                # デフォルトシナリオ（直線道路）
+│   │   └── corner_intersection.py    # 交差点シナリオ
 │   └── visualization/                # 可視化モジュール
 │       ├── __init__.py
 │       ├── link_visualizer.py        # V2Xリンク時系列可視化
@@ -52,17 +59,32 @@ simulation/
 │   ├── run_raytracing.py             # レイトレーシング実行
 │   ├── run_throughput.py             # スループット計算実行
 │   ├── run_optimization.py           # 最適化実行
-│   └── run_visualization.py          # 可視化実行
+│   ├── run_visualization.py          # 可視化実行
+│   └── generate_fcd_corner.py        # 交差点シナリオFCD生成
 ├── sumo_config/                      # SUMO設定ファイル
-│   ├── road.net.xml                  # 道路ネットワーク定義
-│   ├── traffic.rou.xml               # 交通流定義
-│   └── simulation.sumocfg            # SUMO設定
+│   ├── road.net.xml                  # デフォルト道路ネットワーク
+│   ├── traffic.rou.xml               # デフォルト交通流定義
+│   ├── simulation.sumocfg            # デフォルトSUMO設定
+│   └── corner_intersection/          # 交差点シナリオ設定
+│       ├── road.net.xml              # 十字交差点ネットワーク
+│       ├── traffic.rou.xml           # 交差点交通流定義
+│       └── simulation.sumocfg        # 交差点シナリオSUMO設定
 ├── output/                           # 出力データ
-│   ├── fcd/                          # SUMO FCD出力
-│   ├── raytracing/                   # レイトレーシング結果
-│   ├── throughput/                   # スループット計算結果
-│   ├── baseline/                     # ベースライン比較結果
-│   └── visualizations/               # 可視化出力
+│   └── scenarios/                    # シナリオ別出力
+│       ├── default/                  # デフォルトシナリオ出力
+│       │   ├── fcd/                  # SUMO FCD出力
+│       │   ├── raytracing/           # レイトレーシング結果
+│       │   ├── throughput/           # スループット計算結果
+│       │   ├── optimization/         # 最適化結果
+│       │   ├── analysis/             # 分析結果
+│       │   └── figures/              # 可視化出力
+│       └── corner_intersection/      # 交差点シナリオ出力
+│           ├── fcd/
+│           ├── raytracing/
+│           ├── throughput/
+│           ├── optimization/
+│           ├── analysis/
+│           └── figures/
 ├── run_simulation.sh                 # 統合実行スクリプト
 ├── requirements.txt                  # Python依存パッケージ
 └── README.md                         # 本ドキュメント
@@ -92,6 +114,75 @@ pip install -r requirements.txt
 
 ---
 
+## シナリオ
+
+本シミュレーションでは複数のシナリオをサポートしています。`--scenario` オプションでシナリオを選択できます。
+
+### default（デフォルトシナリオ）
+
+直線道路上の車両移動をシミュレートします。
+
+```
+道路: 1km直線道路（x: 0〜1000m）
+建物: 1棟（道路脇）
+基地局: 道路中央付近
+```
+
+**座標系:**
+- 道路: x軸に沿って0〜1000m
+- 建物: (500, 50, 0) 中心、20×20×100m
+- 基地局: (500, 150, 30)
+
+### corner_intersection（交差点シナリオ）
+
+十字交差点での車両移動をシミュレートします。LOS/NLOS切り替えが頻繁に発生し、prop_mode(K)やNLOSサンプルの収集に適しています。
+
+```
+道路: 十字交差点（各方向±200m）
+建物: 4棟の角ビル（NE, NW, SE, SW）
+基地局: 北東方向（道路から離れた位置）
+```
+
+**座標系（交差点中心が原点）:**
+- 道路: x軸（東西）-200〜+200m、y軸（南北）-200〜+200m
+- 建物:
+  - NE: (+40, +40) 中心、60×60×20m
+  - NW: (-40, +40) 中心、60×60×20m
+  - SE: (+40, -40) 中心、60×60×20m
+  - SW: (-40, -40) 中心、60×60×20m
+- 基地局: (+120, +120, 20)
+
+**車両ルート:**
+- 西→東（直進）
+- 南→北（直進）
+- 西→北（左折）
+- 南→東（左折）
+
+**特徴:**
+- 建物による遮蔽でNLOS率が高い（約45%）
+- 交差点通過時にLOS/NLOS切り替えが発生
+- 左折車両は複数建物の遮蔽を経験
+
+**レイアウト図:**
+```
+                  N (+y)
+                   |
+        NW Building| NE Building    * BS (+120,+120)
+           [-40,+40]  [+40,+40]
+                   |
+    ---------------+--------------- E (+x)
+                   |
+        SW Building| SE Building
+           [-40,-40]  [+40,-40]
+                   |
+                  S (-y)
+
+    建物サイズ: 60×60×20m（各角に配置）
+    道路幅: 7m（2車線）
+```
+
+---
+
 ## 使用方法
 
 ### シミュレーション実行
@@ -107,16 +198,31 @@ pip install -r requirements.txt
 
 # 全パイプライン実行
 ./run_simulation.sh --all
+
+# 交差点シナリオで全パイプライン実行
+./run_simulation.sh --scenario corner_intersection --all
 ```
 
 #### 個別スクリプト
 
 ```bash
-# レイトレーシング実行
+# レイトレーシング実行（簡易モデル - 単一パス）
 python scripts/run_raytracing.py
 
-# スループット計算
+# レイトレーシング実行（Sionna RT - マルチパス対応）
+python scripts/run_raytracing.py --sionna-rt
+
+# Sionna RTのパラメータ指定
+python scripts/run_raytracing.py --sionna-rt --max-depth 5 --num-samples 2000000
+
+# スループット計算（デフォルト: Shannon公式）
 python scripts/run_throughput.py
+
+# スループット計算（MCSベース - 離散レートモデル）
+python scripts/run_throughput.py --rate-model mcs
+
+# スループット計算（Shannon + MCS比較モード）
+python scripts/run_throughput.py --rate-model both
 
 # 最適化（分散型 + グローバル）
 python scripts/run_optimization.py
@@ -126,6 +232,44 @@ python scripts/run_optimization.py --distributed
 
 # グローバル最適化のみ
 python scripts/run_optimization.py --global
+
+# 最適化でMCSベースのスループット列を使用
+python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+
+# 交差点シナリオで実行
+python scripts/run_raytracing.py --scenario corner_intersection
+python scripts/run_throughput.py --scenario corner_intersection
+python scripts/run_optimization.py --scenario corner_intersection
+
+# Shannon vs MCS 分析・可視化
+python scripts/analyze_throughput_models.py
+
+# 分析結果の出力先を指定
+python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbps 10
+
+# 交差点シナリオで分析
+python scripts/analyze_throughput_models.py --scenario corner_intersection
+
+# 最小追加分析（距離CDF、SNR CDF、MCS分布）
+python scripts/analyze_minimal_additional.py
+
+# 出力先とパラメータを指定
+python scripts/analyze_minimal_additional.py --outdir output/analysis --rmin-mbps 50
+
+# カスタム入力ファイル指定
+python scripts/analyze_minimal_additional.py \
+    --input-default output/scenarios/default/throughput/theoretical_network_results.csv \
+    --input-corner output/scenarios/corner_intersection/throughput/theoretical_network_results.csv
+
+# リレー可能率分析（V2Vリレーの可能性を評価）
+python scripts/analyze_relay_possible_rate.py
+
+# パラメータを指定してリレー可能率分析
+python scripts/analyze_relay_possible_rate.py \
+    --input output/scenarios/corner_intersection/throughput/theoretical_network_results.csv \
+    --outdir output/scenarios/corner_intersection/analysis \
+    --throughput-col throughput_mbps_mcs \
+    --t-out 50 --t-v2v-min 50 --t-v2i-good 100
 
 # 可視化（すべて）
 python scripts/run_visualization.py --all
@@ -137,6 +281,9 @@ python scripts/run_visualization.py --frames
 python scripts/run_visualization.py --network   # ネットワークサマリー
 python scripts/run_visualization.py --baseline  # ベースライン比較
 python scripts/run_visualization.py --final     # 最終比較
+
+# 交差点シナリオで可視化
+python scripts/run_visualization.py --scenario corner_intersection --all
 ```
 
 ---
@@ -176,13 +323,19 @@ data = parse_fcd_xml("output/fcd/fcd_output.xml")
 
 #### `RayTracingSimulator`
 
-28GHz帯ミリ波レイトレーシングシミュレータ。
+28GHz帯ミリ波レイトレーシングシミュレータ。2つのモードをサポート:
+- **簡易モデル** (`use_sionna_rt=False`): フリスの伝搬式による単一パス計算
+- **Sionna RTモード** (`use_sionna_rt=True`): 本格的なレイトレーシングによるマルチパス計算
 
 **コンストラクタ引数:**
 - `base_station` (BaseStation): 基地局設定
-- `building` (Building): 建物設定
+- `building` (Building, optional): 建物設定（後方互換性のため維持）
+- `buildings` (List[Building], optional): 建物のリスト（複数建物対応）
 - `frequency_ghz` (float, optional): 周波数 [GHz]. デフォルト: 28.0
 - `v2v_tx_power_dbm` (float, optional): V2V送信電力 [dBm]. デフォルト: 23.0
+- `use_sionna_rt` (bool, optional): Sionna RTモードを有効化. デフォルト: False
+- `max_depth` (int, optional): レイトレーシングの最大反射回数. デフォルト: 3
+- `num_samples` (int, optional): レイトレーシングのサンプル数. デフォルト: 1000000
 
 **主要メソッド:**
 - `calculate_link_quality(timestamp, vehicle_positions)`: 全リンク（V2I+V2V）の品質を計算
@@ -192,21 +345,70 @@ data = parse_fcd_xml("output/fcd/fcd_output.xml")
 from src.core import RayTracingSimulator, BaseStation, Building
 
 bs = BaseStation(id="BS_1", position=[500.0, 150.0, 30.0], tx_power_dbm=30.0)
-bldg = Building(id="Building_1", center=[500.0, 50.0, 0.0], size=[20.0, 20.0, 100.0])
 
+# 単一建物（後方互換）
+bldg = Building(id="Building_1", center=[500.0, 50.0, 0.0], size=[20.0, 20.0, 100.0])
 simulator = RayTracingSimulator(base_station=bs, building=bldg)
+
+# 複数建物（交差点シナリオなど）
+buildings = [
+    Building(id="Building_NE", center=[40.0, 40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_NW", center=[-40.0, 40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_SE", center=[40.0, -40.0, 0.0], size=[60.0, 60.0, 20.0]),
+    Building(id="Building_SW", center=[-40.0, -40.0, 0.0], size=[60.0, 60.0, 20.0]),
+]
+simulator = RayTracingSimulator(base_station=bs, buildings=buildings)
+
+# Sionna RTモード（マルチパス対応）
+simulator_rt = RayTracingSimulator(
+    base_station=bs, buildings=buildings,
+    use_sionna_rt=True, max_depth=5
+)
+
 link_qualities = simulator.calculate_link_quality(timestamp=0.0, vehicle_positions=positions)
 ```
 
-#### `calculate_theoretical_throughput(df)`
+#### `calculate_theoretical_throughput(df, rate_model='shannon')`
 
 リンク品質DataFrameに理論的スループットを追加します。
 
 **引数:**
 - `df` (DataFrame): link_quality_results.csvから読み込んだDataFrame
+- `rate_model` (str): レートモデル ('shannon', 'mcs', 'both')
+  - `'shannon'`: シャノン公式のみ（デフォルト、後方互換）
+  - `'mcs'`: MCSベースのみ
+  - `'both'`: 両方の列を出力
 
 **戻り値:**
 - `DataFrame`: スループット列が追加されたDataFrame
+
+**使用例:**
+```python
+from src.core.throughput import calculate_theoretical_throughput
+df = calculate_theoretical_throughput(df, rate_model='both')
+```
+
+#### MCSモデル (`src.core.mcs_model`)
+
+SNRからMCS（Modulation and Coding Scheme）を選択し、離散的なスループットを計算する研究用簡略モデル。
+
+**MCSテーブル（8段階）:**
+
+| MCS Index | SNR範囲 [dB] | スペクトル効率 [bits/s/Hz] | 変調方式相当 |
+|-----------|-------------|--------------------------|-------------|
+| 0 | < -5 | 0.15 | QPSK 1/8 |
+| 1 | -5 ~ 0 | 0.38 | QPSK 1/3 |
+| 2 | 0 ~ 5 | 0.88 | QPSK 2/3 |
+| 3 | 5 ~ 10 | 1.48 | 16QAM 1/2 |
+| 4 | 10 ~ 15 | 2.40 | 16QAM 3/4 |
+| 5 | 15 ~ 20 | 3.30 | 64QAM 2/3 |
+| 6 | 20 ~ 25 | 4.40 | 64QAM 5/6 |
+| 7 | >= 25 | 5.50 | 256QAM 3/4 |
+
+**主要関数:**
+- `select_mcs(snr_db)`: SNRからMCSインデックスを選択
+- `get_spectral_efficiency(mcs_index)`: MCSに対応するスペクトル効率を取得
+- `calculate_mcs_throughput_mbps(bandwidth_hz, spectral_efficiency)`: スループットを計算
 
 ### 最適化モジュール (`src.optimization`)
 
@@ -254,16 +456,31 @@ V2Xリンク可視化フレームを生成します。
 
 ## パラメータ一覧
 
-### 物理環境パラメータ
+### 物理環境パラメータ（デフォルトシナリオ）
 
 | パラメータ | 値 | 単位 | 説明 | 定義場所 |
 |-----------|-----|------|------|----------|
 | 道路長 | 1000 | m | 直線道路の全長 | sumo_config/road.net.xml |
 | 車線数 | 2 | - | 片側1車線×2 | sumo_config/road.net.xml |
 | 車線幅 | 3.5 | m | 各車線の幅 | sumo_config/road.net.xml |
-| BS位置 | (500, 150, 30) | m | 基地局の3D座標 | src/core/raytracing.py |
-| 建物位置 | (500, 50, 0) | m | 建物中心の3D座標 | src/core/raytracing.py |
-| 建物サイズ | (20, 20, 100) | m | 幅×奥行×高さ | src/core/raytracing.py |
+| BS位置 | (500, 150, 30) | m | 基地局の3D座標 | src/scenarios/default.py |
+| 建物位置 | (500, 50, 0) | m | 建物中心の3D座標 | src/scenarios/default.py |
+| 建物サイズ | (20, 20, 100) | m | 幅×奥行×高さ | src/scenarios/default.py |
+
+### 物理環境パラメータ（交差点シナリオ）
+
+| パラメータ | 値 | 単位 | 説明 | 定義場所 |
+|-----------|-----|------|------|----------|
+| 道路長 | 400 | m | 交差点各方向の全長（±200m） | sumo_config/corner_intersection/road.net.xml |
+| 車線数 | 2 | - | 各道路2車線 | sumo_config/corner_intersection/road.net.xml |
+| 車線幅 | 3.5 | m | 各車線の幅 | sumo_config/corner_intersection/road.net.xml |
+| BS位置 | (120, 120, 20) | m | 基地局の3D座標 | src/scenarios/corner_intersection.py |
+| 建物NE位置 | (40, 40, 0) | m | 北東建物中心 | src/scenarios/corner_intersection.py |
+| 建物NW位置 | (-40, 40, 0) | m | 北西建物中心 | src/scenarios/corner_intersection.py |
+| 建物SE位置 | (40, -40, 0) | m | 南東建物中心 | src/scenarios/corner_intersection.py |
+| 建物SW位置 | (-40, -40, 0) | m | 南西建物中心 | src/scenarios/corner_intersection.py |
+| 建物サイズ | (60, 60, 20) | m | 幅×奥行×高さ（全建物共通） | src/scenarios/corner_intersection.py |
+| 座標オフセット | (-200, -200) | m | SUMO座標→シナリオ座標変換 | src/scenarios/corner_intersection.py |
 
 ### 無線通信パラメータ
 
@@ -273,6 +490,7 @@ V2Xリンク可視化フレームを生成します。
 | 帯域幅 | 100 | MHz | チャネル帯域幅 | src/core/throughput.py |
 | V2I送信電力 | 30 | dBm | 基地局送信電力 | src/core/raytracing.py |
 | V2V送信電力 | 23 | dBm | 車両送信電力 | src/core/raytracing.py |
+| V2V最大距離 | 100 | m | V2Vリンク生成の最大距離（計算量削減用） | src/core/raytracing.py |
 | 遮蔽損失 | 15 | dB | NLOS時の追加損失 | src/core/raytracing.py |
 | 雑音温度 | 290 | K | 受信機雑音温度 | src/core/throughput.py |
 
@@ -298,18 +516,42 @@ V2Xリンク可視化フレームを生成します。
 | path_loss | float | パスロス [dB] |
 | delay_spread | float | 遅延スプレッド [ns] |
 | is_line_of_sight | boolean | LOS判定 |
+| num_paths | int | パス数（現状は常に1） |
+| p_tot_watts | float | 総受信電力 [Watts] |
+| p_max_watts | float | 最大パス電力 [Watts] |
+| dominance | float | Dominance指標 D = P_max / P_tot (0-1) |
+| k_factor | float | K-factor（線形値）。K = P_max / (P_tot - P_max) |
+| k_factor_db | float | K-factor [dB] |
+| prop_mode | string | 伝搬モード ("D" or "K")。D >= 0.5 なら "D" |
+
+**Propagation-Mode Switch (D/K) について:**
+
+Dominance (D) は最大パス電力が総受信電力に占める割合を示し、マルチパス環境における支配的パスの強さを表します：
+- D = 1.0: 単一パス（完全支配）
+- D > 0.5: 支配的パスが存在（"D" モード）
+- D <= 0.5: 散乱的なマルチパス環境（"K" モード）
+
+現状の簡易パスロスモデルでは単一パスとして計算されるため、すべてのリンクで D = 1.0、prop_mode = "D" となります。将来的にSionna RTのCIR（Channel Impulse Response）から複数パス情報を取得する拡張に備えた設計です。
 
 ### `theoretical_network_results.csv`
 
 上記に加え:
 
-| 列名 | データ型 | 説明 |
-|------|----------|------|
-| received_power_watts | float | 受信電力 [Watts] |
-| snr | float | SNR（線形値） |
-| snr_db | float | SNR [dB] |
-| theoretical_throughput_bps | float | スループット [bps] |
-| theoretical_throughput_mbps | float | スループット [Mbps] |
+| 列名 | データ型 | 説明 | レートモデル |
+|------|----------|------|-------------|
+| received_power_watts | float | 受信電力 [Watts] | 全モード |
+| snr | float | SNR（線形値） | 全モード |
+| snr_db | float | SNR [dB] | 全モード |
+| theoretical_throughput_bps | float | スループット（Shannon）[bps] | shannon/both |
+| theoretical_throughput_mbps | float | スループット（Shannon）[Mbps] | shannon/both |
+| mcs_index | int | MCSインデックス (0-7) | mcs/both |
+| spectral_efficiency_bpshz | float | スペクトル効率 [bits/s/Hz] | mcs/both |
+| throughput_mbps_mcs | float | スループット（MCS）[Mbps] | mcs/both |
+
+**レートモデルオプション:**
+- `--rate-model shannon`（デフォルト）: Shannon列のみ出力（後方互換）
+- `--rate-model mcs`: MCS列のみ出力
+- `--rate-model both`: 両方の列を出力し比較可能
 
 ### `baseline_distributed_results.csv`
 
@@ -324,6 +566,166 @@ V2Xリンク可視化フレームを生成します。
 |------|----------|------|
 | timestamp | float | タイムステップ [秒] |
 | optimized_total_throughput_mbps | float | 最適化スループット [Mbps] |
+
+### `summary_shannon_vs_mcs.csv`（分析出力）
+
+| 列名 | データ型 | 説明 |
+|------|----------|------|
+| condition | string | 条件名（All, LOS, NLOS, prop_mode=D/K 等） |
+| count | int | サンプル数 |
+| mean_shannon_mbps | float | Shannon平均スループット [Mbps] |
+| mean_mcs_mbps | float | MCS平均スループット [Mbps] |
+| median_shannon_mbps | float | Shannon中央値 [Mbps] |
+| median_mcs_mbps | float | MCS中央値 [Mbps] |
+| p05_shannon_mbps | float | Shannon 5%タイル [Mbps] |
+| p05_mcs_mbps | float | MCS 5%タイル [Mbps] |
+| outage_rate_shannon | float | Shannonアウテージ率 (< Rmin) |
+| outage_rate_mcs | float | MCSアウテージ率 (< Rmin) |
+| mcs_shannon_ratio | float | MCS/Shannon比 |
+
+---
+
+## 最適化オプション
+
+### `--throughput-col` オプション
+
+最適化で使用するスループット列を選択できます。Shannon公式ベースとMCSベースを公平に比較するための機能です。
+
+**有効な値:**
+- `theoretical_throughput_mbps`（デフォルト）: Shannon公式によるスループット
+- `throughput_mbps_mcs`: MCSベースのスループット
+
+**使用例:**
+```bash
+# Shannonベースで最適化（デフォルト）
+python scripts/run_optimization.py
+
+# MCSベースで最適化
+python scripts/run_optimization.py --throughput-col throughput_mbps_mcs
+```
+
+**注意:** 入力CSVに該当列が存在しない場合、分かりやすいエラーメッセージが表示されます。MCS列がない場合は `--rate-model both` でスループット計算を再実行してください。
+
+---
+
+## 分析・可視化
+
+### Shannon vs MCS 分析スクリプト
+
+`analyze_throughput_models.py` は Shannon と MCS のスループットモデルを比較分析します。
+
+**実行方法:**
+```bash
+# 基本実行
+python scripts/analyze_throughput_models.py
+
+# オプション指定
+python scripts/analyze_throughput_models.py --outdir results/analysis --rmin-mbps 10
+```
+
+**出力ファイル:**
+- `summary_shannon_vs_mcs.csv`: 条件別の統計量
+- `fig1_cdf_shannon_vs_mcs.png`: Shannon vs MCS のCDF比較
+- `fig2_timeseries_throughput.png`: 時系列総スループット
+- `fig3_cdf_los_nlos.png`: LOS/NLOS別CDF
+- `fig4_cdf_prop_mode.png`: prop_mode (D/K) 別CDF
+
+### 最小追加分析スクリプト
+
+`analyze_minimal_additional.py` は Default と Corner の2つのシナリオを比較し、以下の3点を分析します：
+- A) 距離CDF（tx-rx距離の累積分布）
+- B) SNR CDF（snr_dbの累積分布）
+- C) MCS分布（特にNLOSでのmcs_index分布）
+
+**特徴:**
+- FCDファイルから車両位置を読み込み、V2I/V2V距離を自動計算
+- Default vs Corner シナリオを重ねてプロット
+- 条件別（LOS/NLOS、prop_mode=D/K）の統計量を集計CSV出力
+
+**実行方法:**
+```bash
+# 基本実行（デフォルトパスを使用）
+python scripts/analyze_minimal_additional.py
+
+# 出力先とパラメータを指定
+python scripts/analyze_minimal_additional.py --outdir output/analysis --rmin-mbps 50
+
+# カスタム入力ファイル指定
+python scripts/analyze_minimal_additional.py \
+    --input-default output/scenarios/default/throughput/theoretical_network_results.csv \
+    --input-corner output/scenarios/corner_intersection/throughput/theoretical_network_results.csv
+
+# リンクタイプフィルタ（V2Iのみ、V2Vのみ）
+python scripts/analyze_minimal_additional.py --link-type v2i
+```
+
+**出力ファイル:**
+- 図:
+  - `figA1_distance_cdf_all.png`: 距離CDF（All）
+  - `figA2_distance_cdf_los_nlos.png`: 距離CDF（LOS/NLOS別）
+  - `figB1_snr_cdf_all.png`: SNR CDF（All）
+  - `figB2_snr_cdf_los_nlos.png`: SNR CDF（LOS/NLOS別）
+  - `figC1_mcs_histogram_nlos.png`: MCS分布（NLOS）
+  - `figC2_mcs_histogram_prop_mode.png`: MCS分布（prop_mode別）
+- 集計CSV:
+  - `summary_minimal_additional_default.csv`: Default条件別統計
+  - `summary_minimal_additional_corner.csv`: Corner条件別統計
+  - `summary_minimal_additional_compare.csv`: Default vs Corner差分比較
+
+**集計CSV項目:**
+- 条件（All, LOS, NLOS, D, K, LOS&D, LOS&K, NLOS&D, NLOS&K）別に以下を出力:
+  - 距離統計: mean, p05, median, p95
+  - SNR統計: mean, p05, median, p95
+  - MCS統計: mode, p50, p95
+  - スループット: mean_shannon_mbps, mean_mcs_mbps, mcs_shannon_ratio
+
+### リレー可能率分析スクリプト
+
+`analyze_relay_possible_rate.py` は V2Vリレーの可能性を評価する参考指標を算出します。実際のリレー送信は実装せず、「リレー可能性」のみを集計します。
+
+**目的:**
+- 交差点シナリオで「V2Vが成立する環境」を確保し、V2Vリレーの可能性を示す
+- アウトエージ（低レート状態）車両が、近傍のV2Vリンクを介してリレー可能かを評価
+
+**定義:**
+時刻tで車両vが「リレー可能」と判定される条件：
+1. vの直V2Iが"アウトエージ候補"である：`throughput_v2i(v,t) < T_out`
+2. vの近傍に車両uが存在し、次を全て満たす：
+   - `throughput_v2v(v→u,t) >= T_v2v_min`
+   - `throughput_v2i(u,t) >= T_v2i_good`
+
+**実行方法:**
+```bash
+# 基本実行（デフォルトパラメータ）
+python scripts/analyze_relay_possible_rate.py
+
+# パラメータ指定
+python scripts/analyze_relay_possible_rate.py \
+    --input output/scenarios/corner_intersection/throughput/theoretical_network_results.csv \
+    --outdir output/scenarios/corner_intersection/analysis \
+    --throughput-col throughput_mbps_mcs \
+    --t-out 50 --t-v2v-min 50 --t-v2i-good 100 \
+    --v2v-radius-m 100
+```
+
+**パラメータ:**
+- `--throughput-col`: 使用するスループット列（デフォルト: `throughput_mbps_mcs`）
+- `--t-out`: アウトエージ候補閾値 [Mbps]（デフォルト: 50）
+- `--t-v2v-min`: V2Vリンク成立閾値 [Mbps]（デフォルト: 50）
+- `--t-v2i-good`: 中継車のV2Iが十分な閾値 [Mbps]（デフォルト: 100）
+- `--v2v-radius-m`: V2V近傍距離閾値 [m]（デフォルト: 100、既にRTで絞り込み済み）
+
+**出力ファイル:**
+- `relay_possible_rate_summary.csv`: サマリー統計（1行）
+- `relay_possible_rate_by_time.csv`: 時刻別の詳細統計
+
+**出力指標:**
+- `outage_candidate_rate`: 全車両のうちアウトエージ候補の割合
+- `relay_possible_rate_vehicle`: 全車両のうちリレー可能な割合
+- `conditional_relay_possible_rate`: アウトエージ候補のうちリレー可能な割合
+- `avg_neighbors_within_R`: 近傍車両数の平均
+- `rate_vehicles_with_neighbors`: 近傍車両が1台以上いる車両の割合
+- `avg_vehicles_per_timestamp`: タイムステップあたりの平均車両数
 
 ---
 
@@ -394,7 +796,130 @@ python scripts/run_raytracing.py
 
 ---
 
+## Mode-aware Fading Margin（フェージング・マージン）
+
+**実装日**: 2026-01-11
+
+フェージング理論に基づく保守的スループット推定により、最適化の入力（estimate）と評価（truth）を分離し、アウトエージ回避を目指す機能です。
+
+### 概要
+
+**理論**: Rayleighフェージング環境では、瞬間SNRは平均SNRに対して指数分布に従い、下位p分位を保証するSNRマージンは以下の式で与えられます：
+
+```
+M_Rayleigh(p) = 10 log₁₀( 1 / (-ln(1-p)) ) [dB]
+```
+
+**実装**:
+- **Dモード**（支配的成分なし、Rayleigh寄り）: 計算されたRayleighマージン（例：p=0.20で約6.51 dB）
+- **Kモード**（支配的成分あり、Ricean寄り）: 固定の小マージン（デフォルト：1.5 dB）
+
+### 使用方法
+
+#### 1. スループット計算（推定列生成）
+
+```bash
+# Mode-aware Margin適用（推奨設定）
+python scripts/run_throughput.py \
+  --scenario corner_intersection \
+  --rate-model both \
+  --enable-margin-estimate \
+  --margin-p 0.20 \
+  --margin-k-db 1.5
+```
+
+**新規追加列**:
+- `margin_db_used`: 適用したマージン値 [dB]
+- `snr_db_eff_margin`: マージン適用後の有効SNR [dB]
+- `mcs_index_est`: 推定（保守的）MCS index
+- `throughput_mbps_mcs_est`: 推定（保守的）MCSスループット [Mbps]
+
+#### 2. 最適化実行（opt列とeval列の分離）
+
+```bash
+# Baseline（truth列のみ）
+python scripts/run_optimization.py \
+  --scenario corner_intersection \
+  --global \
+  --opt-throughput-col throughput_mbps_mcs \
+  --eval-throughput-col throughput_mbps_mcs \
+  --outage-threshold-mbps 50
+
+# Proposed（estimate→truth評価）
+python scripts/run_optimization.py \
+  --scenario corner_intersection \
+  --global \
+  --opt-throughput-col throughput_mbps_mcs_est \
+  --eval-throughput-col throughput_mbps_mcs \
+  --outage-threshold-mbps 50
+```
+
+### 実験結果（10タイムステップ、p=0.20, K=1.5dB）
+
+| 指標 | Baseline | Proposed | 変化 |
+|------|----------|----------|------|
+| アウトエージ率 (< 50 Mbps) | 2.23% | 4.38% | +2.15%pt ❌ |
+| P05 [Mbps] | 440.00 | 330.00 | -110.00 ❌ |
+| 平均 [Mbps] | 493.70 | ~509 | +~15 ✅ **+3.0%** |
+
+**結論**:
+- ✅ 平均スループットが **3.0%改善**
+- ❌ P05が25%悪化、アウトエージ率が悪化
+- 🤔 トレードオフ: 平均改善 vs 下位悪化
+
+### 詳細ドキュメント
+
+実装の詳細、理論背景、実験結果の詳細、今後の研究方向については、`MODE_AWARE_MARGIN.md` を参照してください。
+
+---
+
 ## 更新履歴
 
+- **2026-01-11**:
+  - **Mode-aware Fading Margin実装を追加**。フェージング理論に基づく保守的スループット推定により、最適化の入力（estimate）と評価（truth）を分離。
+  - `throughput.py` に Rayleigh/Ricean フェージング・マージン計算を実装。Dモード（Rayleigh寄り）とKモード（Ricean寄り）で異なるマージンを適用。
+  - `run_throughput.py` に `--enable-margin-estimate`, `--margin-p`, `--margin-k-db` オプションを追加。
+  - `run_optimization.py` に `--opt-throughput-col`, `--eval-throughput-col`, `--outage-threshold-mbps` オプションを追加し、opt列とeval列の分離処理を実現。
+  - `distributed.py`, `global_optimizer.py` に評価指標計算（アウトエージ率、P05、平均）を追加。
+  - 実験結果: 平均スループット3.0%改善、ただしP05が25%悪化（トレードオフ）。
+  - 詳細ドキュメント `MODE_AWARE_MARGIN.md` を作成。
+- **2026-01-10** (2回目):
+  - **V2Vリレー可能率分析機能を追加** - 研究の主軸である「アウトエージ回避」に向けたV2Vリレーの可能性を評価する機能を実装。
+  - **V2V距離閾値フィルタを追加** (`RayTracingSimulator`に`v2v_max_distance_m`パラメータ追加、デフォルト100m)。車両数増加時の計算量爆発を防止。
+  - **交差点シナリオの交通密度を大幅に増加** - プラトーン投入方式により100台の車両を短間隔（0.8秒間隔）で投入。V2Vリンクが成立する環境を実現。
+  - **リレー可能率分析スクリプトを追加** (`analyze_relay_possible_rate.py`)。アウトエージ候補車両がV2Vリンク経由でリレー可能かを評価。
+  - **検証結果（交差点シナリオ）**:
+    - 平均同時車両数: 67.59台（目標10台以上を達成）
+    - 近傍車両数の平均: 42.87台（目標1台以上を大幅達成）
+    - 近傍車両がいる車両の割合: 99.66%（目標50%以上を大幅達成）
+    - アウトエージ候補率: 29.95%（約30%の車両が救う対象）
+    - 条件付きリレー可能率: 7.85%（アウトエージ候補の約8%がリレー可能）
+  - **後方互換性を完全維持** - 既存パイプライン（SUMO→RT→CSV→throughput→analysis）に影響なし。
+- **2026-01-10** (1回目):
+  - **最小追加分析スクリプトを追加** (`analyze_minimal_additional.py`)。論文締めくくり用の3点分析（距離CDF、SNR CDF、MCS分布）をDefault vs Corner比較で自動生成。
+  - FCDファイルから車両位置を読み込み、V2I/V2V距離を自動計算する機能を実装。
+  - 条件別（All, LOS, NLOS, D, K, LOS&D, LOS&K, NLOS&D, NLOS&K）の統計量を集計CSV出力。
+  - 6種類の図（距離CDF×2、SNR CDF×2、MCS分布×2）と3種類の集計CSV（Default, Corner, Compare）を生成。
+- **2026-01-09**:
+  - **【重大バグ修正】Sionna RTシーンへの複数建物登録の不具合を修正**。`raytracing.py`で`self.building`（単一）を参照していたため、corner_intersectionの4建物のうち1棟しか登録されていなかった問題を解決。全建物を`self.buildings`（複数）からループで登録するように修正。
+  - **可視化の座標系不整合を修正**。レイトレーシングは変換済み座標を使用する一方、可視化は生のSUMO座標を使用していたため、車両と建物の位置がずれていた問題を解決。`link_visualizer.py`で`scenario_config.transform_coordinates()`を適用。
+  - **可視化の描画範囲をシナリオ対応に改善**。各シナリオ設定に`viz_xlim`, `viz_ylim`パラメータを追加し、シナリオごとに適切な描画範囲を自動設定。
+  - **corner_intersection結果が大幅に改善**: NLOS率 24.4% → 44.8% (+83.6%)、prop_mode=K 24 → 166サンプル (+591%)。建物遮蔽効果が正しく反映されるようになった。
+  - **スループット性能分析を実施**: Shannon vs MCS比較により、MCS/Shannon比率0.585を確認。NLOS時は0.604とMCSの保守性が顕著。
+- **2026-01-07**:
+  - **交差点シナリオ（corner_intersection）を追加**。LOS/NLOS切り替えを頻繁に発生させ、prop_mode(K)やNLOSサンプル収集に最適化。
+  - `--scenario` オプションを全スクリプトに追加。`default` / `corner_intersection` を選択可能に。
+  - `RayTracingSimulator` が複数建物に対応（`buildings` パラメータ追加、後方互換性維持）。
+  - シナリオ設定モジュール (`src/scenarios/`) を新規追加。建物・BS配置・座標変換をシナリオ別に管理。
+  - 交差点シナリオ用FCD生成スクリプト (`scripts/generate_fcd_corner.py`) を追加。
+  - 検証結果: NLOS率45.8%達成（目標5%以上）。
+  - **出力ディレクトリ構造を整理**: `output/scenarios/{scenario_name}/` に統一。既存データを `default/` に移動。
+  - **全スクリプトの出力パスをシナリオ対応に統一**: `analyze_throughput_models.py`, `run_visualization.py` にも `--scenario` オプション追加。
+- **2026-01-05**:
+  - 最適化スクリプトに `--throughput-col` オプションを追加。Shannon/MCS列を選択して最適化可能に。
+  - Shannon vs MCS 分析スクリプト (`analyze_throughput_models.py`) を追加。CDF・時系列図・条件別統計を自動生成。
+  - 列不足時の分かりやすいエラーメッセージを追加。
+  - MCS（離散レート）ベースのスループット推定を追加。`--rate-model`オプションでShannon/MCS/both切替が可能に。MCSテーブル（8段階）による現実的なレート選択をサポート。
+- **2026-01-04**: Sionna RTマルチパス対応を追加。`--sionna-rt`オプションでマルチパス計算が可能に。Propagation-Mode Switch (D/K) 指標をlink_quality_results.csvに追加。
 - **2026-01-03**: モジュール構造をリファクタリング、READMEを更新
 - **2025-10-22**: 初版作成

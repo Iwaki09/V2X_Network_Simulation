@@ -1,17 +1,39 @@
 """
 理論的スループット計算モジュール
 
-シャノンのチャネル容量公式を用いて各リンクの理論的最大スループットを計算します。
+2つのレートモデルをサポート:
 
-計算式: C = B * log2(1 + SNR)
-- C: チャネル容量 [bps]
-- B: 帯域幅 [Hz]
-- SNR: 信号対雑音比 (Signal-to-Noise Ratio)
+1. Shannon（デフォルト）:
+   シャノンのチャネル容量公式を用いて理論的最大スループットを計算
+   計算式: C = B * log2(1 + SNR)
+
+2. MCS（Modulation and Coding Scheme）:
+   離散的なMCSテーブルによるレート選択
+   SNR閾値ベースでMCSを選択し、対応するスペクトル効率からスループットを計算
+
+3. both:
+   ShannonとMCS両方の列を出力し比較可能にする
+
+4. Mode-aware Fading Margin (推定列生成):
+   フェージング理論に基づく保守的スループット推定
+   - Rayleighフェージング（Dモード）: 下位p分位を保証するSNRマージン
+   - Riceanフェージング（Kモード）: 固定の小マージン
+   - 最適化の入力（estimate）と評価（truth）を分離
 """
 
 import pandas as pd
 import numpy as np
 from pathlib import Path
+from typing import Literal
+
+from .mcs_model import (
+    select_mcs,
+    get_spectral_efficiency,
+    calculate_mcs_throughput_mbps,
+    print_mcs_table,
+    MCS_SNR_THRESHOLDS_DB,
+    MCS_SPECTRAL_EFFICIENCY,
+)
 
 
 # ============================================================
@@ -38,6 +60,80 @@ NOISE_POWER_WATTS = BOLTZMANN_CONSTANT * NOISE_TEMPERATURE_K * BANDWIDTH_HZ
 # P_N (mW) = P_N (Watts) * 1000
 # P_N (dBm) = 10 * log10(P_N (mW))
 NOISE_POWER_DBM = 10 * np.log10(NOISE_POWER_WATTS * 1000)
+
+# ============================================================
+# Mode-aware Fading Margin (フェージング・マージン)
+# ============================================================
+
+# デフォルト設定
+DEFAULT_MARGIN_P = 0.10        # 下位p分位 (10%)
+DEFAULT_MARGIN_K_DB = 3.0      # Kモード用固定マージン [dB]
+
+
+def calculate_rayleigh_fading_margin_db(p: float) -> float:
+    """
+    Rayleighフェージングの下位p分位を保証するSNRマージンを計算
+
+    理論:
+    Rayleighフェージングでは、瞬間SNR γ は平均SNR γ̄ に対して指数分布となり、
+    下位p分位は γ_p = -γ̄ ln(1-p) で与えられる。
+
+    平均SNRから下位p分位を保証するためのSNRバックオフ（マージン）は:
+    M_Rayleigh(p) = 10 log10( 1 / (-ln(1-p)) ) [dB]
+
+    Args:
+        p: 目標信頼性（下位p分位を見込む）(0 < p < 1)
+           例: 0.10 なら下位10%を保証
+
+    Returns:
+        フェージング・マージン [dB]
+
+    Examples:
+        >>> calculate_rayleigh_fading_margin_db(0.10)
+        9.8...  # 約9.8 dB
+        >>> calculate_rayleigh_fading_margin_db(0.05)
+        12.8...  # 約12.8 dB
+    """
+    if p <= 0 or p >= 1:
+        raise ValueError(f"p must be in (0, 1), got {p}")
+
+    # M = 10 * log10(1 / (-ln(1-p)))
+    margin_db = 10 * np.log10(1 / (-np.log(1 - p)))
+    return margin_db
+
+
+def get_fading_margin_for_mode(
+    prop_mode: str,
+    margin_p: float = DEFAULT_MARGIN_P,
+    margin_k_db: float = DEFAULT_MARGIN_K_DB,
+    margin_d_db_override: float = None
+) -> float:
+    """
+    伝搬モード（D/K）に基づいてフェージング・マージンを取得
+
+    - Dモード（支配的成分なし、Rayleigh寄り）: 計算されたRayleighマージン
+    - Kモード（支配的成分あり、Ricean寄り）: 固定の小マージン
+    - その他/欠損: 0 dB（保守的に扱う場合はDモードと同じにしてもよい）
+
+    Args:
+        prop_mode: 伝搬モード ("D" or "K" or その他)
+        margin_p: Dモード用の目標信頼性（下位p分位）
+        margin_k_db: Kモード用の固定マージン [dB]
+        margin_d_db_override: Dモード用マージンを手動指定する場合（Noneなら計算）
+
+    Returns:
+        適用するマージン [dB]
+    """
+    if prop_mode == 'D':
+        if margin_d_db_override is not None:
+            return margin_d_db_override
+        else:
+            return calculate_rayleigh_fading_margin_db(margin_p)
+    elif prop_mode == 'K':
+        return margin_k_db
+    else:
+        # その他/欠損の場合は0 dB
+        return 0.0
 
 
 def dbm_to_watts(power_dbm: float) -> float:
@@ -88,21 +184,50 @@ def calculate_shannon_capacity(bandwidth_hz: float, snr: float) -> float:
     return bandwidth_hz * np.log2(1 + snr)
 
 
-def calculate_theoretical_throughput(df: pd.DataFrame) -> pd.DataFrame:
+# レートモデルの型定義
+RateModel = Literal['shannon', 'mcs', 'both']
+
+
+def calculate_theoretical_throughput(
+    df: pd.DataFrame,
+    rate_model: RateModel = 'shannon',
+    enable_margin_estimate: bool = False,
+    margin_p: float = DEFAULT_MARGIN_P,
+    margin_k_db: float = DEFAULT_MARGIN_K_DB,
+    margin_d_db_override: float = None
+) -> pd.DataFrame:
     """
     リンク品質DataFrameに理論的スループットを追加
 
     Args:
         df: link_quality_results.csv から読み込んだDataFrame
             必須列: received_power (dBm)
+            推定列生成時に必要: prop_mode
+        rate_model: レートモデル ('shannon', 'mcs', 'both')
+            - 'shannon': シャノン公式のみ（デフォルト、後方互換）
+            - 'mcs': MCSベースのみ
+            - 'both': 両方の列を出力
+        enable_margin_estimate: 推定列生成を有効化（デフォルト: False）
+        margin_p: Dモード用の目標信頼性（下位p分位）（デフォルト: 0.10）
+        margin_k_db: Kモード用の固定マージン [dB]（デフォルト: 3.0）
+        margin_d_db_override: Dモード用マージンを手動指定する場合（デフォルト: None）
 
     Returns:
         以下の列が追加されたDataFrame:
         - received_power_watts
         - snr
         - snr_db
-        - theoretical_throughput_bps
-        - theoretical_throughput_mbps
+        - theoretical_throughput_bps (shannon/both)
+        - theoretical_throughput_mbps (shannon/both)
+        - mcs_index (mcs/both)
+        - spectral_efficiency_bpshz (mcs/both)
+        - throughput_mbps_mcs (mcs/both)
+
+        推定列生成が有効な場合、さらに以下が追加:
+        - margin_db_used: 適用したマージン値 [dB]
+        - snr_db_eff_margin: マージン適用後の有効SNR [dB]
+        - mcs_index_est: 推定（保守的）MCS index
+        - throughput_mbps_mcs_est: 推定（保守的）MCSスループット [Mbps]
     """
     result_df = df.copy()
 
@@ -117,36 +242,115 @@ def calculate_theoretical_throughput(df: pd.DataFrame) -> pd.DataFrame:
     # SNR (dB) の計算（可視化用）
     result_df['snr_db'] = 10 * np.log10(result_df['snr'])
 
-    # 理論的スループットの計算（シャノン公式）
-    result_df['theoretical_throughput_bps'] = result_df['snr'].apply(
-        lambda snr: calculate_shannon_capacity(BANDWIDTH_HZ, snr)
-    )
+    # Shannon計算（shannon または both モード）
+    if rate_model in ('shannon', 'both'):
+        result_df['theoretical_throughput_bps'] = result_df['snr'].apply(
+            lambda snr: calculate_shannon_capacity(BANDWIDTH_HZ, snr)
+        )
+        result_df['theoretical_throughput_mbps'] = result_df['theoretical_throughput_bps'] / 1_000_000
 
-    # Mbps に変換
-    result_df['theoretical_throughput_mbps'] = result_df['theoretical_throughput_bps'] / 1_000_000
+    # MCS計算（mcs または both モード）
+    if rate_model in ('mcs', 'both'):
+        # MCSインデックスを選択
+        result_df['mcs_index'] = result_df['snr_db'].apply(select_mcs)
+
+        # スペクトル効率を取得
+        result_df['spectral_efficiency_bpshz'] = result_df['mcs_index'].apply(get_spectral_efficiency)
+
+        # MCSベーススループットを計算
+        result_df['throughput_mbps_mcs'] = result_df['spectral_efficiency_bpshz'].apply(
+            lambda se: calculate_mcs_throughput_mbps(BANDWIDTH_HZ, se)
+        )
+
+    # 推定列生成（enable_margin_estimate=Trueの場合）
+    if enable_margin_estimate and rate_model in ('mcs', 'both'):
+        # prop_mode列の存在確認
+        if 'prop_mode' not in result_df.columns:
+            raise ValueError(
+                "推定列生成には 'prop_mode' 列が必要です。"
+                "レイトレーシング結果に prop_mode が含まれていることを確認してください。"
+            )
+
+        # 各行のprop_modeに基づいてマージンを計算
+        result_df['margin_db_used'] = result_df['prop_mode'].apply(
+            lambda mode: get_fading_margin_for_mode(
+                mode, margin_p, margin_k_db, margin_d_db_override
+            )
+        )
+
+        # マージンを適用した有効SNR [dB]
+        result_df['snr_db_eff_margin'] = result_df['snr_db'] - result_df['margin_db_used']
+
+        # 有効SNRから推定MCSインデックスを計算
+        result_df['mcs_index_est'] = result_df['snr_db_eff_margin'].apply(select_mcs)
+
+        # 推定スペクトル効率を取得
+        result_df['spectral_efficiency_bpshz_est'] = result_df['mcs_index_est'].apply(get_spectral_efficiency)
+
+        # 推定MCSスループットを計算
+        result_df['throughput_mbps_mcs_est'] = result_df['spectral_efficiency_bpshz_est'].apply(
+            lambda se: calculate_mcs_throughput_mbps(BANDWIDTH_HZ, se)
+        )
 
     return result_df
 
 
-def process_link_quality_data(input_csv: str, output_csv: str):
+def process_link_quality_data(
+    input_csv: str,
+    output_csv: str,
+    rate_model: RateModel = 'shannon',
+    enable_margin_estimate: bool = False,
+    margin_p: float = DEFAULT_MARGIN_P,
+    margin_k_db: float = DEFAULT_MARGIN_K_DB,
+    margin_d_db_override: float = None
+):
     """
     リンク品質データから理論的スループットを計算
 
     Args:
         input_csv: 入力CSVファイルパス (link_quality_results.csv)
         output_csv: 出力CSVファイルパス (theoretical_network_results.csv)
+        rate_model: レートモデル ('shannon', 'mcs', 'both')
+        enable_margin_estimate: 推定列生成を有効化（デフォルト: False）
+        margin_p: Dモード用の目標信頼性（下位p分位）（デフォルト: 0.10）
+        margin_k_db: Kモード用の固定マージン [dB]（デフォルト: 3.0）
+        margin_d_db_override: Dモード用マージンを手動指定する場合（デフォルト: None）
     """
+    rate_model_names = {
+        'shannon': 'シャノン公式ベース',
+        'mcs': 'MCS（離散レート）ベース',
+        'both': 'シャノン + MCS 比較モード'
+    }
+
     print("=" * 70)
-    print("理論的スループット計算 (シャノン公式ベース)")
+    print(f"理論的スループット計算 ({rate_model_names.get(rate_model, rate_model)})")
     print("=" * 70)
     print("\n【シミュレーション前提条件】")
     print(f"  帯域幅 (B):              {BANDWIDTH_HZ / 1e6:.1f} MHz")
     print(f"  受信機温度 (T):          {NOISE_TEMPERATURE_K:.1f} K")
     print(f"  ボルツマン定数 (k_B):     {BOLTZMANN_CONSTANT:.2e} J/K")
     print(f"  熱雑音電力 (P_N):         {NOISE_POWER_DBM:.2f} dBm ({NOISE_POWER_WATTS:.2e} W)")
+
+    # フェージング・マージン設定（推定列生成が有効な場合）
+    if enable_margin_estimate:
+        print("\n【Mode-aware Fading Margin 設定】")
+        print(f"  推定列生成:              有効")
+        print(f"  目標信頼性 (p):          {margin_p:.2%} (下位{margin_p*100:.0f}%分位を保証)")
+        if margin_d_db_override is not None:
+            print(f"  Dモード用マージン:        {margin_d_db_override:.2f} dB (手動指定)")
+        else:
+            d_margin = calculate_rayleigh_fading_margin_db(margin_p)
+            print(f"  Dモード用マージン:        {d_margin:.2f} dB (Rayleigh計算値)")
+        print(f"  Kモード用マージン:        {margin_k_db:.2f} dB (固定値)")
+
+    # MCSテーブルを表示（mcsまたはbothモード）
+    if rate_model in ('mcs', 'both'):
+        print_mcs_table()
+
     print()
     print("【処理開始】")
     print(f"  入力ファイル: {input_csv}")
+    print(f"  レートモデル: {rate_model}")
     print()
 
     # CSVファイルを読み込む
@@ -159,9 +363,22 @@ def process_link_quality_data(input_csv: str, output_csv: str):
     # スループット計算
     print("【計算中】受信電力を dBm → Watts に変換...")
     print("【計算中】SNR (信号対雑音比) を計算...")
-    print("【計算中】シャノン公式でスループットを計算...")
 
-    df = calculate_theoretical_throughput(df)
+    if rate_model in ('shannon', 'both'):
+        print("【計算中】シャノン公式でスループットを計算...")
+    if rate_model in ('mcs', 'both'):
+        print("【計算中】MCSベースでスループットを計算...")
+    if enable_margin_estimate:
+        print("【計算中】Mode-aware Fading Margin を適用して推定列を生成...")
+
+    df = calculate_theoretical_throughput(
+        df,
+        rate_model=rate_model,
+        enable_margin_estimate=enable_margin_estimate,
+        margin_p=margin_p,
+        margin_k_db=margin_k_db,
+        margin_d_db_override=margin_d_db_override
+    )
 
     print("✅ 計算完了")
     print()
@@ -178,11 +395,75 @@ def process_link_quality_data(input_csv: str, output_csv: str):
     print(f"    - 最小: {df['snr_db'].min():.2f} dB")
     print(f"    - 最大: {df['snr_db'].max():.2f} dB")
     print()
-    print(f"  理論的スループット (Mbps):")
-    print(f"    - 平均: {df['theoretical_throughput_mbps'].mean():.2f} Mbps")
-    print(f"    - 最小: {df['theoretical_throughput_mbps'].min():.2f} Mbps")
-    print(f"    - 最大: {df['theoretical_throughput_mbps'].max():.2f} Mbps")
-    print()
+
+    # Shannon統計（shannon/bothモード）
+    if rate_model in ('shannon', 'both'):
+        print(f"  理論的スループット - Shannon (Mbps):")
+        print(f"    - 平均: {df['theoretical_throughput_mbps'].mean():.2f} Mbps")
+        print(f"    - 最小: {df['theoretical_throughput_mbps'].min():.2f} Mbps")
+        print(f"    - 最大: {df['theoretical_throughput_mbps'].max():.2f} Mbps")
+        print()
+
+    # MCS統計（mcs/bothモード）
+    if rate_model in ('mcs', 'both'):
+        print(f"  MCSインデックス分布:")
+        mcs_counts = df['mcs_index'].value_counts().sort_index()
+        for mcs_idx, count in mcs_counts.items():
+            se = MCS_SPECTRAL_EFFICIENCY[mcs_idx]
+            print(f"    - MCS {mcs_idx} (SE={se:.2f}): {count} リンク ({100*count/len(df):.1f}%)")
+        print()
+        print(f"  理論的スループット - MCS (Mbps):")
+        print(f"    - 平均: {df['throughput_mbps_mcs'].mean():.2f} Mbps")
+        print(f"    - 最小: {df['throughput_mbps_mcs'].min():.2f} Mbps")
+        print(f"    - 最大: {df['throughput_mbps_mcs'].max():.2f} Mbps")
+        print()
+
+    # bothモードの場合、比較を表示
+    if rate_model == 'both':
+        print("  【Shannon vs MCS 比較】")
+        shannon_avg = df['theoretical_throughput_mbps'].mean()
+        mcs_avg = df['throughput_mbps_mcs'].mean()
+        ratio = mcs_avg / shannon_avg * 100 if shannon_avg > 0 else 0
+        print(f"    - Shannon平均: {shannon_avg:.2f} Mbps")
+        print(f"    - MCS平均:     {mcs_avg:.2f} Mbps")
+        print(f"    - MCS/Shannon: {ratio:.1f}%")
+        print()
+
+    # 推定列の統計情報を表示
+    if enable_margin_estimate and rate_model in ('mcs', 'both'):
+        print("  【推定列（Mode-aware Margin適用後）統計】")
+
+        # prop_mode別マージン統計
+        print(f"  適用マージン [dB]:")
+        mode_margin_stats = df.groupby('prop_mode')['margin_db_used'].agg(['count', 'mean'])
+        for mode, stats in mode_margin_stats.iterrows():
+            print(f"    - {mode}モード: {stats['mean']:.2f} dB (n={int(stats['count'])})")
+        print()
+
+        # 推定MCSインデックス分布
+        print(f"  推定MCSインデックス分布:")
+        mcs_est_counts = df['mcs_index_est'].value_counts().sort_index()
+        for mcs_idx, count in mcs_est_counts.items():
+            se = MCS_SPECTRAL_EFFICIENCY[mcs_idx]
+            print(f"    - MCS {mcs_idx} (SE={se:.2f}): {count} リンク ({100*count/len(df):.1f}%)")
+        print()
+
+        # 推定スループット統計
+        print(f"  推定スループット (Mbps):")
+        print(f"    - 平均: {df['throughput_mbps_mcs_est'].mean():.2f} Mbps")
+        print(f"    - 最小: {df['throughput_mbps_mcs_est'].min():.2f} Mbps")
+        print(f"    - 最大: {df['throughput_mbps_mcs_est'].max():.2f} Mbps")
+        print()
+
+        # truth vs estimate 比較
+        print(f"  【Truth vs Estimate 比較】")
+        truth_avg = df['throughput_mbps_mcs'].mean()
+        est_avg = df['throughput_mbps_mcs_est'].mean()
+        ratio_est = est_avg / truth_avg * 100 if truth_avg > 0 else 0
+        print(f"    - Truth平均:    {truth_avg:.2f} Mbps")
+        print(f"    - Estimate平均: {est_avg:.2f} Mbps")
+        print(f"    - Est/Truth:    {ratio_est:.1f}% (保守化率: {100-ratio_est:.1f}%)")
+        print()
 
     # CSVファイルに保存
     df.to_csv(output_csv, index=False)

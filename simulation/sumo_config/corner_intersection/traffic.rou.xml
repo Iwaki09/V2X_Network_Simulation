@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- 交差点（コーナー）シナリオ - 車両ルート定義
+     目的: LOS/NLOS切替を増やし、prop_mode(K)サンプルを確保
+
+     ルート:
+     - Route A: West→East（直進）: A1→B1→C1
+     - Route B: South→North（直進）: B0→B1→B2
+     - Route C: West→North（左折）: A1→B1→B2
+     - Route D: South→East（左折）: B0→B1→C1
+     - Route E: East→West（直進）: C1→B1→A1
+     - Route F: North→South（直進）: B2→B1→B0
+
+     車両数: 8台（6-10台の範囲内）
+     速度: 10-15 m/s
+-->
+
+<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">
+
+    <!-- 車両タイプ定義 -->
+    <vType id="passenger_car" accel="2.6" decel="4.5" sigma="0.3" length="4.5" minGap="2.5" maxSpeed="16.67" guiShape="passenger"/>
+
+    <!-- ルート定義 -->
+    <!-- Route A: West→East（直進）-->
+    <route id="route_west_east" edges="A1B1 B1C1"/>
+
+    <!-- Route B: South→North（直進）-->
+    <route id="route_south_north" edges="B0B1 B1B2"/>
+
+    <!-- Route C: West→North（左折）-->
+    <route id="route_west_north" edges="A1B1 B1B2"/>
+
+    <!-- Route D: South→East（左折）-->
+    <route id="route_south_east" edges="B0B1 B1C1"/>
+
+    <!-- Route E: East→West（直進）-->
+    <route id="route_east_west" edges="C1B1 B1A1"/>
+
+    <!-- Route F: North→South（直進）-->
+    <route id="route_north_south" edges="B2B1 B1B0"/>
+
+    <!-- 車両配置（8台）-->
+    <!-- 交差点でLOS/NLOS切替が多く発生するよう、時間差で発車 -->
+
+    <!-- 西から東へ直進する車両（2台）-->
+    <vehicle id="vehicle_0" type="passenger_car" route="route_west_east" depart="0.0" departPos="10.0" departSpeed="12.0"/>
+    <vehicle id="vehicle_1" type="passenger_car" route="route_west_east" depart="5.0" departPos="10.0" departSpeed="11.0"/>
+
+    <!-- 南から北へ直進する車両（2台）-->
+    <vehicle id="vehicle_2" type="passenger_car" route="route_south_north" depart="2.0" departPos="10.0" departSpeed="13.0"/>
+    <vehicle id="vehicle_3" type="passenger_car" route="route_south_north" depart="8.0" departPos="10.0" departSpeed="12.0"/>
+
+    <!-- 西から北へ左折する車両（1台）-->
+    <vehicle id="vehicle_4" type="passenger_car" route="route_west_north" depart="10.0" departPos="10.0" departSpeed="10.0"/>
+
+    <!-- 南から東へ左折する車両（1台）-->
+    <vehicle id="vehicle_5" type="passenger_car" route="route_south_east" depart="15.0" departPos="10.0" departSpeed="11.0"/>
+
+    <!-- 東から西へ直進する車両（1台）-->
+    <vehicle id="vehicle_6" type="passenger_car" route="route_east_west" depart="3.0" departPos="10.0" departSpeed="12.0"/>
+
+    <!-- 北から南へ直進する車両（1台）-->
+    <vehicle id="vehicle_7" type="passenger_car" route="route_north_south" depart="6.0" departPos="10.0" departSpeed="11.0"/>
+
+    <!-- 追加の車両フロー（交差点付近でのイベントを増やす）-->
+    <!-- 西から東へ -->
+    <flow id="flow_west_east" type="passenger_car" route="route_west_east"
+          begin="20.0" end="80.0"
+          vehsPerHour="180"
+          departPos="10.0"
+          departSpeed="11.0"/>
+
+    <!-- 南から北へ -->
+    <flow id="flow_south_north" type="passenger_car" route="route_south_north"
+          begin="25.0" end="85.0"
+          vehsPerHour="180"
+          departPos="10.0"
+          departSpeed="12.0"/>
+
+</routes>

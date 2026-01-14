@@ -9,7 +9,16 @@ Note: raytracing モジュールはSIONNA RTを必要とするため、
 """
 
 # throughputは常にインポート可能
-from .throughput import calculate_theoretical_throughput, process_link_quality_data
+from .throughput import calculate_theoretical_throughput, process_link_quality_data, RateModel
+
+# MCSモデル
+from .mcs_model import (
+    select_mcs,
+    get_spectral_efficiency,
+    calculate_mcs_throughput_mbps,
+    MCS_SNR_THRESHOLDS_DB,
+    MCS_SPECTRAL_EFFICIENCY,
+)
 
 # raytracing は SIONNA 依存のため遅延インポート
 def _import_raytracing():
@@ -26,6 +35,13 @@ def _import_raytracing():
 __all__ = [
     "calculate_theoretical_throughput",
     "process_link_quality_data",
+    "RateModel",
+    # MCSモデル
+    "select_mcs",
+    "get_spectral_efficiency",
+    "calculate_mcs_throughput_mbps",
+    "MCS_SNR_THRESHOLDS_DB",
+    "MCS_SPECTRAL_EFFICIENCY",
     # 以下はSIONNA環境でのみ利用可能
     # "RayTracingSimulator",
     # "BaseStation",
