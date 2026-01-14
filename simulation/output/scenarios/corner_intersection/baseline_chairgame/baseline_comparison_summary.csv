@@ -1,0 +1,4 @@
+Baseline,Outage Rate (%),Mean Throughput (Mbps),P05 Throughput (Mbps),BS Load (mean),BS Load (max)
+MAX_SNR,86.39,57.43,0.00,9.2,10
+NEAREST,86.39,57.31,0.00,9.2,10
+RANDOM,86.39,28.01,0.00,9.2,10

@@ -46,7 +46,8 @@ simulation/
 │   ├── optimization/                 # 最適化アルゴリズム
 │   │   ├── __init__.py
 │   │   ├── distributed.py            # 分散型制御（ベースライン）
-│   │   └── global_optimizer.py       # ILPグローバル最適化
+│   │   ├── global_optimizer.py       # ILPグローバル最適化
+│   │   └── baselines_chairgame.py    # ベースライン手法（椅子取りゲーム）
 │   ├── scenarios/                    # シナリオ設定モジュール
 │   │   ├── __init__.py
 │   │   ├── default.py                # デフォルトシナリオ（直線道路）
@@ -59,6 +60,7 @@ simulation/
 │   ├── run_raytracing.py             # レイトレーシング実行
 │   ├── run_throughput.py             # スループット計算実行
 │   ├── run_optimization.py           # 最適化実行
+│   ├── run_baselines_chairgame.py    # ベースライン手法実行
 │   ├── run_visualization.py          # 可視化実行
 │   └── generate_fcd_corner.py        # 交差点シナリオFCD生成
 ├── sumo_config/                      # SUMO設定ファイル
@@ -76,6 +78,7 @@ simulation/
 │       │   ├── raytracing/           # レイトレーシング結果
 │       │   ├── throughput/           # スループット計算結果
 │       │   ├── optimization/         # 最適化結果
+│       │   ├── baseline_chairgame/   # ベースライン手法結果
 │       │   ├── analysis/             # 分析結果
 │       │   └── figures/              # 可視化出力
 │       └── corner_intersection/      # 交差点シナリオ出力
@@ -83,6 +86,7 @@ simulation/
 │           ├── raytracing/
 │           ├── throughput/
 │           ├── optimization/
+│           ├── baseline_chairgame/
 │           ├── analysis/
 │           └── figures/
 ├── run_simulation.sh                 # 統合実行スクリプト
@@ -285,6 +289,91 @@ python scripts/run_visualization.py --final     # 最終比較
 # 交差点シナリオで可視化
 python scripts/run_visualization.py --scenario corner_intersection --all
 ```
+
+---
+
+## ベースライン手法（椅子取りゲーム）
+
+提案手法との比較のため、3種類のベースライン手法を「共通の椅子取りゲーム」フレームワークとして実装しています。
+
+### 椅子取りゲームフレームワーク
+
+各タイムステップで以下の2段階プロセスを実行：
+
+#### Step A: 希望選出（Proposal）
+- 各車両がルールに従って「一番繋ぎたいBS」を1つ選ぶ
+
+#### Step B: Admission Control（足切り）
+- 各基地局bの希望者数が定員 `C_b` を超えた場合、優先順位で上位 `C_b` のみ接続
+- 残りは **アウトエージ**（接続できず、スループット0として評価）
+
+### 3つのベースライン手法
+
+#### 1. Max-SNR (Greedy Baseline)
+**希望選出**: 各車両は候補V2Iリンクのうち **SNRが最大のBS** を希望
+**足切り**: SNR降順で上位C_bをaccepted
+
+**論文での主張点**: 利己的に良い回線を選ぶと特定BSへ負荷が集中し、Admission Controlにより接続あぶれ（アウトエージ）が生じる → 提案手法の「譲り合い（オフロード）による負荷分散利得」の対照
+
+#### 2. Nearest-BS (Distance-based Baseline)
+**希望選出**: 各車両は **3次元ユークリッド距離が最小のBS** を希望
+**足切り**: 距離昇順で上位C_bをaccepted
+
+**論文での主張点**: ミリ波では「近い ≠ 繋がる」（遮蔽でNLOSになる） → Ray Tracing統合（遮蔽考慮）の価値を強調
+
+#### 3. Random (Lower Bound)
+**希望選出**: 各車両は候補V2Iリンクから **一様ランダムに** 1つ選んで希望
+**足切り**: 希望者からランダムにC_bをaccepted
+
+**論文での主張点**: 下限（Lower Bound）としてのサニティチェック
+
+### 使用方法
+
+```bash
+# 交差点シナリオで全ベースラインを実行（BS定員=10）
+python scripts/run_baselines_chairgame.py --scenario corner_intersection --baseline all --bs-capacity 10
+
+# Max-SNRベースラインのみ実行
+python scripts/run_baselines_chairgame.py --scenario corner_intersection --baseline max_snr --bs-capacity 10
+
+# MCS評価列を使用
+python scripts/run_baselines_chairgame.py --scenario corner_intersection --baseline all --bs-capacity 10 --eval-throughput-col throughput_mbps_mcs
+
+# Randomベースラインに乱数シード指定
+python scripts/run_baselines_chairgame.py --scenario corner_intersection --baseline random --bs-capacity 10 --seed 42
+```
+
+### 出力ファイル
+
+#### 各ベースライン用
+- `baseline_{baseline_name}_assignment.csv`: 選択結果（時刻×車両単位）
+  - 列: `timestamp`, `vehicle_id`, `desired_bs_id`, `assigned_bs_id`, `accepted`, `baseline_name`, `score`, `throughput_truth`, `snr_db_truth`
+- `baseline_{baseline_name}_summary.csv`: 評価指標
+  - 列: `baseline_name`, `bs_capacity`, `seed`, `total_links`, `outage_count`, `outage_rate`, `mean_throughput_mbps`, `p05_throughput_mbps`, `bs_load_mean`, `bs_load_max`, `bs_load_min`
+
+#### 比較サマリー
+- `baseline_comparison_summary.csv`: 全ベースラインの比較表
+
+### 評価指標
+
+- **アウトエージ率** (`outage_rate`): 接続できなかった（rejected）車両の割合
+- **平均スループット** (`mean_throughput_mbps`): accepted車両は真値スループット、rejectedは0として平均
+- **P05スループット** (`p05_throughput_mbps`): 下位5%タイル値（0含む）
+- **BS負荷分散** (`bs_load_mean`, `bs_load_max`, `bs_load_min`): BSごとの接続台数の統計
+
+### 実験例（corner_intersection, BS定員=10）
+
+| Baseline | Outage Rate (%) | Mean Throughput (Mbps) | P05 Throughput (Mbps) |
+|----------|-----------------|------------------------|------------------------|
+| MAX_SNR  | 86.39           | 57.43                  | 0.00                   |
+| NEAREST  | 86.39           | 57.31                  | 0.00                   |
+| RANDOM   | 86.39           | 28.01                  | 0.00                   |
+
+**観察**:
+- **Random が最も劣る**（平均28.01 Mbps、他の約半分）
+- **Max-SNR が最も良い**（平均57.43 Mbps）
+- **Nearest は Max-SNR とほぼ同等**（平均57.31 Mbps）
+- すべて同じアウトエージ率（86.39%）なのは、各タイムステップで同じ数の車両が定員を超えて足切りされるため
 
 ---
 

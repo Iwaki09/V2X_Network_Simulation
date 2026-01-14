@@ -1,0 +1,2 @@
+baseline_name,bs_capacity,seed,total_links,outage_count,outage_rate,mean_throughput_mbps,p05_throughput_mbps,bs_load_mean,bs_load_max,bs_load_min
+max_snr,10,N/A,4123,3562,0.863934028619937,57.42857142857144,0.0,9.19672131147541,10,1
