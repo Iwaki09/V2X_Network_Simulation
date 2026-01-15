@@ -1022,8 +1022,150 @@ python scripts/run_optimization.py \
 
 ---
 
+## V2X割当最適化システム（最終比較版）
+
+**実装日**: 2026-01-15
+
+V2X通信の割当最適化について、スループット最大化（Obj-T）とアウトエージ最小化（Obj-O）の2種類の目的関数を実装し、4つの手法（random、greedy_mcs、optimal_shannon、proposed_optimal_dkmcs）を同一条件で比較評価するシステムです。
+
+### 概要
+
+各タイムスタンプで車両集合V(t)があり、各車両vは次のどちらかを選択：
+- **Direct(v,b)**: v→b（V2I通信）
+- **Relay(v,u,b)**: v→u（V2V）かつ u→b（V2I）を同時に確保
+
+制約条件：
+- 各車両は各タイムスタンプで1アクションのみ
+- 各基地局bには定員C_b（容量制約）
+- 未選択車両はアウトエージ（スループット0）
+
+### 使用方法
+
+```bash
+# 小規模データセットでテスト実行
+source ../.venv/bin/activate
+python3 ../scripts/run_final_comparison.py \
+  --input-theoretical simulation/output/scenarios/corner_intersection/throughput/theoretical_network_results_small20.csv \
+  --outdir simulation/output/optimization_comparison_test \
+  --bs-capacity 5 \
+  --neighbor-radius 200.0 \
+  --max-neighbors 5 \
+  --max-bs-candidates 3 \
+  --outage-threshold-mbps 0.0 \
+  --margin-d-db 6.5 \
+  --margin-k-db 6.5 \
+  --seed 42 \
+  --rolling-window 5
+
+# 大規模データセットで実行
+python3 ../scripts/run_final_comparison.py \
+  --input-theoretical simulation/output/scenarios/corner_intersection/throughput/theoretical_network_results.csv \
+  --outdir simulation/output/optimization_comparison_full \
+  --bs-capacity 10 \
+  --rolling-window 10
+```
+
+### 4つの手法
+
+1. **random**: 各車両がランダムに候補を選択、BS定員超過時もランダムに採択
+2. **greedy_mcs**: 各車両がrate_mcs最大の候補を選択、定員超過時はレート降順で採択
+3. **optimal_shannon**: Shannonレート基準で線形計画法により最適化（Obj-TとObj-O）
+4. **proposed_optimal_dkmcs**: D/K×MCS+marginレート基準で最適化（Obj-TとObj-O）
+
+### 2つの目的関数
+
+- **Obj-T（throughput）**: スループット最大化 - `maximize Σ x_{v,a} * R(v,a)`
+- **Obj-O（outage）**: アウトエージ最小化 - 2段階最適化
+  1. 第1段：救済数最大化 `maximize Σ y_v`
+  2. 第2段：救済数を固定してスループット最大化
+
+### レートモデル
+
+最適化の入力レート（推定）はmodelで切替：
+- **Shannon**: 理論的スループット（theoretical_throughput_mbps）
+- **MCS**: MCSベーススループット（throughput_mbps_mcs）
+- **D/K×MCS+margin**: マージン適用後MCSレート（rate_dkmcs）
+  - Dモード（LOS系）: margin_d_db（デフォルト6.5dB）
+  - Kモード（NLOS系）: margin_k_db（デフォルト6.5dB）
+
+評価（truth）は常に：throughput_mbps_mcs
+
+### 出力ファイル
+
+実行後、`--outdir`に以下のファイルが生成されます：
+
+#### CSV出力
+- `candidates.csv`: 全候補アクション（Direct/Relay）
+- `assignment_random.csv`: Random手法の割当結果
+- `assignment_greedy_mcs.csv`: Greedy手法の割当結果
+- `assignment_optimal_shannon_T.csv`: Optimal Shannon（Throughput目的）
+- `assignment_optimal_shannon_O.csv`: Optimal Shannon（Outage目的）
+- `assignment_proposed_optimal_dkmcs_T.csv`: Proposed（Throughput目的）
+- `assignment_proposed_optimal_dkmcs_O.csv`: Proposed（Outage目的）
+- `all_assignments.csv`: 全手法の統合結果
+- `summary.csv`: 評価指標サマリー
+
+#### プロット出力（plots/ディレクトリ）
+
+**Throughput目的セット（T）**:
+- `outage_rate_bar_T.png`: アウトエージ率の棒グラフ
+- `throughput_cdf_T.png`: スループットCDF（0含む）
+- `p05_mean_T.png`: P05とMeanの比較
+- `relay_ratio_T.png`: リレー率の棒グラフ
+- `bs_load_T.png`: BS負荷の比較
+- `throughput_timeseries_mean_T.png`: 平均スループット時系列
+- `throughput_timeseries_p05_T.png`: P05スループット時系列
+
+**Outage目的セット（O）**:
+- 同様の7つのプロット（接尾辞が`_O.png`）
+
+**トレードオフ分析**:
+- `tradeoff_frontier.png`: アウトエージ率 vs 平均スループット
+
+### 評価指標
+
+- **アウトエージ率** (`outage_rate`): 接続できなかった車両の割合
+- **平均スループット** (`mean_throughput_mbps`): 全車両（accepted+outage）の平均
+- **P05/P50/P95**: スループットの5/50/95パーセンタイル値
+- **リレー率** (`relay_ratio`): accepted車両のうちRelayを選択した割合
+- **BS負荷** (`bs_load_mean`, `bs_load_max`): BS接続台数の統計
+
+### 実装の特徴
+
+- **候補生成**: パラメータ化された候補選択（BS候補数、近傍車距離・台数）
+- **最適化**: PuLP（線形計画法ソルバー）による厳密解
+- **比較公平性**: 全手法で同一候補・同一truth評価
+- **可視化**: 論文用の高品質プロット自動生成
+- **時系列分析**: 移動平均による時系列変動の可視化
+
+### 実装場所
+
+- **モジュール**: `/src/optimization/`
+  - `candidates.py`: 候補生成
+  - `optimizer.py`: 最適化ソルバー（Obj-T、Obj-O）
+  - `methods.py`: Random/Greedy手法
+  - `plotting.py`: プロット生成
+- **スクリプト**: `/scripts/run_final_comparison.py`
+
+### 将来課題
+
+- V2V側資源制約（干渉、同時送信数）の追加
+- リレー時の2ホップ遅延制約
+- 動的なBS定員割当
+- マルチホップリレー対応
+
+---
+
 ## 更新履歴
 
+- **2026-01-15** (2回目):
+  - **V2X割当最適化システムを実装**。スループット最大化（Obj-T）とアウトエージ最小化（Obj-O）の2種類の目的関数を実装し、4つの手法（random、greedy_mcs、optimal_shannon、proposed_optimal_dkmcs）を比較評価するシステムを構築。
+  - 候補生成モジュール（`src/optimization/candidates.py`）を追加。Direct/Relay候補を生成し、複数のレートモデル（Shannon、MCS、D/K×MCS+margin）を計算。
+  - 最適化ソルバー（`src/optimization/optimizer.py`）を追加。PuLPを使用した線形計画法により、Obj-TとObj-Oの厳密解を計算。
+  - Random/Greedy手法（`src/optimization/methods.py`）を追加。ベースライン手法として実装。
+  - プロット生成モジュール（`src/optimization/plotting.py`）を追加。15種類の論文用プロットを自動生成。
+  - 統合実行スクリプト（`scripts/run_final_comparison.py`）を追加。全手法を一括実行し、結果を比較。
+  - テスト実行成功: 小規模データセット（20タイムステップ、約26K行）で全手法が完走し、プロット生成まで確認。
 - **2026-01-15**:
   - **ビームフォーミング(BF)対応を追加**。Sionna RTのAoD/AoA（最大パス）に基づきBS/UEの理想ビーム利得を反映。
   - **3GPP TR 38.901素子パターンを実装**（θ/φカット、A_V/A_H/A、G_element）。
