@@ -30,14 +30,28 @@ class CornerIntersectionConfig:
     coord_offset_x: float = -200.0
     coord_offset_y: float = -200.0
 
-    # 基地局設定
-    # 位置: (+120, +120)、高さ: z_bs = 20m
-    # 西側(x<0)や南側(y<0)の車両に対し、角ビルでNLOSが起きやすくする
-    base_station: BaseStation = field(default_factory=lambda: BaseStation(
-        id="BS_1",
-        position=[120.0, 120.0, 20.0],
-        tx_power_dbm=40.0
-    ))
+    # 基地局設定（複数BS対応）
+    # 3基地局を配置して負荷分散の余地を作る
+    # BS_1: (+120, +120, 20) - 北東
+    # BS_2: (-120, +120, 20) - 北西
+    # BS_3: (+120, -120, 20) - 南東
+    base_stations: List[BaseStation] = field(default_factory=lambda: [
+        BaseStation(
+            id="BS_1",
+            position=[120.0, 120.0, 20.0],
+            tx_power_dbm=40.0
+        ),
+        BaseStation(
+            id="BS_2",
+            position=[-120.0, 120.0, 20.0],
+            tx_power_dbm=40.0
+        ),
+        BaseStation(
+            id="BS_3",
+            position=[120.0, -120.0, 20.0],
+            tx_power_dbm=40.0
+        )
+    ])
 
     # 建物設定（4棟の角ビル）
     # 道路からのセットバック d=10m、建物サイズ W=60m, H=60m、高さ z=20m
@@ -124,6 +138,12 @@ class CornerIntersectionConfig:
     def transform_coordinates(self, x: float, y: float) -> tuple:
         """FCD座標をRT座標に変換"""
         return (x + self.coord_offset_x, y + self.coord_offset_y)
+
+    # 後方互換性のために単一基地局プロパティを維持
+    @property
+    def base_station(self) -> BaseStation:
+        """最初の基地局への参照（後方互換性）"""
+        return self.base_stations[0] if self.base_stations else None
 
     # 後方互換性のために単一建物プロパティを維持
     @property

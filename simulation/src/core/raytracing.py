@@ -73,7 +73,8 @@ class RayTracingSimulator:
 
     def __init__(
         self,
-        base_station: BaseStation,
+        base_station: BaseStation = None,
+        base_stations: List[BaseStation] = None,
         building: Building = None,
         buildings: List[Building] = None,
         frequency_ghz: float = 28.0,
@@ -85,7 +86,8 @@ class RayTracingSimulator:
     ):
         """
         Args:
-            base_station: 基地局の設定
+            base_station: 基地局の設定（後方互換性のため維持、base_stationsがある場合は無視）
+            base_stations: 基地局のリスト（複数BS対応）
             building: 建物の設定（後方互換性のため維持、buildingsがある場合は無視）
             buildings: 建物のリスト（複数建物対応）
             frequency_ghz: 周波数 [GHz]
@@ -95,7 +97,16 @@ class RayTracingSimulator:
             num_samples: レイトレーシングのサンプル数
             v2v_max_distance_m: V2Vリンク生成の最大距離 [m]（計算量削減用）
         """
-        self.base_station = base_station
+        # 後方互換性: base_station引数またはbase_stations引数をサポート
+        if base_stations is not None:
+            self.base_stations = base_stations
+        elif base_station is not None:
+            self.base_stations = [base_station]
+        else:
+            raise ValueError("Either base_station or base_stations must be provided")
+
+        # 後方互換性のためにself.base_stationも維持
+        self.base_station = self.base_stations[0] if self.base_stations else None
 
         # 後方互換性: building引数またはbuildings引数をサポート
         if buildings is not None:
@@ -153,8 +164,9 @@ class RayTracingSimulator:
         print("✅ RayTracingSimulator initialized")
         print(f"   - Mode: {'Sionna RT (multi-path)' if use_sionna_rt else 'Simple model (single-path)'}")
         print(f"   - Frequency: {frequency_ghz} GHz")
-        print(f"   - Base Station: {base_station.id} at {base_station.position}")
-        print(f"   - V2I TX Power: {base_station.tx_power_dbm} dBm")
+        print(f"   - Base Stations: {len(self.base_stations)} station(s)")
+        for bs in self.base_stations:
+            print(f"     - {bs.id} at {bs.position}, TX Power: {bs.tx_power_dbm} dBm")
         print(f"   - V2V TX Power: {v2v_tx_power_dbm} dBm")
         print(f"   - V2V Max Distance: {v2v_max_distance_m} m")
         print(f"   - Buildings: {len(self.buildings)} building(s)")
@@ -828,19 +840,20 @@ class RayTracingSimulator:
         link_qualities = []
         vehicle_ids = list(vehicle_positions.keys())
 
-        # V2Iリンクの計算（基地局 -> 各車両）
-        for vehicle_id in vehicle_ids:
-            vehicle_pos = vehicle_positions[vehicle_id]
-            link_quality = self._calculate_single_link(
-                timestamp=timestamp,
-                link_type="V2I",
-                tx_id=self.base_station.id,
-                tx_position=self.base_station.position,
-                tx_power_dbm=self.base_station.tx_power_dbm,
-                rx_id=vehicle_id,
-                rx_position=vehicle_pos
-            )
-            link_qualities.append(link_quality)
+        # V2Iリンクの計算（全ての基地局 -> 各車両）
+        for base_station in self.base_stations:
+            for vehicle_id in vehicle_ids:
+                vehicle_pos = vehicle_positions[vehicle_id]
+                link_quality = self._calculate_single_link(
+                    timestamp=timestamp,
+                    link_type="V2I",
+                    tx_id=base_station.id,
+                    tx_position=base_station.position,
+                    tx_power_dbm=base_station.tx_power_dbm,
+                    rx_id=vehicle_id,
+                    rx_position=vehicle_pos
+                )
+                link_qualities.append(link_quality)
 
         # V2Vリンクの計算（距離閾値内のペアのみ）
         for i, tx_vehicle_id in enumerate(vehicle_ids):

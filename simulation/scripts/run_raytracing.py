@@ -183,19 +183,32 @@ def main():
     print("\n[Step 2] Initializing Ray Tracing Simulator")
 
     # シナリオ設定から基地局と建物を取得
-    base_station = scenario_config.base_station
-    buildings = scenario_config.buildings
-
-    simulator = RayTracingSimulator(
-        base_station=base_station,
-        buildings=buildings,
-        frequency_ghz=scenario_config.frequency_ghz,
-        v2v_tx_power_dbm=scenario_config.v2v_tx_power_dbm,
-        use_sionna_rt=args.sionna_rt,
-        max_depth=args.max_depth,
-        num_samples=args.num_samples,
-        v2v_max_distance_m=args.v2v_max_distance
-    )
+    # 複数BS対応（base_stationsがあればそれを使用、なければbase_stationで後方互換）
+    if hasattr(scenario_config, 'base_stations'):
+        base_stations = scenario_config.base_stations
+        simulator = RayTracingSimulator(
+            base_stations=base_stations,
+            buildings=scenario_config.buildings,
+            frequency_ghz=scenario_config.frequency_ghz,
+            v2v_tx_power_dbm=scenario_config.v2v_tx_power_dbm,
+            use_sionna_rt=args.sionna_rt,
+            max_depth=args.max_depth,
+            num_samples=args.num_samples,
+            v2v_max_distance_m=args.v2v_max_distance
+        )
+    else:
+        # 後方互換性: 単一BS
+        base_station = scenario_config.base_station
+        simulator = RayTracingSimulator(
+            base_station=base_station,
+            buildings=scenario_config.buildings,
+            frequency_ghz=scenario_config.frequency_ghz,
+            v2v_tx_power_dbm=scenario_config.v2v_tx_power_dbm,
+            use_sionna_rt=args.sionna_rt,
+            max_depth=args.max_depth,
+            num_samples=args.num_samples,
+            v2v_max_distance_m=args.v2v_max_distance
+        )
 
     # Step 3: 各タイムステップでリンク品質を計算
     print(f"\n[Step 3] Computing link qualities for {len(timestep_data_list)} timesteps")
@@ -265,6 +278,16 @@ def main():
         print(f"\n  Link statistics:")
         print(f"    V2I links: {v2i_count}")
         print(f"    V2V links: {v2v_count}")
+
+        # 複数BS検証ログ: BS別のV2Iリンク数
+        v2i_links = [lq for lq in all_link_qualities if lq.link_type == "V2I"]
+        if v2i_links:
+            bs_ids = set(lq.tx_id for lq in v2i_links)
+            print(f"\n  Multi-BS verification (V2I only):")
+            print(f"    Unique BS count: {len(bs_ids)}")
+            for bs_id in sorted(bs_ids):
+                bs_link_count = sum(1 for lq in v2i_links if lq.tx_id == bs_id)
+                print(f"      {bs_id}: {bs_link_count} links")
 
         # LOS/NLOS統計（検証ログ）
         los_count = sum(1 for lq in all_link_qualities if lq.is_line_of_sight)
