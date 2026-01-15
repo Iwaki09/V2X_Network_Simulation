@@ -438,3 +438,7 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
   - V2I送信電力を 40 dBm に更新（シナリオ設定/BSデフォルト）
 - **ドキュメント更新**:
   - `simulation/README.md` にBF方式、TR 38.901式、追加CSV列、実行例、更新履歴を追記
+- **最小手順の整理**:
+  - `simulation/ESSENTIAL.md` を新規作成し、Ray Tracing → Throughput → グラフ作成の最短手順とコマンドのみを抽出
+- **手順追記**:
+  - `simulation/ESSENTIAL.md` に最適化の実行手順と `bs_load_O.png` 出力用の最終比較手順を追加

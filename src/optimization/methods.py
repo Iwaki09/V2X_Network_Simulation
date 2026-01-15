@@ -18,6 +18,7 @@ def random_assignment(
     ランダム割当
 
     各車両がランダムに1つのアクションを希望し、BS定員超過時はランダムに採択
+    Relay接続の場合、リレー車のBS接続を正しくカウント
 
     Args:
         candidates_df: 候補DF
@@ -50,26 +51,59 @@ def random_assignment(
                     'rate_mcs': selected['rate_mcs'],
                 })
 
-        # BS定員管理
-        bs_assignments = {}
+        # BS容量管理：Direct接続車両 + リレー車のBS接続をカウント
+        bs_usage = {}  # {bs_id: {'direct': [...], 'relay_vehicles': {relay_id: [...]}}}
         for req in requests:
             bs_id = req['bs_id']
-            if bs_id not in bs_assignments:
-                bs_assignments[bs_id] = []
-            bs_assignments[bs_id].append(req)
+            if bs_id not in bs_usage:
+                bs_usage[bs_id] = {'direct': [], 'relay_vehicles': {}}
+
+            if req['action_type'] == 'direct':
+                bs_usage[bs_id]['direct'].append(req)
+            elif req['action_type'] == 'relay':
+                relay_id = req['relay_id']
+                if relay_id not in bs_usage[bs_id]['relay_vehicles']:
+                    bs_usage[bs_id]['relay_vehicles'][relay_id] = []
+                bs_usage[bs_id]['relay_vehicles'][relay_id].append(req)
 
         # 各BSで定員超過時はランダムに採択
         accepted_vehicles = set()
-        for bs_id, reqs in bs_assignments.items():
-            if len(reqs) <= bs_capacity:
+        for bs_id, usage in bs_usage.items():
+            direct_reqs = usage['direct']
+            relay_groups = usage['relay_vehicles']
+
+            # 候補リスト作成：Direct車両 + リレー車グループ
+            candidates_for_bs = []
+            for req in direct_reqs:
+                candidates_for_bs.append(('direct', req))
+            for relay_id, relay_reqs in relay_groups.items():
+                candidates_for_bs.append(('relay_group', relay_id, relay_reqs))
+
+            # 現在のBS使用数
+            current_usage = len(direct_reqs) + len(relay_groups)
+
+            if current_usage <= bs_capacity:
                 # 全員採択
-                for req in reqs:
+                for req in direct_reqs:
                     accepted_vehicles.add(req['vehicle_id'])
+                for relay_reqs in relay_groups.values():
+                    for req in relay_reqs:
+                        accepted_vehicles.add(req['vehicle_id'])
             else:
                 # ランダムにbs_capacity個だけ採択
-                np.random.shuffle(reqs)
-                for req in reqs[:bs_capacity]:
-                    accepted_vehicles.add(req['vehicle_id'])
+                np.random.shuffle(candidates_for_bs)
+                selected_count = 0
+                for item in candidates_for_bs:
+                    if selected_count >= bs_capacity:
+                        break
+                    if item[0] == 'direct':
+                        accepted_vehicles.add(item[1]['vehicle_id'])
+                        selected_count += 1
+                    elif item[0] == 'relay_group':
+                        relay_id, relay_reqs = item[1], item[2]
+                        for req in relay_reqs:
+                            accepted_vehicles.add(req['vehicle_id'])
+                        selected_count += 1
 
         # 結果を生成
         for vehicle_id in vehicles_t:
@@ -110,6 +144,7 @@ def greedy_assignment(
     Greedy割当（rate_mcsベース）
 
     各車両がrate_mcsが最大のアクションを希望し、BS定員超過時は希望レート降順で採択
+    Relay接続の場合、リレー車のBS接続を正しくカウント
 
     Args:
         candidates_df: 候補DF
@@ -140,23 +175,53 @@ def greedy_assignment(
                     'rate_mcs': best['rate_mcs'],
                 })
 
-        # BS定員管理
-        bs_assignments = {}
+        # BS容量管理：Direct接続車両 + リレー車のBS接続をカウント
+        bs_usage = {}  # {bs_id: {'direct': [...], 'relay_vehicles': {relay_id: [...]}}}
         for req in requests:
             bs_id = req['bs_id']
-            if bs_id not in bs_assignments:
-                bs_assignments[bs_id] = []
-            bs_assignments[bs_id].append(req)
+            if bs_id not in bs_usage:
+                bs_usage[bs_id] = {'direct': [], 'relay_vehicles': {}}
+
+            if req['action_type'] == 'direct':
+                bs_usage[bs_id]['direct'].append(req)
+            elif req['action_type'] == 'relay':
+                relay_id = req['relay_id']
+                if relay_id not in bs_usage[bs_id]['relay_vehicles']:
+                    bs_usage[bs_id]['relay_vehicles'][relay_id] = []
+                bs_usage[bs_id]['relay_vehicles'][relay_id].append(req)
 
         # 各BSで定員超過時は希望レート降順で採択
         accepted_vehicles = set()
-        for bs_id, reqs in bs_assignments.items():
-            # 希望レート降順でソート
-            reqs_sorted = sorted(reqs, key=lambda x: x['rate_mcs'], reverse=True)
+        for bs_id, usage in bs_usage.items():
+            direct_reqs = usage['direct']
+            relay_groups = usage['relay_vehicles']
+
+            # 候補リスト作成：Direct車両 + リレー車グループ
+            # それぞれの最大レートで評価
+            candidates_for_bs = []
+            for req in direct_reqs:
+                candidates_for_bs.append(('direct', req['rate_mcs'], req))
+            for relay_id, relay_reqs in relay_groups.items():
+                # リレーグループの最大レート
+                max_rate = max(r['rate_mcs'] for r in relay_reqs)
+                candidates_for_bs.append(('relay_group', max_rate, relay_id, relay_reqs))
+
+            # レート降順でソート
+            candidates_for_bs.sort(key=lambda x: x[1], reverse=True)
 
             # トップbs_capacity個だけ採択
-            for req in reqs_sorted[:bs_capacity]:
-                accepted_vehicles.add(req['vehicle_id'])
+            selected_count = 0
+            for item in candidates_for_bs:
+                if selected_count >= bs_capacity:
+                    break
+                if item[0] == 'direct':
+                    accepted_vehicles.add(item[2]['vehicle_id'])
+                    selected_count += 1
+                elif item[0] == 'relay_group':
+                    relay_id, relay_reqs = item[2], item[3]
+                    for req in relay_reqs:
+                        accepted_vehicles.add(req['vehicle_id'])
+                    selected_count += 1
 
         # 結果を生成
         for vehicle_id in vehicles_t:
