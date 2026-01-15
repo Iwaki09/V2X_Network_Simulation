@@ -8,7 +8,7 @@
 実行内容：
 1. レイトレーシング（corner_intersection、3BS）
 2. スループット計算
-3. 各C_bについて4手法×2目的を実行
+3. 各C_bについて5手法×2目的を実行
 4. 追加可視化（BS負荷分布、負荷分散指標、C_b sweep図）
 5. 自動チェック（複数BS検証、sweep完全性）
 """
@@ -73,7 +73,7 @@ def run_throughput(input_csv: Path, scenario: str):
         "python3", "simulation/scripts/run_throughput.py",
         "--input", str(input_csv),
         "--scenario", scenario,
-        "--rate-model", "mcs",
+        "--rate-model", "both",
         "--enable-margin-estimate",
         "--margin-d-db", "6.5",
         "--margin-k-db", "6.5"
@@ -112,11 +112,11 @@ def verify_multi_bs(theoretical_csv: Path) -> Dict:
     bs_per_timestamp = df_v2i.groupby('timestamp')['tx_id'].nunique()
 
     verification = {
-        'unique_bs_count': unique_bs,
-        'bs_link_counts': bs_counts.to_dict(),
-        'min_bs_per_timestamp': bs_per_timestamp.min(),
-        'mean_bs_per_timestamp': bs_per_timestamp.mean(),
-        'max_bs_per_timestamp': bs_per_timestamp.max(),
+        'unique_bs_count': int(unique_bs),
+        'bs_link_counts': {bs_id: int(count) for bs_id, count in bs_counts.to_dict().items()},
+        'min_bs_per_timestamp': int(bs_per_timestamp.min()),
+        'mean_bs_per_timestamp': float(bs_per_timestamp.mean()),
+        'max_bs_per_timestamp': int(bs_per_timestamp.max()),
     }
 
     print(f"  - ユニークBS数: {unique_bs}")
@@ -146,7 +146,9 @@ def run_optimization_for_cb(
     margin_d_db: float = 6.5,
     margin_k_db: float = 6.5,
     seed: int = 42,
-    rolling_window: int = 0
+    rolling_window: int = 0,
+    solver_time_limit: int = None,
+    solver_verbose: bool = False,
 ) -> Dict:
     """指定されたC_bで最適化を実行"""
 
@@ -216,14 +218,51 @@ def run_optimization_for_cb(
     result_greedy.to_csv(outdir / 'assignment_greedy_mcs.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_greedy)['outage_rate']:.3f})")
 
-    # 3-3. Optimal Shannon (Throughput)
+    # 3-3. Optimal MCS (Throughput)
+    print("  - Optimal MCS (Throughput) 最適化中...")
+    result_opt_mcs_T = solve_optimization(
+        candidates_df,
+        cb_value,
+        rate_col='rate_mcs',
+        objective='throughput',
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
+    )
+    result_opt_mcs_T['method'] = 'optimal_mcs'
+    result_opt_mcs_T['objective'] = 'throughput'
+    if 'optimal_mcs' not in all_results:
+        all_results['optimal_mcs'] = {}
+    all_results['optimal_mcs']['throughput'] = result_opt_mcs_T.copy()
+    all_assignments.append(result_opt_mcs_T)
+    result_opt_mcs_T.to_csv(outdir / 'assignment_optimal_mcs_T.csv', index=False)
+    print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_mcs_T)['outage_rate']:.3f})")
+
+    # 3-4. Optimal MCS (Outage)
+    print("  - Optimal MCS (Outage) 最適化中...")
+    result_opt_mcs_O = solve_optimization(
+        candidates_df,
+        cb_value,
+        rate_col='rate_mcs',
+        objective='outage',
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
+    )
+    result_opt_mcs_O['method'] = 'optimal_mcs'
+    result_opt_mcs_O['objective'] = 'outage'
+    all_results['optimal_mcs']['outage'] = result_opt_mcs_O.copy()
+    all_assignments.append(result_opt_mcs_O)
+    result_opt_mcs_O.to_csv(outdir / 'assignment_optimal_mcs_O.csv', index=False)
+    print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_mcs_O)['outage_rate']:.3f})")
+
+    # 3-5. Optimal Shannon (Throughput)
     print("  - Optimal Shannon (Throughput) 最適化中...")
     result_opt_shannon_T = solve_optimization(
         candidates_df,
         cb_value,
         rate_col='rate_shannon',
         objective='throughput',
-        verbose=False,
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
     )
     result_opt_shannon_T['method'] = 'optimal_shannon'
     result_opt_shannon_T['objective'] = 'throughput'
@@ -234,14 +273,15 @@ def run_optimization_for_cb(
     result_opt_shannon_T.to_csv(outdir / 'assignment_optimal_shannon_T.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_shannon_T)['outage_rate']:.3f})")
 
-    # 3-4. Optimal Shannon (Outage)
+    # 3-6. Optimal Shannon (Outage)
     print("  - Optimal Shannon (Outage) 最適化中...")
     result_opt_shannon_O = solve_optimization(
         candidates_df,
         cb_value,
         rate_col='rate_shannon',
         objective='outage',
-        verbose=False,
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
     )
     result_opt_shannon_O['method'] = 'optimal_shannon'
     result_opt_shannon_O['objective'] = 'outage'
@@ -250,14 +290,15 @@ def run_optimization_for_cb(
     result_opt_shannon_O.to_csv(outdir / 'assignment_optimal_shannon_O.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_shannon_O)['outage_rate']:.3f})")
 
-    # 3-5. Proposed Optimal (D/K×MCS+margin) (Throughput)
+    # 3-7. Proposed Optimal (D/K×MCS+margin) (Throughput)
     print("  - Proposed Optimal (D/K×MCS+margin) (Throughput) 最適化中...")
     result_proposed_T = solve_optimization(
         candidates_df,
         cb_value,
         rate_col='rate_dkmcs',
         objective='throughput',
-        verbose=False,
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
     )
     result_proposed_T['method'] = 'proposed_optimal_dkmcs'
     result_proposed_T['objective'] = 'throughput'
@@ -268,14 +309,15 @@ def run_optimization_for_cb(
     result_proposed_T.to_csv(outdir / 'assignment_proposed_optimal_dkmcs_T.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_proposed_T)['outage_rate']:.3f})")
 
-    # 3-6. Proposed Optimal (D/K×MCS+margin) (Outage)
+    # 3-8. Proposed Optimal (D/K×MCS+margin) (Outage)
     print("  - Proposed Optimal (D/K×MCS+margin) (Outage) 最適化中...")
     result_proposed_O = solve_optimization(
         candidates_df,
         cb_value,
         rate_col='rate_dkmcs',
         objective='outage',
-        verbose=False,
+        verbose=solver_verbose,
+        time_limit_sec=solver_time_limit,
     )
     result_proposed_O['method'] = 'proposed_optimal_dkmcs'
     result_proposed_O['objective'] = 'outage'
@@ -309,18 +351,20 @@ def run_optimization_for_cb(
     # Step 6: プロット生成
     print("\n[6/7] プロット生成中...")
 
-    # Throughput目的セット（4手法）
+    # Throughput目的セット
     results_T = {
         'random': all_results['random']['throughput'],
         'greedy_mcs': all_results['greedy_mcs']['throughput'],
+        'optimal_mcs_T': all_results['optimal_mcs']['throughput'],
         'optimal_shannon_T': all_results['optimal_shannon']['throughput'],
         'proposed_T': all_results['proposed_optimal_dkmcs']['throughput'],
     }
 
-    # Outage目的セット（4手法）
+    # Outage目的セット
     results_O = {
         'random': all_results['random']['throughput'],
         'greedy_mcs': all_results['greedy_mcs']['throughput'],
+        'optimal_mcs_O': all_results['optimal_mcs']['outage'],
         'optimal_shannon_O': all_results['optimal_shannon']['outage'],
         'proposed_O': all_results['proposed_optimal_dkmcs']['outage'],
     }
@@ -368,10 +412,11 @@ def plot_cb_sweep_metrics(df_summary: pd.DataFrame, output_base: Path):
     df_T = df_summary[df_summary['objective'] == 'throughput'].copy()
     df_O = df_summary[df_summary['objective'] == 'outage'].copy()
 
-    methods = ['random', 'greedy_mcs', 'optimal_shannon', 'proposed_optimal_dkmcs']
+    methods = ['random', 'greedy_mcs', 'optimal_mcs', 'optimal_shannon', 'proposed_optimal_dkmcs']
     method_labels = {
         'random': 'Random',
         'greedy_mcs': 'Greedy (MCS)',
+        'optimal_mcs': 'Optimal (MCS)',
         'optimal_shannon': 'Optimal (Shannon)',
         'proposed_optimal_dkmcs': 'Proposed (D/K×MCS)',
     }
@@ -586,6 +631,10 @@ def main():
                         help='時系列プロットの移動平均ウィンドウ（デフォルト: 0=無効）')
     parser.add_argument('--use-sionna', action='store_true',
                         help='Sionna RTを使用（マルチパス、D/K判定に必要）')
+    parser.add_argument('--solver-time-limit', type=int, default=None,
+                        help='ソルバーのタイムリミット（秒）。未指定なら無制限')
+    parser.add_argument('--solver-verbose', action='store_true',
+                        help='ソルバーの詳細ログを表示')
 
     args = parser.parse_args()
 
@@ -641,7 +690,9 @@ def main():
             margin_d_db=args.margin_d_db,
             margin_k_db=args.margin_k_db,
             seed=args.seed,
-            rolling_window=args.rolling_window
+            rolling_window=args.rolling_window,
+            solver_time_limit=args.solver_time_limit,
+            solver_verbose=args.solver_verbose,
         )
 
         sweep_results.append(result)

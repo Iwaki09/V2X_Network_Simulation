@@ -2,7 +2,7 @@
 """
 V2X割当最適化の最終比較実行スクリプト
 
-4つの手法（random、greedy_mcs、optimal_shannon、proposed_optimal_dkmcs）と
+5つの手法（random、greedy_mcs、optimal_mcs、optimal_shannon、proposed_optimal_dkmcs）と
 2つの目的（throughput、outage）を比較評価します。
 """
 
@@ -119,7 +119,41 @@ def main():
     result_greedy.to_csv(outdir / 'assignment_greedy_mcs.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_greedy)['outage_rate']:.3f})")
 
-    # 3-3. Optimal Shannon (Throughput)
+    # 3-3. Optimal MCS (Throughput)
+    print("  - Optimal MCS (Throughput) 最適化中...")
+    result_opt_mcs_T = solve_optimization(
+        candidates_df,
+        args.bs_capacity,
+        rate_col='rate_mcs',
+        objective='throughput',
+        verbose=False,
+    )
+    result_opt_mcs_T['method'] = 'optimal_mcs'
+    result_opt_mcs_T['objective'] = 'throughput'
+    if 'optimal_mcs' not in all_results:
+        all_results['optimal_mcs'] = {}
+    all_results['optimal_mcs']['throughput'] = result_opt_mcs_T.copy()
+    all_assignments.append(result_opt_mcs_T)
+    result_opt_mcs_T.to_csv(outdir / 'assignment_optimal_mcs_T.csv', index=False)
+    print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_mcs_T)['outage_rate']:.3f})")
+
+    # 3-4. Optimal MCS (Outage)
+    print("  - Optimal MCS (Outage) 最適化中...")
+    result_opt_mcs_O = solve_optimization(
+        candidates_df,
+        args.bs_capacity,
+        rate_col='rate_mcs',
+        objective='outage',
+        verbose=False,
+    )
+    result_opt_mcs_O['method'] = 'optimal_mcs'
+    result_opt_mcs_O['objective'] = 'outage'
+    all_results['optimal_mcs']['outage'] = result_opt_mcs_O.copy()
+    all_assignments.append(result_opt_mcs_O)
+    result_opt_mcs_O.to_csv(outdir / 'assignment_optimal_mcs_O.csv', index=False)
+    print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_mcs_O)['outage_rate']:.3f})")
+
+    # 3-5. Optimal Shannon (Throughput)
     print("  - Optimal Shannon (Throughput) 最適化中...")
     result_opt_shannon_T = solve_optimization(
         candidates_df,
@@ -137,7 +171,7 @@ def main():
     result_opt_shannon_T.to_csv(outdir / 'assignment_optimal_shannon_T.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_shannon_T)['outage_rate']:.3f})")
 
-    # 3-4. Optimal Shannon (Outage)
+    # 3-6. Optimal Shannon (Outage)
     print("  - Optimal Shannon (Outage) 最適化中...")
     result_opt_shannon_O = solve_optimization(
         candidates_df,
@@ -153,7 +187,7 @@ def main():
     result_opt_shannon_O.to_csv(outdir / 'assignment_optimal_shannon_O.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_opt_shannon_O)['outage_rate']:.3f})")
 
-    # 3-5. Proposed Optimal (D/K×MCS+margin) (Throughput)
+    # 3-7. Proposed Optimal (D/K×MCS+margin) (Throughput)
     print("  - Proposed Optimal (D/K×MCS+margin) (Throughput) 最適化中...")
     result_proposed_T = solve_optimization(
         candidates_df,
@@ -171,7 +205,7 @@ def main():
     result_proposed_T.to_csv(outdir / 'assignment_proposed_optimal_dkmcs_T.csv', index=False)
     print(f"    ✓ 完了 (outage_rate={calculate_summary(result_proposed_T)['outage_rate']:.3f})")
 
-    # 3-6. Proposed Optimal (D/K×MCS+margin) (Outage)
+    # 3-8. Proposed Optimal (D/K×MCS+margin) (Outage)
     print("  - Proposed Optimal (D/K×MCS+margin) (Outage) 最適化中...")
     result_proposed_O = solve_optimization(
         candidates_df,
@@ -215,18 +249,20 @@ def main():
     # Step 6: プロット生成
     print("\n[6/7] プロット生成中...")
 
-    # Throughput目的セット（4手法）
+    # Throughput目的セット
     results_T = {
         'random': all_results['random']['throughput'],
         'greedy_mcs': all_results['greedy_mcs']['throughput'],
+        'optimal_mcs_T': all_results['optimal_mcs']['throughput'],
         'optimal_shannon_T': all_results['optimal_shannon']['throughput'],
         'proposed_T': all_results['proposed_optimal_dkmcs']['throughput'],
     }
 
-    # Outage目的セット（4手法）
+    # Outage目的セット
     results_O = {
         'random': all_results['random']['throughput'],  # Randomは同じ
         'greedy_mcs': all_results['greedy_mcs']['throughput'],  # Greedyも同じ
+        'optimal_mcs_O': all_results['optimal_mcs']['outage'],
         'optimal_shannon_O': all_results['optimal_shannon']['outage'],
         'proposed_O': all_results['proposed_optimal_dkmcs']['outage'],
     }

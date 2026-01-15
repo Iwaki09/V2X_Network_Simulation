@@ -1,0 +1,11 @@
+{
+  "unique_bs_count": 3,
+  "bs_link_counts": {
+    "BS_1": 4123,
+    "BS_2": 4123,
+    "BS_3": 4123
+  },
+  "min_bs_per_timestamp": 3,
+  "mean_bs_per_timestamp": 3.0,
+  "max_bs_per_timestamp": 3
+}

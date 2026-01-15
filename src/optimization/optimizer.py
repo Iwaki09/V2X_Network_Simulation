@@ -9,7 +9,7 @@ V2X通信の割当最適化問題を解きます。
 import pandas as pd
 import numpy as np
 from pulp import LpProblem, LpMaximize, LpVariable, lpSum, LpStatus, PULP_CBC_CMD
-from typing import Dict, Tuple, List
+from typing import Dict, Tuple, List, Optional
 
 
 def solve_optimization(
@@ -19,6 +19,7 @@ def solve_optimization(
     objective: str = "throughput",
     verbose: bool = False,
     progress_log: bool = True,
+    time_limit_sec: Optional[int] = None,
 ) -> pd.DataFrame:
     """
     最適化問題を解く
@@ -30,15 +31,30 @@ def solve_optimization(
         objective: "throughput" (Obj-T) or "outage" (Obj-O)
         verbose: 詳細出力（ソルバーの詳細ログ）
         progress_log: 進捗ログの表示
+        time_limit_sec: ソルバーのタイムリミット（秒）。Noneなら無制限
 
     Returns:
         割当結果DF (timestamp, vehicle_id, selected_action_type, selected_bs_id,
                     selected_relay_id, accepted, opt_rate_used, truth_rate_mcs_effective)
     """
     if objective == "throughput":
-        return _solve_throughput_max(candidates_df, bs_capacity, rate_col, verbose, progress_log)
+        return _solve_throughput_max(
+            candidates_df,
+            bs_capacity,
+            rate_col,
+            verbose,
+            progress_log,
+            time_limit_sec,
+        )
     elif objective == "outage":
-        return _solve_outage_min(candidates_df, bs_capacity, rate_col, verbose, progress_log)
+        return _solve_outage_min(
+            candidates_df,
+            bs_capacity,
+            rate_col,
+            verbose,
+            progress_log,
+            time_limit_sec,
+        )
     else:
         raise ValueError(f"Unknown objective: {objective}")
 
@@ -49,6 +65,7 @@ def _solve_throughput_max(
     rate_col: str,
     verbose: bool = False,
     progress_log: bool = True,
+    time_limit_sec: Optional[int] = None,
 ) -> pd.DataFrame:
     """
     Obj-T: スループット最大化
@@ -64,6 +81,8 @@ def _solve_throughput_max(
         print(f"      候補数: {len(candidates_df)}")
         print(f"      タイムスタンプ数: {candidates_df['timestamp'].nunique()}")
         print(f"      車両数: {candidates_df['vehicle_id'].nunique()}")
+        if time_limit_sec:
+            print(f"      タイムリミット: {time_limit_sec}s")
 
     prob = LpProblem("V2X_Throughput_Maximization", LpMaximize)
 
@@ -134,7 +153,7 @@ def _solve_throughput_max(
         print(f"    - ソルバー実行中...")
 
     # 求解
-    solver = PULP_CBC_CMD(msg=verbose)
+    solver = PULP_CBC_CMD(msg=verbose, timeLimit=time_limit_sec) if time_limit_sec else PULP_CBC_CMD(msg=verbose)
     prob.solve(solver)
 
     if progress_log or verbose:
@@ -192,6 +211,7 @@ def _solve_outage_min(
     rate_col: str,
     verbose: bool = False,
     progress_log: bool = True,
+    time_limit_sec: Optional[int] = None,
 ) -> pd.DataFrame:
     """
     Obj-O: アウトエージ最小化（2段階最適化）
@@ -204,6 +224,8 @@ def _solve_outage_min(
         print(f"      候補数: {len(candidates_df)}")
         print(f"      タイムスタンプ数: {candidates_df['timestamp'].nunique()}")
         print(f"      車両数: {candidates_df['vehicle_id'].nunique()}")
+        if time_limit_sec:
+            print(f"      タイムリミット: {time_limit_sec}s")
 
     # === 第1段: 救済数最大化 ===
     prob1 = LpProblem("V2X_Rescue_Maximization", LpMaximize)
@@ -287,7 +309,7 @@ def _solve_outage_min(
         print(f"    - [第1段] ソルバー実行中...")
 
     # 第1段求解
-    solver = PULP_CBC_CMD(msg=verbose)
+    solver = PULP_CBC_CMD(msg=verbose, timeLimit=time_limit_sec) if time_limit_sec else PULP_CBC_CMD(msg=verbose)
     prob1.solve(solver)
 
     rescued_count = int(round(prob1.objective.value())) if prob1.objective.value() else 0

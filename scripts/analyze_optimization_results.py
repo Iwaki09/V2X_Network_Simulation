@@ -71,6 +71,17 @@ def analyze_basic_statistics(summary_df: pd.DataFrame) -> dict:
     return results
 
 
+def _select_optimal_t(assignments_dir: Path) -> tuple:
+    candidates = [
+        ("Optimal MCS (T)", assignments_dir / 'assignment_optimal_mcs_T.csv'),
+        ("Optimal Shannon (T)", assignments_dir / 'assignment_optimal_shannon_T.csv'),
+    ]
+    for label, path in candidates:
+        if path.exists():
+            return label, path
+    raise FileNotFoundError("assignment_optimal_mcs_T.csv / assignment_optimal_shannon_T.csv が見つかりません")
+
+
 def analyze_greedy_vs_optimal(assignments_dir: Path):
     """Greedy vs Optimal の詳細比較"""
     print("\n" + "="*80)
@@ -79,10 +90,11 @@ def analyze_greedy_vs_optimal(assignments_dir: Path):
 
     # 各手法の割当を読み込み
     greedy_df = pd.read_csv(assignments_dir / 'assignment_greedy_mcs.csv')
-    optimal_T_df = pd.read_csv(assignments_dir / 'assignment_optimal_shannon_T.csv')
+    optimal_label, optimal_path = _select_optimal_t(assignments_dir)
+    optimal_T_df = pd.read_csv(optimal_path)
 
     print(f"\nGreedy割当数: {len(greedy_df)}")
-    print(f"Optimal(T)割当数: {len(optimal_T_df)}")
+    print(f"{optimal_label}割当数: {len(optimal_T_df)}")
 
     # 同一車両・同一timestampでの比較
     merged = greedy_df.merge(
@@ -120,6 +132,7 @@ def analyze_greedy_vs_optimal(assignments_dir: Path):
         print(f"                    Optimal有利={len(diff_samples[diff_samples['throughput_diff']>0])}, Greedy有利={len(diff_samples[diff_samples['throughput_diff']<0])}")
 
     return {
+        'optimal_label': optimal_label,
         'match_rate': match_rate,
         'diff_count': len(diff_samples),
         'diff_samples': diff_samples if len(diff_samples) > 0 else None
@@ -132,8 +145,9 @@ def analyze_relay_effect(assignments_dir: Path):
     print("3. Relay効果の詳細分析")
     print("="*80)
 
-    # Optimal Shannon (T) を使用
-    df = pd.read_csv(assignments_dir / 'assignment_optimal_shannon_T.csv')
+    optimal_label, optimal_path = _select_optimal_t(assignments_dir)
+    print(f"\n  使用データ: {optimal_label}")
+    df = pd.read_csv(optimal_path)
 
     # 採択されたサンプルのみ
     df_accepted = df[df['accepted'] == 1]
@@ -192,9 +206,13 @@ def analyze_timeseries(assignments_dir: Path, outdir: Path):
     methods = {
         'random': 'assignment_random.csv',
         'greedy': 'assignment_greedy_mcs.csv',
-        'optimal_T': 'assignment_optimal_shannon_T.csv',
         'proposed_T': 'assignment_proposed_optimal_dkmcs_T.csv',
     }
+    optimal_mcs_path = assignments_dir / 'assignment_optimal_mcs_T.csv'
+    if optimal_mcs_path.exists():
+        methods['optimal_mcs_T'] = 'assignment_optimal_mcs_T.csv'
+    else:
+        methods['optimal_T'] = 'assignment_optimal_shannon_T.csv'
 
     timeseries_data = {}
 
@@ -300,19 +318,29 @@ def generate_analysis_report(results: dict, outdir: Path):
         basic_stats = results['basic_statistics']
         random_mean = basic_stats['random']['single']['mean_throughput_mbps']
         greedy_mean = basic_stats['greedy_mcs']['single']['mean_throughput_mbps']
-        optimal_mean = basic_stats['optimal_shannon']['T']['mean_throughput_mbps']
+        optimal_mcs_stats = basic_stats.get('optimal_mcs')
+        optimal_shannon_stats = basic_stats.get('optimal_shannon')
         proposed_mean = basic_stats['proposed_optimal_dkmcs']['T']['mean_throughput_mbps']
+        optimal_shannon_mean = None
+        optimal_mcs_mean = None
+        if optimal_shannon_stats:
+            optimal_shannon_mean = optimal_shannon_stats['T']['mean_throughput_mbps']
+        if optimal_mcs_stats:
+            optimal_mcs_mean = optimal_mcs_stats['T']['mean_throughput_mbps']
 
         f.write(f"- Random baseline: {random_mean:.2f} Mbps\n")
         f.write(f"- Greedy (MCS): {greedy_mean:.2f} Mbps (+{(greedy_mean-random_mean)/random_mean*100:.1f}%)\n")
-        f.write(f"- Optimal Shannon: {optimal_mean:.2f} Mbps (+{(optimal_mean-random_mean)/random_mean*100:.1f}%)\n")
+        if optimal_mcs_mean is not None:
+            f.write(f"- Optimal MCS: {optimal_mcs_mean:.2f} Mbps (+{(optimal_mcs_mean-random_mean)/random_mean*100:.1f}%)\n")
+        if optimal_shannon_mean is not None:
+            f.write(f"- Optimal Shannon: {optimal_shannon_mean:.2f} Mbps (+{(optimal_shannon_mean-random_mean)/random_mean*100:.1f}%)\n")
         f.write(f"- Proposed (D/K×MCS): {proposed_mean:.2f} Mbps (+{(proposed_mean-random_mean)/random_mean*100:.1f}%)\n\n")
 
         # 2. 主要な発見
         f.write("【主要な発見】\n\n")
 
         greedy_vs_optimal = results['greedy_vs_optimal']
-        f.write(f"1. GreedyとOptimal Shannonの一致率: {greedy_vs_optimal['match_rate']:.2%}\n")
+        f.write(f"1. Greedyと{greedy_vs_optimal['optimal_label']}の一致率: {greedy_vs_optimal['match_rate']:.2%}\n")
         f.write(f"   → Greedyが既にほぼ最適解に到達している\n\n")
 
         relay_effect = results['relay_effect']

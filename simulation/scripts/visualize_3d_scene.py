@@ -68,6 +68,15 @@ def create_box_faces(vertices):
     return faces
 
 
+def get_base_stations(config):
+    """設定から基地局リストを取得（単一/複数に対応）"""
+    if hasattr(config, "base_stations") and config.base_stations:
+        return config.base_stations
+    if hasattr(config, "base_station") and config.base_station:
+        return [config.base_station]
+    return []
+
+
 def plot_3d_scene(config, view='isometric', save_path=None, show_labels=True, show_grid=True):
     """
     3Dシーンをプロット
@@ -86,6 +95,12 @@ def plot_3d_scene(config, view='isometric', save_path=None, show_labels=True, sh
     building_color = '#8B4513'  # 茶色
     building_alpha = 0.7
 
+    base_stations = get_base_stations(config)
+    label_xy_offset = 18.0
+    label_z_offset = 8.0
+    bs_label_z_offset = 6.0
+    bs_avoid_radius = 120.0
+
     for building in config.buildings:
         vertices = create_box_vertices(building.center, building.size)
         faces = create_box_faces(vertices)
@@ -100,28 +115,44 @@ def plot_3d_scene(config, view='isometric', save_path=None, show_labels=True, sh
         if show_labels:
             cx, cy, cz = building.center
             _, _, h = building.size
-            ax.text(cx, cy, cz + h + 10, building.id,
-                   fontsize=10, ha='center', va='bottom', fontweight='bold',
+            offset_vec = np.array([cx, cy], dtype=float)
+            if base_stations:
+                bs_positions = np.array([bs.position[:2] for bs in base_stations], dtype=float)
+                deltas = offset_vec - bs_positions
+                dists = np.hypot(deltas[:, 0], deltas[:, 1])
+                nearest_idx = int(np.argmin(dists))
+                if dists[nearest_idx] < bs_avoid_radius:
+                    offset_vec = deltas[nearest_idx]
+
+            norm = np.hypot(offset_vec[0], offset_vec[1])
+            if norm == 0:
+                offset_x, offset_y = 0.0, label_xy_offset
+            else:
+                offset_x = label_xy_offset * offset_vec[0] / norm
+                offset_y = label_xy_offset * offset_vec[1] / norm
+            ax.text(cx + offset_x, cy + offset_y, cz + h + label_z_offset, building.id,
+                   fontsize=10, ha='center', va='bottom', fontweight='bold', zorder=100,
                    bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.8, edgecolor='black'))
 
     # 基地局を描画
-    bs = config.base_station
-    ax.scatter([bs.position[0]], [bs.position[1]], [bs.position[2]],
-              c='red', marker='^', s=300,
-              edgecolors='black', linewidths=2, zorder=10)
+    for bs in base_stations:
+        ax.scatter([bs.position[0]], [bs.position[1]], [bs.position[2]],
+                  c='red', marker='^', s=300,
+                  edgecolors='black', linewidths=2, zorder=10)
 
-    # 基地局の支柱を描画
-    ax.plot([bs.position[0], bs.position[0]],
-            [bs.position[1], bs.position[1]],
-            [0, bs.position[2]],
-            'r--', linewidth=2, alpha=0.6)
+        # 基地局の支柱を描画
+        ax.plot([bs.position[0], bs.position[0]],
+                [bs.position[1], bs.position[1]],
+                [0, bs.position[2]],
+                'r--', linewidth=2, alpha=0.6)
 
-    # ラベル（白背景付きで見やすく）
-    if show_labels:
-        ax.text(bs.position[0], bs.position[1], bs.position[2] + 5,
-               'BS', fontsize=12, ha='center', va='bottom',
-               fontweight='bold', color='red',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9, edgecolor='red'))
+        # ラベル（白背景付きで見やすく）
+        if show_labels:
+            label = getattr(bs, "id", "BS")
+            ax.text(bs.position[0], bs.position[1], bs.position[2] + bs_label_z_offset,
+                   label, fontsize=12, ha='center', va='bottom',
+                   fontweight='bold', color='red', zorder=100,
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9, edgecolor='red'))
 
     # 道路を描画（平面）
     road_width = 7.0  # 2車線
@@ -220,16 +251,18 @@ def plot_2d_top_view(config, save_path=None, show_labels=True):
                    va='center', fontweight='bold', color='white')
 
     # 基地局を描画
-    bs = config.base_station
-    ax.scatter([bs.position[0]], [bs.position[1]],
-              c='red', marker='^', s=400,
-              edgecolors='black', linewidths=2, zorder=10)
+    base_stations = get_base_stations(config)
+    for bs in base_stations:
+        ax.scatter([bs.position[0]], [bs.position[1]],
+                  c='red', marker='^', s=400,
+                  edgecolors='black', linewidths=2, zorder=10)
 
-    if show_labels:
-        ax.text(bs.position[0], bs.position[1] - 10, 'BS',
-               fontsize=12, ha='center', va='top',
-               fontweight='bold', color='red',
-               bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9, edgecolor='red'))
+        if show_labels:
+            label = getattr(bs, "id", "BS")
+            ax.text(bs.position[0], bs.position[1] - 10, label,
+                   fontsize=12, ha='center', va='top',
+                   fontweight='bold', color='red',
+                   bbox=dict(boxstyle='round,pad=0.3', facecolor='white', alpha=0.9, edgecolor='red'))
 
     # 道路を描画
     road_width = 7.0

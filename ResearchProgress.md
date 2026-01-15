@@ -424,6 +424,10 @@ V2X通信環境における物理伝搬シミュレーションを統合した�
 - `simulation/MODE_AWARE_MARGIN.md`に図ごとの数値解釈を追加し、defaultシナリオの図・数値・シナリオ比較表を追記。
 
 ## 2026-01-15
+- **複数BS検証の保存エラー修正**:
+  - `scripts/run_sweep_multibs.py` で `verification.json` 保存時に `int64` が混入しないよう数値型を明示キャスト
+- **C_b sweepの前処理改善**:
+  - `scripts/run_sweep_multibs.py` のスループット計算を `both` モードに変更し、`theoretical_throughput_mbps` と MCS列を同時出力
 - **ビームフォーミング（BF）対応を追加**:
   - `simulation/src/core/beamforming.py` を新規追加し、3GPP TR 38.901素子パターン（A_V/A_H/A）と理想ビーム利得を実装
   - `simulation/src/core/raytracing.py` で最大パスの AoD/AoA を出力（Sionna RT角度＋幾何推定のフォールバック）
